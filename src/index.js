@@ -13,7 +13,7 @@ export default class Navigo {
   }
 
   listen() {
-    
+
   }
 
   on(regex, handler = null) {
