@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Navigo</title>
+</head>
+<body>
+  <div class="container">
+    <a href="" class="js-home">Home</a>
+    <a href="" class="js-products">Products</a>
+  </div>
+  <script src="../lib/navigo.js"></script>
+  <script>
+    var router;
+
+    var handleClick = function (selector, func) {
+      document.querySelector(selector).addEventListener('click', function (e) {
+        e.preventDefault();
+        func();
+      });
+    };
+
+    window.onload = function () {
+      router = new Navigo();
+
+      handleClick('.js-products', router.navigate.bind(router, 'products'));
+      handleClick('.js-home', router.navigate.bind(router));
+    }
+  </script>
+</body>
+</html>
