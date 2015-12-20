@@ -1,4 +1,8 @@
-RewriteEngine on
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(*.)?$ /$1 [NC,L,QSA]
+<ifModule mod_rewrite.c>
+  Options +FollowSymLinks
+  IndexIgnore */*
+  RewriteEngine On
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule (.*) index.html
+</ifModule>
