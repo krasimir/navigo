@@ -13,13 +13,13 @@ export default class Navigo {
   }
 
   listen() {
-
+    
   }
 
   on(regex, handler = null) {
-    if(typeof regex === 'function') {
-        handler = regex;
-        regex = '';
+    if (typeof regex === 'function') {
+      handler = regex;
+      regex = '';
     }
     this._routes.push({ regex, handler });
     return this;

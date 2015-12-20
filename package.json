@@ -21,7 +21,7 @@
     "url": "git@github.com:krasimir/navigo.git"
   },
   "scripts": {
-    "dev": "WEBPACK_ENV=dev ./node_modules/.bin/webpack --watch --inline",
+    "dev": "WEBPACK_ENV=dev ./node_modules/.bin/webpack --progress --colors --watch",
     "build": "WEBPACK_ENV=build ./node_modules/.bin/webpack"
   },
   "devDependencies": {
