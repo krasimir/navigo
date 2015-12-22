@@ -1,7 +1,8 @@
 export default class Navigo {
-  constructor({ root = false, listen = true } = {}) {
+  
+  constructor(root, listen=false) {
     this._routes = [];
-    this._root = !root ? window.location.href : root;
+    this._root = root;
 
     if (listen) this.listen();
   }
@@ -13,7 +14,7 @@ export default class Navigo {
   }
 
   listen() {
-
+    
   }
 
   on(regex, handler = null) {
