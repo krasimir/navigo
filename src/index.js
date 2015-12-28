@@ -1,4 +1,4 @@
-import { parse, clean } from './helpers/URLParse';
+import { match, root, clean } from './helpers/URLParse';
 
 const isHistorySupported = function () {
   return !!(window && window.history && window.history.pushState);
@@ -27,13 +27,13 @@ export default class Navigo {
 
   check(current) {
     var currentURL = current ? current : window.location.href;
-    var match = parse(currentURL, this._routes);
+    var matchedRoute = match(currentURL, this._routes);
     var handler;
 
-    if (match) {
-      handler = this._routes[match.index];
-      handler ? handler(match.params) : null;
-      return match;
+    if (matchedRoute) {
+      handler = matchedRoute.route.handler;
+      handler && typeof handler === 'function' ? handler(matchedRoute.params) : null;
+      return matchedRoute;
     }
     return false;
   }

@@ -17,7 +17,7 @@ var regExpResultToParams = function (match, names) {
 var replaceDynamicURLParts = function (route) {
   var paramNames = [], regexp;
 
-  regexp = route.replace(PARAMETER_REGEXP, function (full, dots, name) {
+  regexp = clean(route).replace(PARAMETER_REGEXP, function (full, dots, name) {
     paramNames.push(name);
     return REPLACE_VARIABLE_REGEXP;
   }) + FOLLOWED_BY_SLASH_REGEXP;
