@@ -3,6 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <title>Navigo</title>
+  <style>
+    body {
+      background: #333;
+      color: #B0B0B0;
+    }
+    a {
+      color: #B0B0B0;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -22,6 +31,7 @@
 
     window.onload = function () {
       router = new Navigo();
+      router.check();
 
       handleClick('.js-products', router.navigate.bind(router, 'products'));
       handleClick('.js-home', router.navigate.bind(router));

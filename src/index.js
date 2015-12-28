@@ -1,37 +1,41 @@
-export default class Navigo {
-  
-  constructor(root, listen=false) {
-    this._routes = [];
-    this._root = root;
+import { parse, clean } from './helpers/URLParse';
 
-    if (listen) this.listen();
+const isHistorySupported = function () {
+  return !!(window && window.history && window.history.pushState);
+};
+
+export default class Navigo {
+
+  constructor() {
+    this._routes = [];
   }
 
   navigate(path = '') {
-    if (this._isHistorySupported()) {
-      history.pushState(null, null, this._root + this._clearSlashes(path));
+    if (isHistorySupported) {
+      history.pushState(null, null, this._root + clean(path));
     }
   }
 
-  listen() {
-    
-  }
-
-  on(regex, handler = null) {
-    if (typeof regex === 'function') {
-      handler = regex;
-      regex = '';
+  on(route, handler = null) {
+    if (typeof route === 'function') {
+      handler = route;
+      route = '';
     }
-    this._routes.push({ regex, handler });
+    this._routes.push({ route, handler });
     return this;
   }
 
-  _isHistorySupported() {
-    return !!(window && window.history && window.history.pushState);
-  }
+  check(current) {
+    var currentURL = current ? current : window.location.href;
+    var match = parse(currentURL, this._routes);
+    var handler;
 
-  _clearSlashes(path) {
-    return path.toString().replace(/\/$/, '').replace(/^\//, '');
+    if (match) {
+      handler = this._routes[match.index];
+      handler ? handler(match.params) : null;
+      return match;
+    }
+    return false;
   }
 }
 
