@@ -108,5 +108,11 @@ describe('Given the URLParse helper', function () {
     it('should return null as params if there is no parameters', () => {
       expect(parse('http://site.com/users', ['/users/:id', '/users']).params).to.equal(null);
     });
+    it('should return the index of the matched pattern', () => {
+      expect(parse(
+        'http://site.com/users/42',
+        ['/test/blah', '/users/:id', '/users', '/library/something']
+      ).index).to.equal(1);
+    });
   });
 });

@@ -17,32 +17,24 @@ const urlToParams = function (names, match) {
 };
 
 export function parse(url, patterns = []) {
-  var result = {
+  let defaultResult = {
+    params: null,
     fullURL: clean(url),
-    params: null
-  };
-  var matches = patterns
-    .map(p => {
+    index: null
+  }
+  return patterns
+    .map((p, index) => {
       let paramNames = [];
       p = p.replace(PARAMETER_REGEXP, function (full, dots, name) {
         paramNames.push(name);
         return REPLACE_VARIABLE_REGEXP;
       });
       let match = url.match(new RegExp(clean(p)));
-      return { 
-        regExpResult: match,
-        params: urlToParams(paramNames, match)
-      }
+      return match ? {
+        params: urlToParams(paramNames, match),
+        fullURL: match ? clean(url.substr(0, match.index)) : defaultResult.fullURL,
+        index
+      } : false;
     })
-    .filter(m => m.regExpResult !== null);
-
-  if (matches.length === 0) {
-    return result;
-  }
-
-  let match = matches.shift();
-  result.fullURL = clean(result.fullURL.substr(0, match.regExpResult.index));
-  result.params = match.params;
-
-  return result;
+    .filter(m => m)[0] || defaultResult;
 };
