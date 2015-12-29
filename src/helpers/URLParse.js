@@ -2,7 +2,11 @@ const PARAMETER_REGEXP = /([:*])(\w+)/g;
 const REPLACE_VARIABLE_REGEXP = '([^\/]+)';
 const FOLLOWED_BY_SLASH_REGEXP = '(?:\/|$)';
 
-var regExpResultToParams = function (match, names) {
+export function clean(s) {
+  return s.replace(/\/+$/, '').replace(/^\/+/, '/');
+};
+
+function regExpResultToParams(match, names) {
   if (names.length === 0) return null;
   if (!match) return null;
   return match
@@ -14,20 +18,23 @@ var regExpResultToParams = function (match, names) {
     }, null);
 };
 
-var replaceDynamicURLParts = function (route) {
+function replaceDynamicURLParts(route) {
   var paramNames = [], regexp;
 
-  regexp = clean(route).replace(PARAMETER_REGEXP, function (full, dots, name) {
-    paramNames.push(name);
-    return REPLACE_VARIABLE_REGEXP;
-  }) + FOLLOWED_BY_SLASH_REGEXP;
-  return { 
-    regexp: new RegExp(clean(regexp)),
-    paramNames
-  };
+  if (route instanceof RegExp) {
+    regexp = route;
+  } else {
+    regexp = new RegExp(
+      clean(route).replace(PARAMETER_REGEXP, function (full, dots, name) {
+        paramNames.push(name);
+        return REPLACE_VARIABLE_REGEXP;
+      }) + FOLLOWED_BY_SLASH_REGEXP
+    );
+  }
+  return { regexp, paramNames };
 };
 
-var findMatchedRoutes = function (url, routes = []) {
+function findMatchedRoutes(url, routes = []) {
   return routes
     .map(route => {
       var { regexp, paramNames } = replaceDynamicURLParts(route.route);
@@ -37,10 +44,6 @@ var findMatchedRoutes = function (url, routes = []) {
       return match ? { match, route, params } : false;
     })
     .filter(m => m);
-};
-
-export function clean(s) {
-  return s.replace(/\/+$/, '').replace(/^\/+/, '/');
 };
 
 export function match(url, routes = []) {

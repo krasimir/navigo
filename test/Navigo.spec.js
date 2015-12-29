@@ -1,7 +1,11 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import Navigo from '../src/';
+
+// Notice that we are importing a lib file here.
+// Consider using:
+// import Navigo from '../src/';
+import Navigo from '../lib/navigo';
 
 chai.expect();
 chai.use(sinonChai);
@@ -10,7 +14,7 @@ const expect = chai.expect;
 
 var router, handler;
 
-describe.only('Given an instance of Navigo', function () {
+describe('Given an instance of Navigo', function () {
 
   beforeEach(function () {
     router = new Navigo();
@@ -92,6 +96,18 @@ describe.only('Given an instance of Navigo', function () {
             params: { id: 42, action: 'edit' }
           }));
         });
+      });
+    });
+
+    describe('and when we pass a regular expression as a pattern', function () {
+      it('should call the handler and receive a regexp result object', function (done) {
+        var handler = function (id, action) {
+          expect(id).to.be.equal('42');
+          expect(action).to.be.equal('save');
+          done();
+        };
+        router.on(/users\/(\d+)\/(\w+)\/?/, handler);
+        router.check('site.com/app/users/42/save');
       });
     });
 

@@ -26,17 +26,22 @@ export default class Navigo {
   }
 
   check(current) {
+    var handler, isRegExp;
     var currentURL = current ? current : window.location.href;
-    var matchedRoute = match(currentURL, this._routes);
-    var handler;
+    var m = match(currentURL, this._routes);
 
-    if (matchedRoute) {
-      handler = matchedRoute.route.handler;
-      handler && typeof handler === 'function' ? handler(matchedRoute.params) : null;
-      return matchedRoute;
+    if (m) {
+      handler = m.route.handler;
+      isRegExp = m.route.route instanceof RegExp;
+      if (handler && typeof handler === 'function') {
+        if (isRegExp) {
+          handler(...(m.match.slice(1, m.match.length)));
+        } else {
+          handler(m.params);
+        }
+      }
+      return m;
     }
     return false;
   }
 }
-
-global.Navigo = Navigo;
