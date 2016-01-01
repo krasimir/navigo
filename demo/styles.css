@@ -103,3 +103,16 @@ footer {
 footer a {
   color: #999 !important;
 }
+.mode-trigger {
+  position: fixed;
+  top: 4px;
+  right: 4px;
+}
+.mode-trigger a {
+  text-decoration: none;
+  font-size: 0.8em;
+  color: #999;
+}
+.mode-trigger a:hover {
+  color: #000
+}

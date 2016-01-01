@@ -9,7 +9,7 @@
   <script type="text/content" id="content-about">
     <p class="big center u-mb">
       Lightweight JavaScript router<br />
-      <small>(It does only one thing - it maps a URL to a function. That&#39;s it!)</small>
+      <small>It does only one thing -<br />it maps a URL to a function.<br />That&#39;s it!</small>
     </p>
     <p>
       <ul>
@@ -35,7 +35,7 @@
       <li><a href="https://raw.githubusercontent.com/krasimir/navigo/master/lib/navigo.js" target="_blank">navigo.js</a></li>
       <li><a href="https://raw.githubusercontent.com/krasimir/navigo/master/lib/navigo.min.js" target="_blank">navigo.min.js</a></li>
     </ul>
-    <p>Then simply create an instance of the router:</p>
+    <p>Then simply create an instance:</p>
     <pre>var router = new Navigo();</pre>
     <p class="big">Adding a route</p>
     <p>There are several way to register a new route:</p>
@@ -79,8 +79,12 @@ router.on(/users\/(\d+)\/(\w+)\/?/, function (id, action) {
     <p>or</p>
     <ul>
       <li><a href="https://raw.githubusercontent.com/krasimir/navigo/master/lib/navigo.js" target="_blank">navigo.js</a> (raw source)</li>
-      <li><a href="https://raw.githubusercontent.com/krasimir/navigo/master/lib/navigo.min.js" target="_blank">navigo.min.js (minified)</a></li>
+      <li><a href="https://raw.githubusercontent.com/krasimir/navigo/master/lib/navigo.min.js" target="_blank">navigo.min.js</a> (minified)</li>
     </ul>
+  </script>
+  <script type="text/content" id="content-try-it">
+    <p class="big">Try it</p>
+    <p>The following JSBin demonstrates most of the Navigo&#39;s features:</p>
   </script>
 
 </head>
@@ -91,9 +95,15 @@ router.on(/users\/(\d+)\/(\w+)\/?/, function (id, action) {
       <a href="javascript:void(0);" data-switchto="about">About</a>
       <a href="javascript:void(0);" data-switchto="usage">Usage</a>
       <a href="javascript:void(0);" data-switchto="download">Download</a>
+      <a href="javascript:void(0);" data-switchto="try-it">Try it</a>
     </nav>
     <div class="js-content content"></div>
     <footer><a href="https://github.com/krasimir/navigo">github.com/krasimir/navigo</a></footer>
+  </div>
+  <div class="mode-trigger js-mode-trigger">
+    <a href="javascript: void(0);">
+      <input type="checkbox" /> hash based routing
+    </a>
   </div>
   <script src="http://home.dev/Krasimir/navigo/lib/navigo.js"></script>
   <script>
@@ -115,7 +125,32 @@ router.on(/users\/(\d+)\/(\w+)\/?/, function (id, action) {
     };
 
     window.onload = function () {
-      router = new Navigo();
+
+      // mode triggering
+      var trigger = el('.js-mode-trigger');
+      var mode = 'history-api';
+      var isLocalStorageSupported = !!window.localStorage;
+      var rerenderTrigger = function (mode) {
+        trigger.querySelector('input').checked = mode === 'hash';
+      };
+
+      if (isLocalStorageSupported) {
+        mode = localStorage.getItem('navigo') || mode;
+      }
+      rerenderTrigger(mode);
+
+      trigger.addEventListener('click', function () {
+        mode = mode === 'history-api' ? 'hash' : 'history-api';
+        isLocalStorageSupported && localStorage.setItem('navigo', mode);
+        window.location.href = router.root.replace('#', '');
+        setTimeout(function () {
+          window.location.reload(true);
+        }, 200);
+      });
+
+      // routing
+
+      router = new Navigo(null, mode === 'hash');
       router.on({
         'usage': function () {
           setContent('usage');
@@ -125,6 +160,9 @@ router.on(/users\/(\d+)\/(\w+)\/?/, function (id, action) {
         },
         'about': function () {
           setContent('about');
+        },
+        'try-it': function () {
+          setContent('try-it');
         }
       });
       router.on(function() {

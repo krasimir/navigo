@@ -2,10 +2,10 @@ import { match, root, clean } from './helpers/URLParse';
 
 export default class Navigo {
 
-  constructor(root = null) {
+  constructor(root = null, useHash = false) {
     this._routes = [];
     this._root = root;
-    this._isHistorySupported = !!(
+    this._isHistorySupported = useHash === false && !!(
       typeof window !== 'undefined' &&
       window.history &&
       window.history.pushState
@@ -15,11 +15,9 @@ export default class Navigo {
 
   navigate(path = '', absolute = false) {
     if (this._isHistorySupported) {
-      history.pushState(
-        {},
-        '',
-        (!absolute ? this._getRoot() + '/' : '') + clean(path)
-      );
+      history.pushState({}, '', (!absolute ? this._getRoot() + '/' : '') + clean(path));
+    } else if (typeof window !== 'undefined') {
+      window.location.href = window.location.href.replace(/#(.*)$/, '') + '#' + path;
     }
     this.resolve();
   }
@@ -49,6 +47,10 @@ export default class Navigo {
       return m;
     }
     return false;
+  }
+
+  get root() {
+    return this._getRoot();
   }
 
   _addRoute(route, handler = null) {

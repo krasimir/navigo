@@ -13,10 +13,12 @@ Via npm with `npm install navigo` or drop `lib/navigo.min.js` into your page.
 ### Initialization
 
 ```js
-var router = new Navigo([root = null]);
+var router = new Navigo(root = null, useHash=false);
 ```
 
-The constructor of the library accepts only one argument - `root`. That's the main URL of your application. If you call the constructor without parameters then Navigo figures out the root URL based on your routes.
+The constructor of the library accepts two argument - `root` and `useHash`. The first one is the main URL of your application. If you call the constructor without parameters then Navigo figures out the root URL based on your routes.
+
+If `useHash` set to `true` then the router uses an old routing approach with hash in the URL. Navigo anyways falls back to this mode if there is no History API supported.
 
 ### Adding a route
 
