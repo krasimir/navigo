@@ -24,7 +24,7 @@ router.on('/products/list', function () {
 });
 ```
 
-It's possible to miss the first parameter and provide only a function. For example:
+Skip the first parameter and provide only a function and the router will fallback every non-existing URL to your handler. (suitable for displaying home page)
 
 ```js
 router.on(function () {
