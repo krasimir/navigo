@@ -21,13 +21,11 @@
     "url": "git@github.com:krasimir/navigo.git"
   },
   "scripts": {
-    "dev": "watch 'npm run build-dev' src/",
     "build": "WEBPACK_ENV=build ./node_modules/.bin/webpack",
-    "build-dev": "WEBPACK_ENV=dev ./node_modules/.bin/webpack --progress --colors",
+    "dev": "WEBPACK_ENV=dev ./node_modules/.bin/webpack --progress --colors --watch",
     "test": "mocha --compilers js:babel-core/register --colors -w ./test/*.spec.js"
   },
   "devDependencies": {
-    "ava": "0.8.0",
     "babel": "6.3.13",
     "babel-core": "6.1.18",
     "babel-eslint": "4.1.3",
@@ -40,7 +38,6 @@
     "mocha": "2.3.4",
     "sinon": "1.17.2",
     "sinon-chai": "2.8.0",
-    "watch": "0.17.1",
     "webpack": "1.12.9"
   }
 }

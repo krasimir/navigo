@@ -3,20 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <title>Navigo</title>
-  <style>
-    body {
-      background: #333;
-      color: #B0B0B0;
-    }
-    a {
-      color: #B0B0B0;
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="./styles.css" />
 </head>
 <body>
   <div class="container">
-    <a href="" class="js-home">Home</a>
-    <a href="" class="js-products">Products</a>
+    <nav>
+      <a href="javascript:void(0);" class="js-home">Home</a>
+      <a href="javascript:void(0);" class="js-about">About</a>
+      <a href="javascript:void(0);" class="js-products">Products</a>
+    </nav>
+    <div class="js-content content"></div>
   </div>
   <script src="http://home.dev/Krasimir/navigo/lib/navigo.js"></script>
   <script>
@@ -29,12 +25,28 @@
       });
     };
 
+    var setContent = function (str) {
+      document.querySelector('.js-content').innerHTML = str;
+    };
+
     window.onload = function () {
       router = new Navigo();
-      router.check();
+      router
+        .on('products', function () {
+          setContent('Products');
+        })
+        .on('about', function () {
+          setContent('About');
+        })
+        .on(function () {
+          setContent('Home')
+        })
+        .check();
 
       handleClick('.js-products', router.navigate.bind(router, 'products'));
+      handleClick('.js-about', router.navigate.bind(router, 'about'));
       handleClick('.js-home', router.navigate.bind(router));
+
     }
   </script>
 </body>

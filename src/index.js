@@ -1,19 +1,27 @@
 import { match, root, clean } from './helpers/URLParse';
 
-const isHistorySupported = function () {
-  return !!(window && window.history && window.history.pushState);
-};
-
 export default class Navigo {
 
-  constructor() {
+  constructor(root = null) {
     this._routes = [];
+    this._root = root;
+    this._isHistorySupported = !!(
+      typeof window !== 'undefined' &&
+      window.history &&
+      window.history.pushState
+    );
+    this._listenForURLChanges();
   }
 
-  navigate(path = '') {
-    if (isHistorySupported) {
-      history.pushState(null, null, this._root + clean(path));
+  navigate(path = '', absolute = false) {
+    if (this._isHistorySupported) {
+      history.pushState(
+        {},
+        '',
+        (!absolute ? this._getRoot() + '/' : '') + clean(path)
+      );
     }
+    this.check();
   }
 
   on(route, handler = null) {
@@ -26,22 +34,38 @@ export default class Navigo {
   }
 
   check(current) {
-    var handler, isRegExp;
-    var currentURL = current ? current : window.location.href;
-    var m = match(currentURL, this._routes);
+    var handler;
+    var m = match(current || this._getCurrentWindowLocation(), this._routes);
 
     if (m) {
       handler = m.route.handler;
-      isRegExp = m.route.route instanceof RegExp;
-      if (handler && typeof handler === 'function') {
-        if (isRegExp) {
-          handler(...(m.match.slice(1, m.match.length)));
-        } else {
-          handler(m.params);
-        }
-      }
+      m.route.route instanceof RegExp ?
+        handler(...(m.match.slice(1, m.match.length))) :
+        handler(m.params);
       return m;
     }
     return false;
   }
+
+  _getRoot() {
+    if (this._root !== null) return this._root;
+    this._root = root(this._getCurrentWindowLocation(), this._routes);
+    return this._root;
+  }
+
+  _listenForURLChanges() {
+    if (this._isHistorySupported) {
+      window.onpopstate = event => {
+        this.check();
+      };
+    }
+  }
+
+  _getCurrentWindowLocation() {
+    if (typeof window !== 'undefined') {
+      return window.location.href;
+    }
+    return '';
+  }
 }
+

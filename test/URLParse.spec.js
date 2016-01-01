@@ -44,6 +44,10 @@ const rootTestCases = [
     source: 'http://site.com/something/else/brother/blah', routes: routes('/d/', '/a/b/', '/b', '/c'),
     expected: 'http://site.com/something/else/brother/blah'
   },
+  { 
+    source: 'http://site.com/something/else', routes: routes(''),
+    expected: 'http://site.com/something/else'
+  }
 ];
 
 describe('Given the URLParse helper', function () {
@@ -80,6 +84,12 @@ describe('Given the URLParse helper', function () {
     });
     it('should deal properly with multiple finds of same pattern', function () {
       expect(match('http://site.com/a/b/c/d', routes('/c')).match.index).to.be.equal(19);
+    });
+    it('should match if there is a wildcard used', function () {
+      expect(match('/app/users/', routes('app/*'))).to.not.be.false;
+      expect(match('/users/mmm/save/nnn/blah', routes('*/users/*/save/*/blah'))).to.not.be.false;
+      expect(match('/app/users/comments/save', routes('app/*/comments/:action')).params)
+        .to.be.deep.equal({ action: 'save' });
     });
   });
 

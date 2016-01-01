@@ -1,5 +1,7 @@
 const PARAMETER_REGEXP = /([:*])(\w+)/g;
+const WILDCARD_REGEXP = /\*/g;
 const REPLACE_VARIABLE_REGEXP = '([^\/]+)';
+const REPLACE_WILDCARD = '(?:.*)';
 const FOLLOWED_BY_SLASH_REGEXP = '(?:\/|$)';
 
 export function clean(s) {
@@ -25,10 +27,12 @@ function replaceDynamicURLParts(route) {
     regexp = route;
   } else {
     regexp = new RegExp(
-      clean(route).replace(PARAMETER_REGEXP, function (full, dots, name) {
+      clean(route)
+      .replace(PARAMETER_REGEXP, function (full, dots, name) {
         paramNames.push(name);
         return REPLACE_VARIABLE_REGEXP;
-      }) + FOLLOWED_BY_SLASH_REGEXP
+      })
+      .replace(WILDCARD_REGEXP, REPLACE_WILDCARD) + FOLLOWED_BY_SLASH_REGEXP
     );
   }
   return { regexp, paramNames };
@@ -51,7 +55,10 @@ export function match(url, routes = []) {
 };
 
 export function root(url, routes = []) {
-  var matched = findMatchedRoutes(url, routes);
+  var matched = findMatchedRoutes(
+    url,
+    routes.filter(route => clean(route.route) !== '')
+  );
   var fallbackURL = clean(url);
 
   if (matched.length > 0) {

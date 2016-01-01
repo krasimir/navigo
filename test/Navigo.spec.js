@@ -5,7 +5,7 @@ import sinonChai from 'sinon-chai';
 // Notice that we are importing a lib file here.
 // Consider using:
 // import Navigo from '../src/';
-import Navigo from '../lib/navigo';
+import Navigo from '../src';
 
 chai.expect();
 chai.use(sinonChai);
@@ -17,7 +17,7 @@ var router, handler;
 describe('Given an instance of Navigo', function () {
 
   beforeEach(function () {
-    router = new Navigo();
+    router = new Navigo(null, true);
   });
 
   describe('when we give no routes', function () {
@@ -80,21 +80,16 @@ describe('Given an instance of Navigo', function () {
       it('should call the handler by passing the parameters', function () {
         handler = sinon.spy();
         router.on('/user/:id/:action', handler);
-        router.check('site.com/app/users/42/edit');
-        expect(handler).to.not.be.called;
-        expect(handler).to.not.be.calledWith(sinon.match({
-          params: { id: 42, action: 'edit' }
-        }));
+        router.check('site.com/app/user/42/edit');
+        expect(handler).to.be.calledWith({ id: '42', action: 'edit' });
       });
       describe('and there are more stuff in the url after that', function () {
         it('should call the handler by passing the parameters', function () {
           handler = sinon.spy();
           router.on('/user/:id/:action', handler);
-          router.check('site.com/app/users/42/edit/something/else');
-          expect(handler).to.not.be.called;
-          expect(handler).to.not.be.calledWith(sinon.match({
-            params: { id: 42, action: 'edit' }
-          }));
+          router.check('site.com/app/user/42/edit/something/else');
+          expect(handler).to.be.called;
+          expect(handler).to.be.calledWith({ id: '42', action: 'edit' });
         });
       });
     });
