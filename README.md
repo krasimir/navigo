@@ -90,6 +90,20 @@ It is important to add `products/:id` first because otherwise you may fall into 
 
 *Have in mind that every call of `on` fires the `resolve` method of the router.*
 
+### Changing the page
+
+Use the `navigate` method:
+
+```
+router.navigate('/products/list');
+```
+
+You may also specify an absolute path. For example:
+
+```
+router.navigate('http://site.com/products/list', true);
+```
+
 ### Resolving the routes
 
 The library resolves the routes by itself. There is a public method `resolve` which is called:
