@@ -70,7 +70,7 @@ router.on('/user/*', function () {
 });
 ```
 
-Have in mind that the order of routes adding do matter. The URL which is added earlier and matches wins. For example:
+The order of routes adding do matter. The URL which is added earlier and matches wins. For example:
 
 ```js
 router.on({
