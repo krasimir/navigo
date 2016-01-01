@@ -56,9 +56,16 @@ Wild card is also supported:
 
 ```js
 router.on('/user/*', function () {
-  // this function will be called on every
+  // This function will be called on every
   // URL that starts with /user
 });
+```
+
+## Tests
+
+```
+npm i
+npm test
 ```
 
 ## Inspiration
