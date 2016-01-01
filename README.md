@@ -23,8 +23,7 @@ router.on('/products/list', function () {
   // display all the products
 });
 ```
-
-Skip the first parameter and provide only a function and the router will fallback every non-existing URL to your handler. (suitable for displaying home page)
+or skip the first parameter and provide only a function and the router will fallback every non-existing URL to your handler. (suitable for displaying home page)
 
 ```js
 router.on(function () {
@@ -32,6 +31,16 @@ router.on(function () {
   // or handle page-not-found case
 });
 ```
+or use the following to pass multiple routes at once:
+
+```js
+router.on({
+  '/products/list': function () { ... },
+  '/products': function () { ... },
+  ...
+});
+```
+
 Navigo also supports a parameterized URLs:
 
 ```js
@@ -60,6 +69,26 @@ router.on('/user/*', function () {
   // URL that starts with /user
 });
 ```
+
+Have in mind that the order of routes adding do matter. The URL which is added earlier and matches wins. For example:
+
+```js
+router.on({
+  'products/:id': function () {
+    setContent('Products');
+  },
+  'products': function () {
+    setContent('About');
+  },
+  '*': function () {
+    setContent('Home')
+  }
+});
+```
+
+It is important to add `products/:id` first because otherwise you may fall into `products` every time.
+
+*Have in mind that every call of `on` fires the `resolve` method of the router.*
 
 ## Tests
 

@@ -31,17 +31,17 @@
 
     window.onload = function () {
       router = new Navigo();
-      router
-        .on('products', function () {
+      router.on({
+        'products': function () {
           setContent('Products');
-        })
-        .on('about', function () {
+        },
+        'about': function () {
           setContent('About');
-        })
-        .on(function () {
-          setContent('Home')
-        })
-        .check();
+        },
+        '*': function () {
+          setContent('Home');
+        }
+      });
 
       handleClick('.js-products', router.navigate.bind(router, 'products'));
       handleClick('.js-about', router.navigate.bind(router, 'about'));

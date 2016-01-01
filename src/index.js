@@ -21,19 +21,23 @@ export default class Navigo {
         (!absolute ? this._getRoot() + '/' : '') + clean(path)
       );
     }
-    this.check();
+    this.resolve();
   }
 
-  on(route, handler = null) {
-    if (typeof route === 'function') {
-      handler = route;
-      route = '';
+  on(...args) {
+    if (args.length === 2) {
+      this._addRoute(args[0], args[1]);
+    } else if (typeof args[0] === 'object') {
+      for (let route in args[0]) {
+        this._addRoute(route, args[0][route]);
+      }
+    } else if (typeof args[0] === 'function') {
+      this._addRoute('', args[0]);
     }
-    this._routes.push({ route, handler });
-    return this;
+    this.resolve();
   }
 
-  check(current) {
+  resolve(current) {
     var handler;
     var m = match(current || this._getCurrentWindowLocation(), this._routes);
 
@@ -45,6 +49,11 @@ export default class Navigo {
       return m;
     }
     return false;
+  }
+
+  _addRoute(route, handler = null) {
+    this._routes.push({ route, handler });
+    return this._addRoute;
   }
 
   _getRoot() {

@@ -22,9 +22,9 @@ describe('Given an instance of Navigo', function () {
 
   describe('when we give no routes', function () {
 
-    describe('and when we call check method', function () {
+    describe('and when we call resolve method', function () {
       it('should return false', function () {
-        expect(router.check('test')).to.be.false;
+        expect(router.resolve('test')).to.be.false;
       });
     });
 
@@ -36,7 +36,6 @@ describe('Given an instance of Navigo', function () {
       it('should call the default handler', function () {
         handler = sinon.spy();
         router.on(handler);
-        router.check('test');
         expect(handler).to.be.calledOnce;
       });
     });
@@ -45,7 +44,7 @@ describe('Given an instance of Navigo', function () {
       it('should call the handler', function () {
         handler = sinon.spy();
         router.on('/missing/route', handler);
-        router.check('test');
+        router.resolve('test');
         expect(handler).to.not.be.called;
       });
     });
@@ -56,8 +55,8 @@ describe('Given an instance of Navigo', function () {
       testCases.forEach(route => {
         it(`should call the handler if we pass ${route}`, function () {
           handler = sinon.spy();
-          router.on(route, handler);
-          router.check('/someapp/route');
+          router.on({ [route]: handler });
+          router.resolve('/someapp/route');
           expect(handler).to.be.calledOnce;
           handler.reset();
         });
@@ -67,8 +66,8 @@ describe('Given an instance of Navigo', function () {
     describe('and when we pass matching handler with dynamic parameters', function () {
       it('should call the handler by passing the parameters', function () {
         handler = sinon.spy();
-        router.on('/user/:id', handler);
-        router.check('site.com/app/users/42');
+        router.on({ '/user/:id': handler });
+        router.resolve('site.com/app/users/42');
         expect(handler).to.not.be.called;
         expect(handler).to.not.be.calledWith(sinon.match({
           params: { id: 42 }
@@ -79,15 +78,15 @@ describe('Given an instance of Navigo', function () {
     describe('and when we pass matching handler with multiple dynamic parameters', function () {
       it('should call the handler by passing the parameters', function () {
         handler = sinon.spy();
-        router.on('/user/:id/:action', handler);
-        router.check('site.com/app/user/42/edit');
+        router.on({ '/user/:id/:action': handler });
+        router.resolve('site.com/app/user/42/edit');
         expect(handler).to.be.calledWith({ id: '42', action: 'edit' });
       });
       describe('and there are more stuff in the url after that', function () {
         it('should call the handler by passing the parameters', function () {
           handler = sinon.spy();
-          router.on('/user/:id/:action', handler);
-          router.check('site.com/app/user/42/edit/something/else');
+          router.on({ '/user/:id/:action': handler });
+          router.resolve('site.com/app/user/42/edit/something/else');
           expect(handler).to.be.called;
           expect(handler).to.be.calledWith({ id: '42', action: 'edit' });
         });
@@ -102,7 +101,7 @@ describe('Given an instance of Navigo', function () {
           done();
         };
         router.on(/users\/(\d+)\/(\w+)\/?/, handler);
-        router.check('site.com/app/users/42/save');
+        router.resolve('site.com/app/users/42/save');
       });
     });
 
