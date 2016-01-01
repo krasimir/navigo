@@ -16,10 +16,10 @@ export default class Navigo {
   navigate(path = '', absolute = false) {
     if (this._isHistorySupported) {
       history.pushState({}, '', (!absolute ? this._getRoot() + '/' : '') + clean(path));
+      this.resolve();
     } else if (typeof window !== 'undefined') {
       window.location.href = window.location.href.replace(/#(.*)$/, '') + '#' + path;
     }
-    this.resolve();
   }
 
   on(...args) {
@@ -69,6 +69,18 @@ export default class Navigo {
       window.onpopstate = event => {
         this.resolve();
       };
+    } else {
+      let cached = this._getCurrentWindowLocation(), current, check;
+
+      check = () => {
+        current = this._getCurrentWindowLocation();
+        if (cached !== current) {
+          cached = current;
+          this.resolve();
+        }
+        setTimeout(check, 200);
+      };
+      check();
     }
   }
 
