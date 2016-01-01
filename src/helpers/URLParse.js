@@ -57,7 +57,11 @@ export function match(url, routes = []) {
 export function root(url, routes = []) {
   var matched = findMatchedRoutes(
     url,
-    routes.filter(route => clean(route.route) !== '')
+    routes.filter(route => {
+      let u = clean(route.route);
+
+      return u !== '' && u !== '*';
+    })
   );
   var fallbackURL = clean(url);
 

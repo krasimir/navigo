@@ -47,6 +47,10 @@ const rootTestCases = [
   { 
     source: 'http://site.com/something/else', routes: routes(''),
     expected: 'http://site.com/something/else'
+  },
+  { 
+    source: 'http://site.com/something/else', routes: routes('*'),
+    expected: 'http://site.com/something/else'
   }
 ];
 

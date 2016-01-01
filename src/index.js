@@ -65,7 +65,7 @@ export default class Navigo {
   _listenForURLChanges() {
     if (this._isHistorySupported) {
       window.onpopstate = event => {
-        this.check();
+        this.resolve();
       };
     }
   }
