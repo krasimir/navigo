@@ -13,10 +13,10 @@
     </p>
     <p>
       <ul>
-        <li>Small file size. ~3KB minified</li>
+        <li>Small file size (~3KB minified)</li>
         <li>No dependencies.</li>
         <li>Uses <a href="https://developer.mozilla.org/en-US/docs/Web/API/History_API" target="_blank">History API</a></li>
-        <li><strike>Fallbacks to the good old hash based routing if History API is not supported</strike></li>
+        <li>Fallbacks to the good old hash based routing if History API is not supported</li>
       </ul></p>
     <p>
     <hr />
@@ -84,9 +84,10 @@ router.on(/users\/(\d+)\/(\w+)\/?/, function (id, action) {
   </script>
   <script type="text/content" id="content-try-it">
     <p class="big">Try it</p>
-    <p>The following JSBin demonstrates most of the Navigo&#39;s features:</p>
+    <a class="jsbin-embed" href="http://jsbin.com/toqoqe/embed?js,output">JS Bin on jsbin.com</a>
   </script>
   <script type="text/content" id="content-parameterized">
+    <small>(The content of this page is based on the URL)</small>
     <p class="big">Happy New {{number}} {{what}} !!!</p>
     <pre>Route:
 happy/new/:number/:what
@@ -103,7 +104,7 @@ happy/new/{{number}}/{{what}}</pre>
       <a href="javascript:void(0);" data-switchto="about">About</a>
       <a href="javascript:void(0);" data-switchto="usage">Usage</a>
       <a href="javascript:void(0);" data-switchto="download">Download</a>
-      <a href="javascript:void(0);" data-switchto="try-it">Try it</a>
+      <a href="http://jsbin.com/toqoqe/8/edit?js,output" target="_blank">Try it</a>
     </nav>
     <div class="js-content content"></div>
     <footer>
@@ -116,7 +117,7 @@ happy/new/{{number}}/{{what}}</pre>
       <input type="checkbox" /> hash based routing
     </a>
   </div>
-  <script src="http://home.dev/Krasimir/navigo/lib/navigo.js"></script>
+  <script src="http://work.krasimirtsonev.com/git/navigo/navigo.js"></script>
   <script>
     var router;
 
@@ -172,9 +173,6 @@ happy/new/{{number}}/{{what}}</pre>
         'about': function () {
           setContent('about');
         },
-        'try-it': function () {
-          setContent('try-it');
-        },
         'happy/new/:number/:what': function (params) {
           var id = 'parameterized';
           var content = el('#content-' + id).innerHTML;
@@ -192,6 +190,7 @@ happy/new/{{number}}/{{what}}</pre>
       .slice
       .call(document.querySelectorAll('nav a'))
       .forEach(function (link) {
+        if (link.getAttribute('href').indexOf('http') >= 0) return;
         link.addEventListener('click', function (e) {
           e.preventDefault();
           router.navigate(link.getAttribute('data-switchto'));
