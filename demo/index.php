@@ -10,6 +10,7 @@
   <title>Navigo</title>
   <link href='https://fonts.googleapis.com/css?family=Exo+2:400,200italic' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" type="text/css" href="<?php echo $root; ?>styles.css" />
+  <link rel="stylesheet" type="text/css" href="<?php echo $root; ?>vendor/mocha.css" />
 
   <script type="text/content" id="content-about">
     <p class="big center u-mb">
@@ -93,12 +94,17 @@ router.on(/users\/(\d+)\/(\w+)\/?/, function (id, action) {
   </script>
   <script type="text/content" id="content-parameterized">
     <small>(The content of this page is based on the URL)</small>
-    <p class="big">Happy New {{number}} {{what}} !!!</p>
+    <p class="big">Navigo is a {{language}} {{what}} !!!</p>
     <pre>Route:
-happy/new/:number/:what
+this/*/:language/:what
 
 Matching url:
-happy/new/{{number}}/{{what}}</pre>
+this/is/{{language}}/{{what}}</pre>
+  </script>
+  <script type="text/content" id="content-testing">
+    <p class="big">Testing</p>
+    <hr />
+    <div id="mocha"></div>
   </script>
 
 </head>
@@ -109,12 +115,13 @@ happy/new/{{number}}/{{what}}</pre>
       <a href="javascript:void(0);" data-switchto="about">About</a>
       <a href="javascript:void(0);" data-switchto="usage">Usage</a>
       <a href="javascript:void(0);" data-switchto="download">Download</a>
+      <a href="javascript:void(0);" data-switchto="testing">Run tests</a>
       <a href="http://jsbin.com/toqoqe/8/edit?js,output" target="_blank">Try it</a>
     </nav>
     <div class="js-content content"></div>
     <footer>
       <a href="https://github.com/krasimir/navigo">github.com/krasimir/navigo</a><br /><br />
-      <a href="javascript:void(0);" id="parameterized">Happy New 2016 Year</a>
+      <a href="javascript:void(0);" id="parameterized">Navigo is a lightweight JavaScript router</a>
     </footer>
   </div>
   <div class="mode-trigger js-mode-trigger">
@@ -124,5 +131,9 @@ happy/new/{{number}}/{{what}}</pre>
   </div>
   <script src="<?php echo $root; ?>navigo.js"></script>
   <script src="<?php echo $root; ?>scripts.js"></script>
+  <script src="<?php echo $root; ?>vendor/chai.js"></script>
+  <script src="<?php echo $root; ?>vendor/mocha.js"></script>
+  <script>mocha.setup('bdd');</script>
+  <script src="<?php echo $root; ?>tests.js"></script>
 </body>
 </html>

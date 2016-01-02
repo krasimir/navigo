@@ -123,6 +123,7 @@ The library resolves the routes by itself. There is a public method `resolve` wh
 * `router.on(object)` - adding a new route
 * `router.navigate(path='', absolute=false)` - if `absolute` is `false` then Navigo finds the root path of your app based on the provided routes.
 * `router.resolve(currentURL=undefined)` - if `currentURL` is provided then the method tries resolving the registered routes to that URL and not `window.location.href`.
+* `router.destroy` - removes all the registered routes and stops the URL change listening.
 
 ## Tests
 

@@ -72,13 +72,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var Navigo = (function () {
 	  function Navigo() {
-	    var root = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+	    var r = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
 	    var useHash = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
 	
 	    _classCallCheck(this, Navigo);
 	
 	    this._routes = [];
-	    this._root = root;
+	    this._root = r;
 	    this._isHistorySupported = useHash === false && !!(typeof window !== 'undefined' && window.history && window.history.pushState);
 	    this._listenForURLChanges();
 	  }
@@ -124,6 +124,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return false;
 	    }
 	  }, {
+	    key: 'destroy',
+	    value: function destroy() {
+	      this._routes = [];
+	      clearTimeout(this._listenningInterval);
+	      typeof window !== 'undefined' ? window.onpopstate = null : null;
+	    }
+	  }, {
 	    key: '_addRoute',
 	    value: function _addRoute(route) {
 	      var handler = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
@@ -159,7 +166,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	              cached = current;
 	              _this.resolve();
 	            }
-	            setTimeout(check, 200);
+	            _this._listenningInterval = setTimeout(check, 200);
 	          };
 	          check();
 	        })();
@@ -205,6 +212,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var FOLLOWED_BY_SLASH_REGEXP = '(?:\/|$)';
 	
 	function clean(s) {
+	  if (s instanceof RegExp) return s;
 	  return s.replace(/\/+$/, '').replace(/^\/+/, '/');
 	};
 	
@@ -251,15 +259,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  });
 	};
 	
-	function match(url) {
-	  var routes = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
-	
+	function match(url, routes) {
 	  return findMatchedRoutes(url, routes)[0] || false;
 	};
 	
-	function root(url) {
-	  var routes = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
-	
+	function root(url, routes) {
 	  var matched = findMatchedRoutes(url, routes.filter(function (route) {
 	    var u = clean(route.route);
 	

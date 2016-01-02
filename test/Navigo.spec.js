@@ -105,6 +105,17 @@ describe('Given an instance of Navigo', function () {
       });
     });
 
+    describe('and when we use the destroy method', function () {
+      it('should not be able to resolve a route', function () {
+        var handler = sinon.spy();
+        router.on('/users', handler);
+        router.resolve('site.com/app/users');
+        router.destroy();
+        router.resolve('site.com/app/users');
+        expect(handler).to.be.calledOnce;
+      });
+    });
+
   });
 
 });

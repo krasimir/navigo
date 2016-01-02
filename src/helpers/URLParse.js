@@ -5,6 +5,7 @@ const REPLACE_WILDCARD = '(?:.*)';
 const FOLLOWED_BY_SLASH_REGEXP = '(?:\/|$)';
 
 export function clean(s) {
+  if (s instanceof RegExp) return s;
   return s.replace(/\/+$/, '').replace(/^\/+/, '/');
 };
 
@@ -50,11 +51,11 @@ function findMatchedRoutes(url, routes = []) {
     .filter(m => m);
 };
 
-export function match(url, routes = []) {
+export function match(url, routes) {
   return findMatchedRoutes(url, routes)[0] || false;
 };
 
-export function root(url, routes = []) {
+export function root(url, routes) {
   var matched = findMatchedRoutes(
     url,
     routes.filter(route => {

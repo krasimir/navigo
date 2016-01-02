@@ -2,9 +2,9 @@ import { match, root, clean } from './helpers/URLParse';
 
 export default class Navigo {
 
-  constructor(root = null, useHash = false) {
+  constructor(r = null, useHash = false) {
     this._routes = [];
-    this._root = root;
+    this._root = r;
     this._isHistorySupported = useHash === false && !!(
       typeof window !== 'undefined' &&
       window.history &&
@@ -49,6 +49,12 @@ export default class Navigo {
     return false;
   }
 
+  destroy() {
+    this._routes = [];
+    clearTimeout(this._listenningInterval);
+    typeof window !== 'undefined' ? window.onpopstate = null : null;
+  }
+
   get root() {
     return this._getRoot();
   }
@@ -78,7 +84,7 @@ export default class Navigo {
           cached = current;
           this.resolve();
         }
-        setTimeout(check, 200);
+        this._listenningInterval = setTimeout(check, 200);
       };
       check();
     }

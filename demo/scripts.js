@@ -1,5 +1,4 @@
 var router;
-
 var routing = function (mode) {
   router = new Navigo(null, mode === 'hash');
   router.on({
@@ -12,16 +11,21 @@ var routing = function (mode) {
     'about': function () {
       setContent('about');
     },
-    'happy/new/:number/:what': function (params) {
+    'this/*/:language/:what': function (params) {
       var id = 'parameterized';
       var content = el('#content-' + id).innerHTML;
+
       Object.keys(params).forEach(function (key) {
         content = content.replace(new RegExp('{{' + key + '}}', 'g'), params[key]);
       });
       setContent(id, content);
     },
+    'test-case/*': function() {},
     'testing': function () {
-      
+      var id = 'testing';
+
+      setContent(id, el('#content-' + id).innerHTML);
+      mocha.run();
     }
   });
   router.on(function() {
@@ -62,7 +66,7 @@ var switchModes = function () {
   return mode;
 };
 
-var mainNavigation = function () {
+var navigation = function () {
   []
   .slice
   .call(document.querySelectorAll('nav a'))
@@ -73,18 +77,15 @@ var mainNavigation = function () {
       router.navigate(link.getAttribute('data-switchto'));
     });
   });
-};
 
-var footer = function () {
   el('#parameterized').addEventListener('click', function () {
-    router.navigate('happy/new/2016/year/folks');
+    router.navigate('this/is/javascript/router');
   });
 };
 
 var init = function () {
   routing(switchModes());
-  mainNavigation();
-  footer();
+  navigation();
 };
 
 window.onload = init;

@@ -63,6 +63,9 @@ describe('Given the URLParse helper', function () {
     it('should remove multiple forward slashes', function () {
       expect(clean('///test/something///')).to.be.equal('/test/something')
     });
+    it('should leave the regular expression untouched', function () {
+      expect(clean(/(\d)/).toString()).to.be.equal(/(\d)/.toString());
+    });
   });
 
   describe('when we use `match` method', function () {
