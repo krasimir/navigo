@@ -2,7 +2,7 @@
 
 > A simple minimalistic JavaScript router with a fallback for older browsers.
 
-Checkout the [demo here](http://work.krasimirtsonev.com/git/navigo/download).
+[Demo and official page](http://work.krasimirtsonev.com/git/navigo/download)
 
 ## Installation
 
