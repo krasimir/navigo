@@ -1,6 +1,8 @@
 # Navigo
 
-> A simple minimalistic JavaScript router with a fallback for older browsers.
+A simple minimalistic JavaScript router with a fallback for older browsers.
+
+---
 
 [Demo and official page](http://work.krasimirtsonev.com/git/navigo/download)
 
