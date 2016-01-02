@@ -3,7 +3,7 @@ import { match, root, clean } from './helpers/URLParse';
 function Navigo(r, useHash) {
   this._routes = [];
   this.root = r || null;
-  this._isHistorySupported = !useHash && !!(
+  this._ok = !useHash && !!(
     typeof window !== 'undefined' &&
     window.history &&
     window.history.pushState
@@ -14,7 +14,7 @@ function Navigo(r, useHash) {
 Navigo.prototype = {
   navigate: function (path, absolute) {
     path = path || '';
-    if (this._isHistorySupported) {
+    if (this._ok) {
       history.pushState({}, '', (!absolute ? this._getRoot() + '/' : '') + clean(path));
       this.resolve();
     } else if (typeof window !== 'undefined') {
@@ -61,7 +61,7 @@ Navigo.prototype = {
     return this.root;
   },
   _listen: function () {
-    if (this._isHistorySupported) {
+    if (this._ok) {
       window.onpopstate = event => {
         this.resolve();
       };
