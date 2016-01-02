@@ -23,13 +23,13 @@ Navigo.prototype = {
   },
   on: function (...args) {
     if (args.length === 2) {
-      this._addRoute(args[0], args[1]);
+      this._add(args[0], args[1]);
     } else if (typeof args[0] === 'object') {
       for (let route in args[0]) {
-        this._addRoute(route, args[0][route]);
+        this._add(route, args[0][route]);
       }
     } else if (typeof args[0] === 'function') {
-      this._addRoute('', args[0]);
+      this._add('', args[0]);
     }
     this.resolve();
   },
@@ -51,9 +51,9 @@ Navigo.prototype = {
     clearTimeout(this._listenningInterval);
     typeof window !== 'undefined' ? window.onpopstate = null : null;
   },
-  _addRoute: function (route, handler = null) {
+  _add: function (route, handler = null) {
     this._routes.push({ route, handler });
-    return this._addRoute;
+    return this._add;
   },
   _getRoot: function () {
     if (this.root !== null) return this.root;
