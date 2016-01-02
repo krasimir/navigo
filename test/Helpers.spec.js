@@ -1,8 +1,9 @@
 import chai from 'chai';
-import { clean, match, root } from '../src/helpers/URLParse';
+import Navigo from '../lib/navigo';
 
 chai.expect();
 
+const { clean, match, root } = (new Navigo()).helpers;
 const expect = chai.expect;
 const routes = (...args) => args.map(r => {
   return { route: r };
@@ -54,7 +55,7 @@ const rootTestCases = [
   }
 ];
 
-describe('Given the URLParse helper', function () {
+describe('Given the helper methods', function () {
 
   describe('when we use `clear` method', function () {
     it('should remove forward slashes', function () {

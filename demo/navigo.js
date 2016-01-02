@@ -52,114 +52,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _URLParse = __webpack_require__(1);
-	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-	
-	function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
-	
-	function Navigo(r, useHash) {
-	  this._routes = [];
-	  this.root = r || null;
-	  this._ok = !useHash && !!(typeof window !== 'undefined' && window.history && window.history.pushState);
-	  this._listen();
-	};
-	
-	Navigo.prototype = {
-	  navigate: function navigate(path, absolute) {
-	    path = path || '';
-	    if (this._ok) {
-	      history.pushState({}, '', (!absolute ? this._getRoot() + '/' : '') + (0, _URLParse.clean)(path));
-	      this.resolve();
-	    } else if (typeof window !== 'undefined') {
-	      window.location.href = window.location.href.replace(/#(.*)$/, '') + '#' + path;
-	    }
-	  },
-	  on: function on() {
-	    if (arguments.length === 2) {
-	      this._add(arguments[0], arguments[1]);
-	    } else if (_typeof(arguments[0]) === 'object') {
-	      for (var route in arguments[0]) {
-	        this._add(route, arguments[0][route]);
-	      }
-	    } else if (typeof arguments[0] === 'function') {
-	      this._add('', arguments[0]);
-	    }
-	    this.resolve();
-	  },
-	  resolve: function resolve(current) {
-	    var handler;
-	    var m = (0, _URLParse.match)(current || this._cLoc(), this._routes);
-	
-	    if (m) {
-	      handler = m.route.handler;
-	      m.route.route instanceof RegExp ? handler.apply(undefined, _toConsumableArray(m.match.slice(1, m.match.length))) : handler(m.params);
-	      return m;
-	    }
-	    return false;
-	  },
-	  destroy: function destroy() {
-	    this._routes = [];
-	    clearTimeout(this._listenningInterval);
-	    typeof window !== 'undefined' ? window.onpopstate = null : null;
-	  },
-	  _add: function _add(route) {
-	    var handler = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
-	
-	    this._routes.push({ route: route, handler: handler });
-	    return this._add;
-	  },
-	  _getRoot: function _getRoot() {
-	    if (this.root !== null) return this.root;
-	    this.root = (0, _URLParse.root)(this._cLoc(), this._routes);
-	    return this.root;
-	  },
-	  _listen: function _listen() {
-	    var _this = this;
-	
-	    if (this._ok) {
-	      window.onpopstate = function (event) {
-	        _this.resolve();
-	      };
-	    } else {
-	      (function () {
-	        var cached = _this._cLoc(),
-	            current = undefined,
-	            check = undefined;
-	
-	        check = function () {
-	          current = _this._cLoc();
-	          if (cached !== current) {
-	            cached = current;
-	            _this.resolve();
-	          }
-	          _this._listenningInterval = setTimeout(check, 200);
-	        };
-	        check();
-	      })();
-	    }
-	  },
-	  _cLoc: function _cLoc() {
-	    if (typeof window !== 'undefined') {
-	      return window.location.href;
-	    }
-	    return '';
-	  }
-	};
-	
-	exports.default = Navigo;
-	module.exports = exports['default'];
-
-/***/ },
-/* 1 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -167,9 +59,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.clean = clean;
-	exports.match = match;
-	exports.root = root;
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	
+	function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
+	
 	var PARAMETER_REGEXP = /([:*])(\w+)/g;
 	var WILDCARD_REGEXP = /\*/g;
 	var REPLACE_VARIABLE_REGEXP = '([^\/]+)';
@@ -245,6 +139,103 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	  return fallbackURL;
 	};
+	
+	function Navigo(r, useHash) {
+	  this._routes = [];
+	  this.root = r || null;
+	  this._ok = !useHash && !!(typeof window !== 'undefined' && window.history && window.history.pushState);
+	  this._listen();
+	};
+	
+	Navigo.prototype = {
+	  helpers: {
+	    match: match,
+	    root: root,
+	    clean: clean
+	  },
+	  navigate: function navigate(path, absolute) {
+	    path = path || '';
+	    if (this._ok) {
+	      history.pushState({}, '', (!absolute ? this._getRoot() + '/' : '') + clean(path));
+	      this.resolve();
+	    } else if (typeof window !== 'undefined') {
+	      window.location.href = window.location.href.replace(/#(.*)$/, '') + '#' + path;
+	    }
+	  },
+	  on: function on() {
+	    if (arguments.length === 2) {
+	      this._add(arguments[0], arguments[1]);
+	    } else if (_typeof(arguments[0]) === 'object') {
+	      for (var route in arguments[0]) {
+	        this._add(route, arguments[0][route]);
+	      }
+	    } else if (typeof arguments[0] === 'function') {
+	      this._add('', arguments[0]);
+	    }
+	    this.resolve();
+	  },
+	  resolve: function resolve(current) {
+	    var handler;
+	    var m = match(current || this._cLoc(), this._routes);
+	
+	    if (m) {
+	      handler = m.route.handler;
+	      m.route.route instanceof RegExp ? handler.apply(undefined, _toConsumableArray(m.match.slice(1, m.match.length))) : handler(m.params);
+	      return m;
+	    }
+	    return false;
+	  },
+	  destroy: function destroy() {
+	    this._routes = [];
+	    clearTimeout(this._listenningInterval);
+	    typeof window !== 'undefined' ? window.onpopstate = null : null;
+	  },
+	  _add: function _add(route) {
+	    var handler = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+	
+	    this._routes.push({ route: route, handler: handler });
+	    return this._add;
+	  },
+	  _getRoot: function _getRoot() {
+	    if (this.root !== null) return this.root;
+	    this.root = root(this._cLoc(), this._routes);
+	    return this.root;
+	  },
+	  _listen: function _listen() {
+	    var _this = this;
+	
+	    if (this._ok) {
+	      window.onpopstate = function (event) {
+	        _this.resolve();
+	      };
+	    } else {
+	      (function () {
+	        var cached = _this._cLoc(),
+	            current = undefined,
+	            check = undefined;
+	
+	        check = function () {
+	          current = _this._cLoc();
+	          if (cached !== current) {
+	            cached = current;
+	            _this.resolve();
+	          }
+	          _this._listenningInterval = setTimeout(check, 200);
+	        };
+	        check();
+	      })();
+	    }
+	  },
+	  _cLoc: function _cLoc() {
+	    if (typeof window !== 'undefined') {
+	      return window.location.href;
+	    }
+	    return '';
+	  }
+	};
+	
+	exports.default = Navigo;
+	module.exports = exports['default'];
 
 /***/ }
 /******/ ])
