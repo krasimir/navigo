@@ -1,10 +1,15 @@
-<!DOCTYPE html>
+<?php
+
+  $path = str_replace('index.php', '' , $_SERVER['SCRIPT_NAME']);
+  $root = "http://".$_SERVER['HTTP_HOST'].$path;
+
+?><!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Navigo</title>
   <link href='https://fonts.googleapis.com/css?family=Exo+2:400,200italic' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" type="text/css" href="http://work.krasimirtsonev.com/git/navigo/styles.css" />
+  <link rel="stylesheet" type="text/css" href="<?php echo $root; ?>styles.css" />
 
   <script type="text/content" id="content-about">
     <p class="big center u-mb">
@@ -117,93 +122,7 @@ happy/new/{{number}}/{{what}}</pre>
       <input type="checkbox" /> hash based routing
     </a>
   </div>
-  <script src="http://work.krasimirtsonev.com/git/navigo/navigo.js"></script>
-  <script>
-    var router;
-
-    var handleClick = function (selector, func) {
-      document.querySelector(selector).addEventListener('click', function (e) {
-        e.preventDefault();
-        func();
-      });
-    };
-
-    var el = function(sel) {
-      return document.querySelector(sel);
-    }
-
-    var setContent = function(id, content) {
-      el('.js-content').innerHTML = content || el('#content-' + id).innerHTML;
-    };
-
-    window.onload = function () {
-
-      // mode triggering
-      var trigger = el('.js-mode-trigger');
-      var mode = 'history-api';
-      var isLocalStorageSupported = !!window.localStorage;
-      var rerenderTrigger = function (mode) {
-        trigger.querySelector('input').checked = mode === 'hash';
-      };
-
-      if (isLocalStorageSupported) {
-        mode = localStorage.getItem('navigo') || mode;
-      }
-      rerenderTrigger(mode);
-
-      trigger.addEventListener('click', function () {
-        mode = mode === 'history-api' ? 'hash' : 'history-api';
-        isLocalStorageSupported && localStorage.setItem('navigo', mode);
-        window.location.href = router.root.replace('#', '');
-        setTimeout(function () {
-          window.location.reload(true);
-        }, 200);
-      });
-
-      // routing
-
-      router = new Navigo(null, mode === 'hash');
-      router.on({
-        'usage': function () {
-          setContent('usage');
-        },
-        'download': function () {
-          setContent('download');
-        },
-        'about': function () {
-          setContent('about');
-        },
-        'happy/new/:number/:what': function (params) {
-          var id = 'parameterized';
-          var content = el('#content-' + id).innerHTML;
-          Object.keys(params).forEach(function (key) {
-            content = content.replace(new RegExp('{{' + key + '}}', 'g'), params[key]);
-          });
-          setContent(id, content);
-        }
-      });
-      router.on(function() {
-        setContent('about');
-      });
-
-      []
-      .slice
-      .call(document.querySelectorAll('nav a'))
-      .forEach(function (link) {
-        if (link.getAttribute('href').indexOf('http') >= 0) return;
-        link.addEventListener('click', function (e) {
-          e.preventDefault();
-          router.navigate(link.getAttribute('data-switchto'));
-        });
-      });
-
-      // parameterized
-
-      el('#parameterized').addEventListener('click', function () {
-        router.navigate('happy/new/2016/year/folks');
-      });
-
-    }
-  </script>
+  <script src="<?php echo $root; ?>navigo.js"></script>
+  <script src="<?php echo $root; ?>scripts.js"></script>
 </body>
 </html>
