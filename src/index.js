@@ -8,7 +8,7 @@ function Navigo(r, useHash) {
     window.history &&
     window.history.pushState
   );
-  this._listenForURLChanges();
+  this._listen();
 };
 
 Navigo.prototype = {
@@ -35,7 +35,7 @@ Navigo.prototype = {
   },
   resolve: function (current) {
     var handler;
-    var m = match(current || this._getCurrentWindowLocation(), this._routes);
+    var m = match(current || this._cLoc(), this._routes);
 
     if (m) {
       handler = m.route.handler;
@@ -57,19 +57,19 @@ Navigo.prototype = {
   },
   _getRoot: function () {
     if (this.root !== null) return this.root;
-    this.root = root(this._getCurrentWindowLocation(), this._routes);
+    this.root = root(this._cLoc(), this._routes);
     return this.root;
   },
-  _listenForURLChanges: function () {
+  _listen: function () {
     if (this._isHistorySupported) {
       window.onpopstate = event => {
         this.resolve();
       };
     } else {
-      let cached = this._getCurrentWindowLocation(), current, check;
+      let cached = this._cLoc(), current, check;
 
       check = () => {
-        current = this._getCurrentWindowLocation();
+        current = this._cLoc();
         if (cached !== current) {
           cached = current;
           this.resolve();
@@ -79,7 +79,7 @@ Navigo.prototype = {
       check();
     }
   },
-  _getCurrentWindowLocation: function () {
+  _cLoc: function () {
     if (typeof window !== 'undefined') {
       return window.location.href;
     }
