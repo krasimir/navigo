@@ -57,7 +57,7 @@ var switchModes = function () {
   trigger.addEventListener('click', function () {
     mode = mode === 'history-api' ? 'hash' : 'history-api';
     isLocalStorageSupported && localStorage.setItem('navigo', mode);
-    window.location.href = router.root.replace('#', '');
+    window.location.href = (router.root || '').replace('#', '');
     setTimeout(function () {
       window.location.reload(true);
     }, 200);
