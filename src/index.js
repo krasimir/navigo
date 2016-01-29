@@ -76,9 +76,9 @@ function root(url, routes) {
   return fallbackURL;
 };
 
-function Navigo(r, useHash) {
+function Navigo(root, useHash) {
   this._routes = [];
-  this.root = r || null;
+  this.root = root || null;
   this._ok = !useHash && !!(
     typeof window !== 'undefined' &&
     window.history &&
