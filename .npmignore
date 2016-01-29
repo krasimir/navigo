@@ -1,1 +1,3 @@
 webpack.conf.js
+.babelrc
+.eslintrc
