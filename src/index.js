@@ -7,7 +7,7 @@ const FOLLOWED_BY_SLASH_REGEXP = '(?:\/|$)';
 function clean(s) {
   if (s instanceof RegExp) return s;
   return s.replace(/\/+$/, '').replace(/^\/+/, '/');
-};
+}
 
 function regExpResultToParams(match, names) {
   if (names.length === 0) return null;
@@ -19,7 +19,7 @@ function regExpResultToParams(match, names) {
       params[names[index]] = value;
       return params;
     }, null);
-};
+}
 
 function replaceDynamicURLParts(route) {
   var paramNames = [], regexp;
@@ -37,7 +37,7 @@ function replaceDynamicURLParts(route) {
     );
   }
   return { regexp, paramNames };
-};
+}
 
 function findMatchedRoutes(url, routes = []) {
   return routes
@@ -49,11 +49,11 @@ function findMatchedRoutes(url, routes = []) {
       return match ? { match, route, params } : false;
     })
     .filter(m => m);
-};
+}
 
 function match(url, routes) {
   return findMatchedRoutes(url, routes)[0] || false;
-};
+}
 
 function root(url, routes) {
   var matched = findMatchedRoutes(
@@ -74,7 +74,7 @@ function root(url, routes) {
       }, fallbackURL);
   }
   return fallbackURL;
-};
+}
 
 function Navigo(r, useHash) {
   this._routes = [];
@@ -85,7 +85,7 @@ function Navigo(r, useHash) {
     window.history.pushState
   );
   this._listen();
-};
+}
 
 Navigo.prototype = {
   helpers: {
@@ -143,7 +143,7 @@ Navigo.prototype = {
   },
   _listen: function () {
     if (this._ok) {
-      window.onpopstate = event => {
+      window.onpopstate = () => {
         this.resolve();
       };
     } else {
