@@ -136,6 +136,9 @@ Navigo.prototype = {
     this._routes.push({ route, handler });
     return this._add;
   },
+  link: function (path) {
+    return this._getRoot() + path;
+  },
   _getRoot: function () {
     if (this.root !== null) return this.root;
     this.root = root(this._cLoc(), this._routes);

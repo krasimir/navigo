@@ -196,6 +196,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this._routes.push({ route: route, handler: handler });
 	    return this._add;
 	  },
+	  link: function link(path) {
+	    return this._getRoot() + path;
+	  },
 	  _getRoot: function _getRoot() {
 	    if (this.root !== null) return this.root;
 	    this.root = root(this._cLoc(), this._routes);

@@ -118,4 +118,12 @@ describe('Given an instance of Navigo', function () {
 
   });
 
+  describe('when we use the link method', function () {
+    it('should provide a proper url', function () {
+      router = new Navigo('/my/root/here', true);
+      expect(router.link('/foo')).to.be.equal('/my/root/here/foo');
+      expect(router.link('/bar/foo')).to.be.equal('/my/root/here/bar/foo');
+    });
+  });
+
 });
