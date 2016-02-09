@@ -1,6 +1,6 @@
 {
   "name": "navigo",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A simple vanilla JavaScript router with a fallback for older browsers",
   "main": "lib/navigo.js",
   "jsnext:main": "src/index.js",
@@ -22,10 +22,11 @@
     "url": "git@github.com:krasimir/navigo.git"
   },
   "scripts": {
-    "build": "WEBPACK_ENV=build ./node_modules/.bin/webpack && npm run demo",
     "dev": "WEBPACK_ENV=dev ./node_modules/.bin/webpack --progress --colors --watch",
+    "build": "WEBPACK_ENV=build ./node_modules/.bin/webpack && npm run demo",
     "test": "mocha --compilers js:babel-core/register --colors -w ./test/*.spec.js",
-    "demo": "cp ./lib/* ./demo"
+    "demo": "cp ./lib/* ./demo",
+    "release": "./node_modules/.bin/webpack --progress --colors  && npm run demo && npm run build"
   },
   "devDependencies": {
     "babel": "6.3.26",

@@ -176,7 +176,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  resolve: function resolve(current) {
 	    var handler;
-	    var m = match(current || this._cLoc(), this._routes);
+	    var url = (current || this._cLoc()).replace(this._getRoot(), '');
+	    var m = match(url, this._routes);
 	
 	    if (m) {
 	      handler = m.route.handler;

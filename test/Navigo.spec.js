@@ -126,4 +126,35 @@ describe('Given an instance of Navigo', function () {
     });
   });
 
+  describe('when we use only a dynamic parameter', function () {
+    describe('and the url is matching root', function () {
+      it('should call the handler with the right value', function () {
+        var handler = sinon.spy();
+        router = new Navigo('http://site.com/my/app/path', true);
+        router._cLoc = sinon.stub().returns('http://site.com/my/app/path');
+        router.on(':slug', handler);
+        expect(handler).to.not.be.called;
+      });
+    });
+    describe('and the url is NOT matching root', function () {
+      it('should call the handler with the right value', function () {
+        var handler = sinon.spy();
+        router = new Navigo('http://site.com/my/app/path', true);
+        router._cLoc = sinon.stub().returns('http://site.com/my/app/path/something/else');
+        router.on(':slug', handler);
+        expect(handler).to.be.calledWith({ slug: 'something' });
+      });
+    });
+  });
+
+  describe('when we want to catch the default route', function () {
+    it('should call the handler with the right value', function () {
+      var handler = sinon.spy();
+      router = new Navigo('http://site.com/my/app/path', true);
+      router._cLoc = sinon.stub().returns('http://site.com/my/app/path');
+      router.on('/', handler);
+      expect(handler).to.be.called;
+    });
+  });
+
 });
