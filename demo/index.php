@@ -2,6 +2,8 @@
 
   $path = str_replace('index.php', '' , $_SERVER['SCRIPT_NAME']);
   $root = "http://".$_SERVER['HTTP_HOST'].$path;
+  $navigoURL = 'http://krasimir.github.io/navigo/lib/navigo.js';
+  $navigoURL = 'http://home.dev/Krasimir/navigo/lib/navigo.js'; // while developing locally
 
 ?><!DOCTYPE html>
 <html lang="en">
@@ -77,6 +79,10 @@ router.on(/users\/(\d+)\/(\w+)\/?/, function (id, action) {
 });</pre>
     <p class="big">Moving to another page</p>
     <pre>router.navigate('some/other/url');</pre>
+    <p class="big">Handle/Bind/Attach to page links</p>
+    <p>Navigo automatically binds links that contain <b>data-navigo</b> attribute.</p>
+    <pre>&lt;a href="about" data-navigo>About&lt;/a></pre>
+    <p>The result is a <i>onclick</i> handler that calls <i>router.navigate</i> internaly.</p>
   </script>
 
   <script type="text/content" id="content-download">
@@ -112,16 +118,16 @@ this/is/{{language}}/{{what}}</pre>
   <div class="container">
     <h1>Navigo</h1>
     <nav>
-      <a href="javascript:void(0);" data-switchto="about">About</a>
-      <a href="javascript:void(0);" data-switchto="usage">Usage</a>
-      <a href="javascript:void(0);" data-switchto="download">Download</a>
-      <a href="javascript:void(0);" data-switchto="testing">Run tests</a>
+      <a href="about" data-navigo>About</a>
+      <a href="usage" data-navigo>Usage</a>
+      <a href="download" data-navigo>Download</a>
+      <a href="testing" data-navigo>Run tests</a>
       <a href="http://jsbin.com/toqoqe/8/edit?js,output" target="_blank">Try it</a>
     </nav>
     <div class="js-content content"></div>
     <footer>
       <a href="https://github.com/krasimir/navigo">github.com/krasimir/navigo</a><br /><br />
-      <a href="javascript:void(0);" id="parameterized">Navigo is a lightweight JavaScript router</a>
+      <a href="this/is/javascript/router" data-navigo>Navigo is a lightweight JavaScript router</a>
     </footer>
   </div>
   <div class="mode-trigger js-mode-trigger">
@@ -132,7 +138,8 @@ this/is/{{language}}/{{what}}</pre>
 
   <a href="https://github.com/krasimir/navigo" target="_blank"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/c6625ac1f3ee0a12250227cf83ce904423abf351/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_gray_6d6d6d.png"></a>
 
-  <script src="http://krasimir.github.io/navigo/lib/navigo.js"></script>
+  <script src="<?php echo $navigoURL; ?>"></script>
+  <script>var root = '<?php echo $root; ?>';</script>
   <script src="<?php echo $root; ?>scripts.js"></script>
   <script src="<?php echo $root; ?>vendor/chai.js"></script>
   <script src="<?php echo $root; ?>vendor/mocha.js"></script>

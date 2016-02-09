@@ -66,26 +66,8 @@ var switchModes = function () {
   return mode;
 };
 
-var navigation = function () {
-  []
-  .slice
-  .call(document.querySelectorAll('nav a'))
-  .forEach(function (link) {
-    if (link.getAttribute('href').indexOf('http') >= 0) return;
-    link.addEventListener('click', function (e) {
-      e.preventDefault();
-      router.navigate(link.getAttribute('data-switchto'));
-    });
-  });
-
-  el('#parameterized').addEventListener('click', function () {
-    router.navigate('this/is/javascript/router');
-  });
-};
-
 var init = function () {
   routing(switchModes());
-  navigation();
 };
 
 window.onload = init;

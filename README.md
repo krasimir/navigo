@@ -110,6 +110,24 @@ You may also specify an absolute path. For example:
 router.navigate('http://site.com/products/list', true);
 ```
 
+If you want to bind page links to Navigo you have to add `data-navigo` attribute. For example:
+
+```html
+<a href="about" data-navigo>About</a>
+```
+
+It's translated to:
+
+```js
+// the html to: <a href="javascript:void(0);" data-navigo>About</a>
+var location = link.getAttribute('href');
+...
+link.addEventListener('click', e => {
+  e.preventDefault();
+  router.navigate(location);
+});
+```
+
 ### Resolving the routes
 
 The library resolves the routes by itself. There is a public method `resolve` which is called:

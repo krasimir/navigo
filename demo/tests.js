@@ -9,17 +9,17 @@ describe('Given Navigo library', function () {
 
   describe('when we give no routes and call the `resolve` method', function () {
     it('should return false', function () {
-      r = new Navigo();
+      r = new Navigo(root);
       expect(r.resolve(currentURL())).to.equal(false);
     });  
   });
   describe('when we register routes', function () {
     beforeEach(function () {
-      r = new Navigo();
+      r = new Navigo(root);
     });
     afterEach(function () {
       r.destroy();
-      r.navigate('');
+      r.navigate('testing');
     });
     it('should call the default handler', function (done) {
       r.on(function() {
