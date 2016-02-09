@@ -25,8 +25,7 @@
     "dev": "WEBPACK_ENV=dev ./node_modules/.bin/webpack --progress --colors --watch",
     "build": "WEBPACK_ENV=build ./node_modules/.bin/webpack && npm run demo",
     "test": "mocha --compilers js:babel-core/register --colors -w ./test/*.spec.js",
-    "demo": "cp ./lib/* ./demo",
-    "release": "./node_modules/.bin/webpack --progress --colors  && npm run demo && npm run build && git checkout gh-pages && git merge origin/master && git push origin gh-pages && git checkout master"
+    "release": "./node_modules/.bin/webpack --progress --colors  && npm run build && git checkout gh-pages && git merge origin/master && git push origin gh-pages && git checkout master"
   },
   "devDependencies": {
     "babel": "6.3.26",
