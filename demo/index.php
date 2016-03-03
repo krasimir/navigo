@@ -96,7 +96,7 @@ router.on(/users\/(\d+)\/(\w+)\/?/, function (id, action) {
   </script>
   <script type="text/content" id="content-try-it">
     <p class="big">Try it</p>
-    <a class="jsbin-embed" href="http://jsbin.com/toqoqe/embed?js,output">JS Bin on jsbin.com</a>
+    <a class="jsbin-embed" href="http://jsbin.com/toqoqe/10/edit?js,output">JS Bin on jsbin.com</a>
   </script>
   <script type="text/content" id="content-parameterized">
     <small>(The content of this page is based on the URL)</small>
@@ -122,7 +122,7 @@ this/is/{{language}}/{{what}}</pre>
       <a href="usage" data-navigo>Usage</a>
       <a href="download" data-navigo>Download</a>
       <a href="testing" data-navigo>Run tests</a>
-      <a href="http://jsbin.com/toqoqe/8/edit?js,output" target="_blank">Try it</a>
+      <a href="http://jsbin.com/toqoqe/10/edit?js,output" target="_blank">Try it</a>
     </nav>
     <div class="js-content content"></div>
     <footer>
