@@ -79,6 +79,7 @@ function root(url, routes) {
 function Navigo(r, useHash) {
   this._routes = [];
   this.root = r || null;
+  this._useHash = useHash;
   this._ok = !useHash && !!(
     typeof window !== 'undefined' &&
     window.history &&
@@ -116,9 +117,13 @@ Navigo.prototype = {
     this.resolve();
   },
   resolve: function (current) {
-    var handler;
+    var handler, m;
     var url = (current || this._cLoc()).replace(this._getRoot(), '');
-    var m = match(url, this._routes);
+
+    if (this._useHash) {
+      url = url.replace(/^\/#/, '/');
+    }
+    m = match(url, this._routes);
 
     if (m) {
       handler = m.route.handler;

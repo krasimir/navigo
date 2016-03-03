@@ -116,6 +116,20 @@ describe('Given an instance of Navigo', function () {
       });
     });
 
+    describe('and when we use `useHash` set to true', function () {
+      describe('and pass /:pattern as a route', function () {
+        it('should not consider # as part of the route', function () {
+          ['#bar', '#/bar'].forEach(function (bit) {
+            var handler = sinon.spy();
+            var r = new Navigo('site.com', true);
+            r.on('/:foo', handler);
+            r.resolve('site.com/' + bit, handler);
+            expect(handler).to.be.calledOnce.and.to.be.calledWith({ foo: 'bar' });
+          });
+        });
+      });
+    });
+
   });
 
   describe('when we use the link method', function () {
