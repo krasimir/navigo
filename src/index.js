@@ -105,7 +105,7 @@ Navigo.prototype = {
     }
   },
   on: function (...args) {
-    if (args.length === 2) {
+    if (args.length >= 2) {
       this._add(args[0], args[1]);
     } else if (typeof args[0] === 'object') {
       for (let route in args[0]) {
@@ -114,6 +114,8 @@ Navigo.prototype = {
     } else if (typeof args[0] === 'function') {
       this._add('', args[0]);
     }
+
+    if (args.length === 3 && args[2] === true) return;
     this.resolve();
   },
   resolve: function (current) {

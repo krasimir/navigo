@@ -130,6 +130,21 @@ describe('Given an instance of Navigo', function () {
       });
     });
 
+    describe('and when we pass three matching routes', function () {
+      it('should call only one handler', function () {
+        var handlerA = sinon.spy();
+        var handlerB = sinon.spy();
+        var handlerC = sinon.spy();
+        var r = new Navigo();
+        router.on('/', handlerA, true);
+        router.on('/about', handlerB, true);
+        router.on('/contacts',handlerC);
+        expect(handlerA).to.be.calledOnce;
+        expect(handlerB).to.not.be.calledOnce;
+        expect(handlerC).to.not.be.calledOnce;
+      });
+    });
+
   });
 
   describe('when we use the link method', function () {
