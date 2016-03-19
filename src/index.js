@@ -78,7 +78,7 @@ function root(url, routes) {
 
 function Navigo(r, useHash) {
   this._routes = [];
-  this.root = r || null;
+  this.root = useHash && r ? r.replace(/\/$/, '/#') : (r || null);
   this._useHash = useHash;
   this._ok = !useHash && !!(
     typeof window !== 'undefined' &&
