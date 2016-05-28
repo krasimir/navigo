@@ -123,7 +123,7 @@ describe('Given an instance of Navigo', function () {
             var handler = sinon.spy();
             var r = new Navigo('site.com', true);
             r.on('/:foo', handler);
-            r.resolve('site.com/' + bit, handler);
+            r.resolve('site.com/' + bit);
             expect(handler).to.be.calledOnce.and.to.be.calledWith({ foo: 'bar' });
           });
         });
@@ -136,9 +136,10 @@ describe('Given an instance of Navigo', function () {
         var handlerB = sinon.spy();
         var handlerC = sinon.spy();
         var r = new Navigo();
+
         router.on('/', handlerA, true);
         router.on('/about', handlerB, true);
-        router.on('/contacts',handlerC);
+        router.on('/contacts', handlerC);
         expect(handlerA).to.be.calledOnce;
         expect(handlerB).to.not.be.calledOnce;
         expect(handlerC).to.not.be.calledOnce;
@@ -159,6 +160,7 @@ describe('Given an instance of Navigo', function () {
     describe('and the url is matching root', function () {
       it('should call the handler with the right value', function () {
         var handler = sinon.spy();
+
         router = new Navigo('http://site.com/my/app/path', true);
         router._cLoc = sinon.stub().returns('http://site.com/my/app/path');
         router.on(':slug', handler);
@@ -168,6 +170,7 @@ describe('Given an instance of Navigo', function () {
     describe('and the url is NOT matching root', function () {
       it('should call the handler with the right value', function () {
         var handler = sinon.spy();
+
         router = new Navigo('http://site.com/my/app/path', true);
         router._cLoc = sinon.stub().returns('http://site.com/my/app/path/something/else');
         router.on(':slug', handler);
@@ -179,10 +182,44 @@ describe('Given an instance of Navigo', function () {
   describe('when we want to catch the default route', function () {
     it('should call the handler with the right value', function () {
       var handler = sinon.spy();
+
       router = new Navigo('http://site.com/my/app/path', true);
       router._cLoc = sinon.stub().returns('http://site.com/my/app/path');
       router.on('/', handler);
       expect(handler).to.be.called;
+    });
+  });
+
+  describe('when we create a named router', function () {
+    it('should generate a proper link', function () {
+      var handler = sinon.spy();
+
+      router = new Navigo('http://site.com/', true);
+      router.on('/trip/:tripId/edit', { as: 'trip.edit', uses: handler });
+      expect(router.generate('trip.edit', { tripId: 42 })).to.be.equal('/trip/42/edit');
+      router.resolve('/trip/42/edit');
+      expect(handler)
+        .to.be.calledOnce
+        .and.to.be.calledWith({ tripId: '42' });
+    });
+    describe('and we set the routes via object', function () {
+      it('should generate a proper link', function () {
+        var handler = sinon.spy();
+
+        router = new Navigo('http://site.com/', true);
+        router.on({
+          '/trip/:tripId/edit': { as: 'trip.edit', uses: handler },
+          '/trip/save': { as: 'trip.save', uses: handler },
+          '/trip/:action/:tripId': { as: 'trip.action', uses: handler }
+        });
+        expect(router.generate('trip.edit', { tripId: 42 })).to.be.equal('/trip/42/edit');
+        expect(router.generate('trip.action', { tripId: 42, action: 'save' })).to.be.equal('/trip/save/42');
+        expect(router.generate('trip.save')).to.be.equal('/trip/save');
+        router.resolve('/trip/42/edit');
+        expect(handler)
+          .to.be.calledOnce
+          .and.to.be.calledWith({ tripId: '42' });
+      });
     });
   });
 

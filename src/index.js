@@ -158,8 +158,25 @@ Navigo.prototype = {
       });
     });
   },
+  generate: function (name, data = {}) {
+    return this._routes.reduce((result, route) => {
+      var key;
+
+      if (route.name === name) {
+        result = route.route;
+        for (key in data) {
+          result = result.replace(':' + key, data[key]);
+        }
+      }
+      return result;
+    }, '');
+  },
   _add: function (route, handler = null) {
-    this._routes.push({ route, handler });
+    if (typeof handler === 'object') {
+      this._routes.push({ route, handler: handler.uses, name: handler.as });
+    } else {
+      this._routes.push({ route, handler });
+    }
     return this._add;
   },
   link: function (path) {

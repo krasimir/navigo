@@ -128,6 +128,22 @@ link.addEventListener('click', e => {
 });
 ```
 
+### Named routes
+
+Use the following API to give a name to your route and later generate URLs:
+
+```js
+router = new Navigo('http://site.com/', true);
+router.on({
+  '/trip/:tripId/edit': { as: 'trip.edit', uses: handler },
+  '/trip/save': { as: 'trip.save', uses: handler },
+  '/trip/:action/:tripId': { as: 'trip.action', uses: handler }
+});
+console.log(router.generate('trip.edit', { tripId: 42 })); // --> /trip/42/edit
+console.log(router.generate('trip.action', { tripId: 42, action: 'save' })); // --> /trip/save/42
+console.log(router.generate('trip.save')); // --> /trip/save
+```
+
 ### Resolving the routes
 
 The library resolves the routes by itself. There is a public method `resolve` which is called:
