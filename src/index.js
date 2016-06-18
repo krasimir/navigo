@@ -99,7 +99,9 @@ Navigo.prototype = {
   navigate: function (path, absolute) {
     path = path || '';
     if (this._ok) {
-      history.pushState({}, '', (!absolute ? this._getRoot() + '/' : '') + clean(path));
+      history[this._paused ? 'replaceState' : 'pushState'](
+        {}, '', (!absolute ? this._getRoot() + '/' : '') + clean(path)
+      );
       this.resolve();
     } else if (typeof window !== 'undefined') {
       window.location.href = window.location.href.replace(/#(.*)$/, '') + '#' + path;
