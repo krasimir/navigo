@@ -103,6 +103,7 @@ Navigo.prototype = {
     } else if (typeof window !== 'undefined') {
       window.location.href = window.location.href.replace(/#(.*)$/, '') + '#' + path;
     }
+    return this;
   },
   on: function (...args) {
     if (args.length >= 2) {
@@ -114,9 +115,7 @@ Navigo.prototype = {
     } else if (typeof args[0] === 'function') {
       this._add('', args[0]);
     }
-
-    if (args.length === 3 && args[2] === true) return;
-    this.resolve();
+    return this;
   },
   resolve: function (current) {
     var handler, m;
@@ -171,6 +170,9 @@ Navigo.prototype = {
       return result;
     }, '');
   },
+  link: function (path) {
+    return this._getRoot() + path;
+  },
   _add: function (route, handler = null) {
     if (typeof handler === 'object') {
       this._routes.push({ route, handler: handler.uses, name: handler.as });
@@ -178,9 +180,6 @@ Navigo.prototype = {
       this._routes.push({ route, handler });
     }
     return this._add;
-  },
-  link: function (path) {
-    return this._getRoot() + path;
   },
   _getRoot: function () {
     if (this.root !== null) return this.root;

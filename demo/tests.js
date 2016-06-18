@@ -24,7 +24,7 @@ describe('Given Navigo library', function () {
     it('should call the default handler', function (done) {
       r.on(function() {
         done();
-      });
+      }).resolve();
     });
     it('should call a handler if there is a matching route', function (done) {
       r.on('test-case/registered', function() {

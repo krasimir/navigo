@@ -25,76 +25,90 @@ If `useHash` set to `true` then the router uses an old routing approach with has
 ### Adding a route
 
 ```js
-router.on('/products/list', function () {
-  // display all the products
-});
+router
+  .on('/products/list', function () {
+    // display all the products
+  })
+  .resolve();
 ```
 or skip the first parameter and provide only a function and the router will fallback every non-existing URL to your handler. (suitable for displaying home page)
 
 ```js
-router.on(function () {
-  // show home page here
-  // or handle page-not-found case
-});
+router
+  .on(function () {
+    // show home page here
+    // or handle page-not-found case
+  })
+  .resolve();
 ```
 or use the following to pass multiple routes at once:
 
 ```js
-router.on({
-  '/products/list': function () { ... },
-  '/products': function () { ... },
-  ...
-});
+router
+  .on({
+    '/products/list': function () { ... },
+    '/products': function () { ... },
+    ...
+  })
+  .resolve();
 ```
 
 Navigo also supports a parameterized URLs:
 
 ```js
-router.on('/user/:id/:action', function (params) {
-  // If we have http://site.com/user/42/save as a url then
-  // params.id = 42
-  // params.action = save
-});
+router
+  .on('/user/:id/:action', function (params) {
+    // If we have http://site.com/user/42/save as a url then
+    // params.id = 42
+    // params.action = save
+  })
+  .resolve();
 ```
 
 We may also send a regular expression:
 
 ```js
-router.on(/users\/(\d+)\/(\w+)\/?/, function (id, action) {
-  // If we have http://site.com/user/42/save as a url then
-  // id = 42
-  // action = save
-});
+router
+  .on(/users\/(\d+)\/(\w+)\/?/, function (id, action) {
+    // If we have http://site.com/user/42/save as a url then
+    // id = 42
+    // action = save
+  })
+  .resolve();
 ```
 
 Wild card is also supported:
 
 ```js
-router.on('/user/*', function () {
-  // This function will be called on every
-  // URL that starts with /user
-});
+router
+  .on('/user/*', function () {
+    // This function will be called on every
+    // URL that starts with /user
+  })
+  .resolve();
 ```
 
 The order of routes adding do matter. The URL which is added earlier and matches wins. For example:
 
 ```js
-router.on({
-  'products/:id': function () {
-    setContent('Products');
-  },
-  'products': function () {
-    setContent('About');
-  },
-  '*': function () {
-    setContent('Home')
-  }
-});
+router
+  .on({
+    'products/:id': function () {
+      setContent('Products');
+    },
+    'products': function () {
+      setContent('About');
+    },
+    '*': function () {
+      setContent('Home')
+    }
+  })
+  .resolve();
 ```
 
 It is important to add `products/:id` first because otherwise you may fall into `products` every time.
 
-*Have in mind that every call of `on` fires the `resolve` method of the router.*
+*Have in mind that every call of `on` do not trigger a route check (anymore). You have to run `resolve` method manually to get the routing works.*
 
 ### Changing the page
 
@@ -146,11 +160,11 @@ console.log(router.generate('trip.save')); // --> /trip/save
 
 ### Resolving the routes
 
-The library resolves the routes by itself. There is a public method `resolve` which is called:
+The resolving of the routes happen when `resolve` method is fired which happen:
 
+* if you manually run `router.resolve()`
 * every time when the page's URL changes
 * if you call `navigate`
-* if you call `on` (register a new route)
 
 ## API
 

@@ -2,8 +2,8 @@
 
   $path = str_replace('index.php', '' , $_SERVER['SCRIPT_NAME']);
   $root = "http://".$_SERVER['HTTP_HOST'].$path;
-  $navigoURL = 'http://krasimir.github.io/navigo/lib/navigo.js';
-  // $navigoURL = 'http://home.dev/Krasimir/navigo/lib/navigo.js'; // while developing locally
+  // $navigoURL = 'http://krasimir.github.io/navigo/lib/navigo.js';
+  $navigoURL = 'http://home.dev/Krasimir/navigo/lib/navigo.js'; // while developing locally
 
 ?><!DOCTYPE html>
 <html lang="en">
@@ -59,11 +59,13 @@ router.on({
   'something/here': function () {
     ...
   }
-});
+})
 
 router.on(function() {
   // ... all the urls end here
 });
+
+router.resolve();
 </pre>
     <p>As every routing library Navigo supports parameterized URLS:</p>
     <pre>router.on('/user/:id/:action', function (params) {
@@ -76,7 +78,9 @@ router.on(/users\/(\d+)\/(\w+)\/?/, function (id, action) {
   // If we have http://site.com/user/42/save as a url then
   // id = 42
   // action = save
-});</pre>
+});
+
+router.resolve();</pre>
     <p class="big">Moving to another page</p>
     <pre>router.navigate('some/other/url');</pre>
     <p class="big">Handle/Bind/Attach to page links</p>

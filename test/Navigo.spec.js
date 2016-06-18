@@ -35,7 +35,7 @@ describe('Given an instance of Navigo', function () {
     describe('and when we pass only a handler', function () {
       it('should call the default handler', function () {
         handler = sinon.spy();
-        router.on(handler);
+        router.on(handler).resolve();
         expect(handler).to.be.calledOnce;
       });
     });
@@ -137,9 +137,11 @@ describe('Given an instance of Navigo', function () {
         var handlerC = sinon.spy();
         var r = new Navigo();
 
-        router.on('/', handlerA, true);
-        router.on('/about', handlerB, true);
-        router.on('/contacts', handlerC);
+        router
+          .on('/', handlerA, true)
+          .on('/about', handlerB, true)
+          .on('/contacts', handlerC)
+          .resolve();
         expect(handlerA).to.be.calledOnce;
         expect(handlerB).to.not.be.calledOnce;
         expect(handlerC).to.not.be.calledOnce;
@@ -163,7 +165,7 @@ describe('Given an instance of Navigo', function () {
 
         router = new Navigo('http://site.com/my/app/path', true);
         router._cLoc = sinon.stub().returns('http://site.com/my/app/path');
-        router.on(':slug', handler);
+        router.on(':slug', handler).resolve();
         expect(handler).to.not.be.called;
       });
     });
@@ -173,7 +175,7 @@ describe('Given an instance of Navigo', function () {
 
         router = new Navigo('http://site.com/my/app/path', true);
         router._cLoc = sinon.stub().returns('http://site.com/my/app/path/something/else');
-        router.on(':slug', handler);
+        router.on(':slug', handler).resolve();
         expect(handler).to.be.calledWith({ slug: 'something' });
       });
     });
@@ -185,7 +187,7 @@ describe('Given an instance of Navigo', function () {
 
       router = new Navigo('http://site.com/my/app/path', true);
       router._cLoc = sinon.stub().returns('http://site.com/my/app/path');
-      router.on('/', handler);
+      router.on('/', handler).resolve();
       expect(handler).to.be.called;
     });
   });

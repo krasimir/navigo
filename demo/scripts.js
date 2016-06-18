@@ -31,6 +31,7 @@ var routing = function (mode) {
   router.on(function() {
     setContent('about');
   });
+  router.resolve();
 };
 
 var el = function(sel) {
