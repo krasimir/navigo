@@ -87,6 +87,8 @@ router.resolve();</pre>
     <p>Navigo automatically binds links that contain <b>data-navigo</b> attribute.</p>
     <pre>&lt;a href="about" data-navigo>About&lt;/a></pre>
     <p>The result is a <i>onclick</i> handler that calls <i>router.navigate</i> internaly.</p>
+    <p class="big">Documentation</p>
+    <p>The full documentation is available on Navigo&#39;s <a href="https://github.com/krasimir/navigo">GitHub page</a>.</p>
   </script>
 
   <script type="text/content" id="content-download">
