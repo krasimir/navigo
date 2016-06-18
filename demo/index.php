@@ -2,8 +2,8 @@
 
   $path = str_replace('index.php', '' , $_SERVER['SCRIPT_NAME']);
   $root = "http://".$_SERVER['HTTP_HOST'].$path;
-  // $navigoURL = 'http://krasimir.github.io/navigo/lib/navigo.js';
-  $navigoURL = 'http://home.dev/Krasimir/navigo/lib/navigo.js'; // while developing locally
+  $navigoURL = 'http://krasimir.github.io/navigo/lib/navigo.js';
+  // $navigoURL = 'http://home.dev/Krasimir/navigo/lib/navigo.js'; // while developing locally
 
 ?><!DOCTYPE html>
 <html lang="en">
@@ -100,7 +100,7 @@ router.resolve();</pre>
   </script>
   <script type="text/content" id="content-try-it">
     <p class="big">Try it</p>
-    <a class="jsbin-embed" href="http://jsbin.com/toqoqe/10/edit?js,output">JS Bin on jsbin.com</a>
+    <a class="jsbin-embed" href="http://jsbin.com/toqoqe/edit?js,output">JS Bin on jsbin.com</a>
   </script>
   <script type="text/content" id="content-parameterized">
     <small>(The content of this page is based on the URL)</small>
@@ -126,7 +126,7 @@ this/is/{{language}}/{{what}}</pre>
       <a href="usage" data-navigo>Usage</a>
       <a href="download" data-navigo>Download</a>
       <a href="testing" data-navigo>Run tests</a>
-      <a href="http://jsbin.com/toqoqe/10/edit?js,output" target="_blank">Try it</a>
+      <a href="http://jsbin.com/toqoqe/edit?js,output" target="_blank">Try it</a>
     </nav>
     <div class="js-content content"></div>
     <footer>
