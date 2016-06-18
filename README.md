@@ -166,6 +166,18 @@ The resolving of the routes happen when `resolve` method is fired which happen:
 * every time when the page's URL changes
 * if you call `navigate`
 
+### Pausing the router
+
+[Sometimes](https://github.com/krasimir/navigo/issues/18) you need to update the URL but you don't want to resolve your callbacks. In such cases you may call `.pause(true)` and do `.navigate('new/url/here')`. For example:
+
+```js
+r.pause(true);
+r.navigate('/en/products');
+r.pause(false);
+```
+
+The route will be changed to `/en/products` but if you have a handler for that path will not be executed.
+
 ## API
 
 * `router.on(function)` - adding a new route
@@ -175,6 +187,7 @@ The resolving of the routes happen when `resolve` method is fired which happen:
 * `router.resolve(currentURL=undefined)` - if `currentURL` is provided then the method tries resolving the registered routes to that URL and not `window.location.href`.
 * `router.destroy` - removes all the registered routes and stops the URL change listening.
 * `router.link(path)` - it returns a full url of the given `path`
+* `router.pause(boolean)` - it gives you a chance to change the route without resolving. Make sure that you call `router.pause(false)` so you return to the previous working state.
 
 ## Tests
 

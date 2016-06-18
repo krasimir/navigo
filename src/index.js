@@ -80,6 +80,7 @@ function Navigo(r, useHash) {
   this._routes = [];
   this.root = useHash && r ? r.replace(/\/$/, '/#') : (r || null);
   this._useHash = useHash;
+  this._paused = false;
   this._ok = !useHash && !!(
     typeof window !== 'undefined' &&
     window.history &&
@@ -121,6 +122,7 @@ Navigo.prototype = {
     var handler, m;
     var url = (current || this._cLoc()).replace(this._getRoot(), '');
 
+    if (this._paused) return false;
     if (this._useHash) {
       url = url.replace(/^\/#/, '/');
     }
@@ -172,6 +174,9 @@ Navigo.prototype = {
   },
   link: function (path) {
     return this._getRoot() + path;
+  },
+  pause: function (status) {
+    this._paused = status;
   },
   _add: function (route, handler = null) {
     if (typeof handler === 'object') {

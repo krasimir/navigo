@@ -59,4 +59,33 @@ describe('Given Navigo library', function () {
       r.navigate('test-case/user/42');
     });
   });
+  describe('when we update the internal state', function () {
+    beforeEach(function () {
+      r = new Navigo(root);
+    });
+    afterEach(function () {
+      r.destroy();
+      r.navigate('testing');
+    });
+    it('should not fire the resolve method', function (done) {
+      this.timeout(3000);
+      var lang = '';
+
+      r.on('/:lang/products', function (params) {
+        lang = params.lang;
+      });
+      r.navigate('/en/products');
+      r.pause(true);
+      r.navigate('/foo/products');
+      setTimeout(function () {
+        r.navigate('/bar/products');
+      }, 500);
+      setTimeout(function () {
+        r.pause(false);
+        r.navigate('/bg/products');
+        expect(lang).to.be.equal('bg');
+        done();
+      }, 1000);
+    });
+  });
 });
