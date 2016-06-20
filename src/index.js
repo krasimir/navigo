@@ -147,14 +147,8 @@ Navigo.prototype = {
   updatePageLinks: function () {
     if (typeof document === 'undefined') return;
     this._findLinks().forEach(link => {
-      var noAction = 'javascript:void(0);';
       var location = link.getAttribute('href');
 
-      if (link.getAttribute('data-navigo-set') === '1') return;
-      if (location === noAction) { location = link.getAttribute('data-navigo'); }
-      link.setAttribute('href', noAction);
-      link.setAttribute('data-navigo', location);
-      link.setAttribute('data-navigo-set', '1');
       link.addEventListener('click', e => {
         e.preventDefault();
         this.navigate(clean(location));
