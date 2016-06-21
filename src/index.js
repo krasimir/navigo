@@ -97,11 +97,13 @@ Navigo.prototype = {
     clean
   },
   navigate: function (path, absolute) {
+    var to;
+
     path = path || '';
     if (this._ok) {
-      history[this._paused ? 'replaceState' : 'pushState'](
-        {}, '', (!absolute ? this._getRoot() + '/' : '') + clean(path)
-      );
+      to = (!absolute ? this._getRoot() + '/' : '') + clean(path);
+      to = to.replace(/([^:])(\/{2,})/g, '$1/');
+      history[this._paused ? 'replaceState' : 'pushState']({}, '', to);
       this.resolve();
     } else if (typeof window !== 'undefined') {
       window.location.href = window.location.href.replace(/#(.*)$/, '') + '#' + path;
