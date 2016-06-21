@@ -68,24 +68,23 @@ describe('Given Navigo library', function () {
       r.navigate('testing');
     });
     it('should not fire the resolve method', function (done) {
-      this.timeout(3000);
       var lang = '';
 
       r.on('/:lang/products', function (params) {
         lang = params.lang;
       });
-      r.navigate('/en/products');
+      r.navigate('site.com/en/products');
       r.pause(true);
-      r.navigate('/foo/products');
+      r.navigate('site.com/foo/products');
       setTimeout(function () {
-        r.navigate('/bar/products');
-      }, 500);
+        r.navigate('site.com/bar/products');
+      }, 10);
       setTimeout(function () {
         r.pause(false);
-        r.navigate('/bg/products');
+        r.navigate('site.com/bg/products');
         expect(lang).to.be.equal('bg');
         done();
-      }, 1000);
+      }, 20);
     });
   });
 });

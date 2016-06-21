@@ -76,17 +76,22 @@ function root(url, routes) {
   return fallbackURL;
 }
 
+function isPushStateAvailable() {
+  return !!(
+    typeof window !== 'undefined' &&
+    window.history &&
+    window.history.pushState
+  );
+}
+
 function Navigo(r, useHash) {
   this._routes = [];
   this.root = useHash && r ? r.replace(/\/$/, '/#') : (r || null);
   this._useHash = useHash;
   this._paused = false;
+  this._destroyed = false;
   this._lastRouteResolved = null;
-  this._ok = !useHash && !!(
-    typeof window !== 'undefined' &&
-    window.history &&
-    window.history.pushState
-  );
+  this._ok = !useHash && isPushStateAvailable();
   this._listen();
   this.updatePageLinks();
 }
@@ -145,6 +150,7 @@ Navigo.prototype = {
   },
   destroy: function () {
     this._routes = [];
+    this._destroyed = true;
     clearTimeout(this._listenningInterval);
     typeof window !== 'undefined' ? window.onpopstate = null : null;
   },
@@ -154,8 +160,10 @@ Navigo.prototype = {
       var location = link.getAttribute('href');
 
       link.addEventListener('click', e => {
-        e.preventDefault();
-        this.navigate(clean(location));
+        if (!this._destroyed) {
+          e.preventDefault();
+          this.navigate(clean(location));
+        }
       });
     });
   },
@@ -177,6 +185,11 @@ Navigo.prototype = {
   },
   pause: function (status) {
     this._paused = status;
+  },
+  disableIfAPINotAvailable: function () {
+    if (!isPushStateAvailable()) {
+      this.destroy();
+    }
   },
   _add: function (route, handler = null) {
     if (typeof handler === 'object') {

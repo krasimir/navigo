@@ -3,7 +3,7 @@
   $path = str_replace('index.php', '' , $_SERVER['SCRIPT_NAME']);
   $root = "http://".$_SERVER['HTTP_HOST'].$path;
   $navigoURL = 'http://krasimir.github.io/navigo/lib/navigo.js';
-  // $navigoURL = 'http://home.dev/Krasimir/navigo/lib/navigo.js'; // while developing locally
+  $navigoURL = 'http://home.dev/Krasimir/navigo/lib/navigo.js'; // while developing locally
 
 ?><!DOCTYPE html>
 <html lang="en">

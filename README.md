@@ -188,6 +188,7 @@ The route will be changed to `/en/products` but if you have a handler for that p
 * `router.destroy` - removes all the registered routes and stops the URL change listening.
 * `router.link(path)` - it returns a full url of the given `path`
 * `router.pause(boolean)` - it gives you a chance to change the route without resolving. Make sure that you call `router.pause(false)` so you return to the previous working state.
+* `router.disableIfAPINotAvailable()` - well, it disables the route if History API is not supported
 
 ## Tests
 
