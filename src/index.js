@@ -81,6 +81,7 @@ function Navigo(r, useHash) {
   this.root = useHash && r ? r.replace(/\/$/, '/#') : (r || null);
   this._useHash = useHash;
   this._paused = false;
+  this._lastRouteResolved = null;
   this._ok = !useHash && !!(
     typeof window !== 'undefined' &&
     window.history &&
@@ -126,13 +127,14 @@ Navigo.prototype = {
     var handler, m;
     var url = (current || this._cLoc()).replace(this._getRoot(), '');
 
-    if (this._paused) return false;
+    if (this._paused || url === this._lastRouteResolved) return false;
     if (this._useHash) {
       url = url.replace(/^\/#/, '/');
     }
     m = match(url, this._routes);
 
     if (m) {
+      this._lastRouteResolved = url;
       handler = m.route.handler;
       m.route.route instanceof RegExp ?
         handler(...(m.match.slice(1, m.match.length))) :

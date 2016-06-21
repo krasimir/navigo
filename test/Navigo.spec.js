@@ -61,6 +61,16 @@ describe('Given an instance of Navigo', function () {
           handler.reset();
         });
       });
+
+      it('should call the handler only once even though it resolves twice', function () {
+        handler = sinon.spy();
+        router.on('/user/edit', handler);
+        router.resolve('/user/edit');
+        router.resolve('/user/edit');
+        router.resolve('/user/edit');
+        router.resolve('/user/edit');
+        expect(handler).to.be.calledOnce;
+      });
     });
 
     describe('and when we pass matching handler with dynamic parameters', function () {
