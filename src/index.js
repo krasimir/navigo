@@ -157,11 +157,11 @@ Navigo.prototype = {
   updatePageLinks: function () {
     if (typeof document === 'undefined') return;
     this._findLinks().forEach(link => {
-      var location = link.getAttribute('href');
-
       link.addEventListener('click', e => {
         if (!this._destroyed) {
           e.preventDefault();
+          // get target's href attribute here, as it might be changed
+          var location = e.target.getAttribute("href");
           this.navigate(clean(location));
         }
       });
