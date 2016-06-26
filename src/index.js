@@ -64,16 +64,16 @@ function root(url, routes) {
       return u !== '' && u !== '*';
     })
   );
-  var fallbackURL = clean(url);
+  var defaultRouteURL = clean(url);
 
   if (matched.length > 0) {
     return matched
       .map(m => clean(url.substr(0, m.match.index)))
       .reduce((root, current) => {
         return current.length < root.length ? current : root;
-      }, fallbackURL);
+      }, defaultRouteURL);
   }
-  return fallbackURL;
+  return defaultRouteURL;
 }
 
 function isPushStateAvailable() {
@@ -128,8 +128,8 @@ Navigo.prototype = {
     }
     return this;
   },
-  fallback: function fallback(callback) {
-          this._fallback = callback;
+  defaultRoute: function defaultRoute(callback) {
+          this._defaultRoute = callback;
   },
   resolve: function (current) {
     var handler, m;
@@ -148,9 +148,9 @@ Navigo.prototype = {
         handler(...(m.match.slice(1, m.match.length))) :
         handler(m.params);
       return m;
-    }else if (this._fallback != undefined) {
+    }else if (this._defaultRoute != undefined) {
 		this._lastRouteResolved = url;
-		handler = this._fallback;
+		handler = this._defaultRoute;
 		handler(url, m.params);
 		return m;
 	}
