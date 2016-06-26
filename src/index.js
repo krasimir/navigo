@@ -64,16 +64,16 @@ function root(url, routes) {
       return u !== '' && u !== '*';
     })
   );
-  var defaultRouteURL = clean(url);
+  var fallbackURL = clean(url);
 
   if (matched.length > 0) {
     return matched
       .map(m => clean(url.substr(0, m.match.index)))
       .reduce((root, current) => {
         return current.length < root.length ? current : root;
-      }, defaultRouteURL);
+      }, fallbackURL);
   }
-  return defaultRouteURL;
+  return fallbackURL;
 }
 
 function isPushStateAvailable() {
