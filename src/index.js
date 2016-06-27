@@ -155,16 +155,22 @@ Navigo.prototype = {
     typeof window !== 'undefined' ? window.onpopstate = null : null;
   },
   updatePageLinks: function () {
-    if (typeof document === 'undefined') return;
-    this._findLinks().forEach(link => {
-      var location = link.getAttribute('href');
+    var self = this;
 
-      link.addEventListener('click', e => {
-        if (!this._destroyed) {
-          e.preventDefault();
-          this.navigate(clean(location));
-        }
-      });
+    if (typeof document === 'undefined') return;
+
+    this._findLinks().forEach(link => {
+      if (!link.hasListenerAttached) {
+        link.addEventListener('click', function (e) {
+          var location = link.getAttribute('href');
+
+          link.hasListenerAttached = true;
+          if (!self._destroyed) {
+            e.preventDefault();
+            self.navigate(clean(location));
+          }
+        });
+      }
     });
   },
   generate: function (name, data = {}) {
