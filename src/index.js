@@ -128,6 +128,9 @@ Navigo.prototype = {
     }
     return this;
   },
+  defaultRoute: function defaultRoute(callback) {
+          this._defaultRoute = callback;
+  },
   resolve: function (current) {
     var handler, m;
     var url = (current || this._cLoc()).replace(this._getRoot(), '');
@@ -145,7 +148,12 @@ Navigo.prototype = {
         handler(...(m.match.slice(1, m.match.length))) :
         handler(m.params);
       return m;
-    }
+    }else if (this._defaultRoute != undefined) {
+		this._lastRouteResolved = url;
+		handler = this._defaultRoute;
+		handler(url, m.params);
+		return m;
+	}
     return false;
   },
   destroy: function () {
