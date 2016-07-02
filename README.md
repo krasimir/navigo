@@ -110,6 +110,16 @@ It is important to add `products/:id` first because otherwise you may fall into 
 
 *Have in mind that every call of `on` do not trigger a route check (anymore). You have to run `resolve` method manually to get the routing works.*
 
+### Fallback route
+
+You may need to provide a fallback handler. A handler that is fired if none of the routes match:
+
+```js
+router.on(function fallback() {
+  // ...
+});
+```
+
 ### Changing the page
 
 Use the `navigate` method:
