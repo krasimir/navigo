@@ -140,6 +140,8 @@ If you want to bind page links to Navigo you have to add `data-navigo` attribute
 <a href="about" data-navigo>About</a>
 ```
 
+*(Have in mind that you have to fire `updatePageLinks` every time when new links are placed on the page so Navigo does the binding for them.)*
+
 It's translated to:
 
 ```js
@@ -199,6 +201,7 @@ The route will be changed to `/en/products` but if you have a handler for that p
 * `router.link(path)` - it returns a full url of the given `path`
 * `router.pause(boolean)` - it gives you a chance to change the route without resolving. Make sure that you call `router.pause(false)` so you return to the previous working state.
 * `router.disableIfAPINotAvailable()` - well, it disables the route if History API is not supported
+* `router.updatePageLinks()` - it triggers the `data-navigo` links binding process
 
 ## Tests
 
