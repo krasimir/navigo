@@ -164,12 +164,12 @@ Navigo.prototype = {
         link.addEventListener('click', function (e) {
           var location = link.getAttribute('href');
 
-          link.hasListenerAttached = true;
           if (!self._destroyed) {
             e.preventDefault();
             self.navigate(clean(location));
           }
         });
+        link.hasListenerAttached = true;
       }
     });
   },
