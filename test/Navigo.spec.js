@@ -7,12 +7,12 @@ import sinonChai from 'sinon-chai';
 // import Navigo from '../src/';
 import Navigo from '../lib/navigo';
 
+var router, handler;
+
 chai.expect();
 chai.use(sinonChai);
 
 const expect = chai.expect;
-
-var router, handler;
 
 describe('Given an instance of Navigo', function () {
 
@@ -132,6 +132,7 @@ describe('Given an instance of Navigo', function () {
           ['#bar', '#/bar'].forEach(function (bit) {
             var handler = sinon.spy();
             var r = new Navigo('site.com', true);
+
             r.on('/:foo', handler);
             r.resolve('site.com/' + bit);
             expect(handler).to.be.calledOnce.and.to.be.calledWith({ foo: 'bar' });
@@ -147,7 +148,7 @@ describe('Given an instance of Navigo', function () {
         var handlerC = sinon.spy();
         var r = new Navigo();
 
-        router
+        r
           .on('/', handlerA, true)
           .on('/about', handlerB, true)
           .on('/contacts', handlerC)
@@ -232,6 +233,27 @@ describe('Given an instance of Navigo', function () {
           .to.be.calledOnce
           .and.to.be.calledWith({ tripId: '42' });
       });
+    });
+  });
+
+  describe('when we set a not-found handler', function () {
+    it('should call the not-found handler', function () {
+      var notFoundRoute = sinon.spy();
+      var defaultRoute = sinon.spy();
+      var normalRoute = sinon.spy();
+
+      router = new Navigo('http://site.com/', true);
+      router.on('something', normalRoute);
+      router.notFound(notFoundRoute);
+      router.on(defaultRoute);
+
+      router.resolve('/something');
+      router.resolve('/something-else');
+      router.resolve('/');
+
+      expect(normalRoute).to.be.calledOnce;
+      expect(notFoundRoute).to.be.calledOnce;
+      expect(defaultRoute).to.be.calledOnce;
     });
   });
 

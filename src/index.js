@@ -91,6 +91,8 @@ function Navigo(r, useHash) {
   this._paused = false;
   this._destroyed = false;
   this._lastRouteResolved = null;
+  this._notFoundHandler = null;
+  this._defaultHandler = null;
   this._ok = !useHash && isPushStateAvailable();
   this._listen();
   this.updatePageLinks();
@@ -124,9 +126,12 @@ Navigo.prototype = {
         this._add(route, args[0][route]);
       }
     } else if (typeof args[0] === 'function') {
-      this._add('', args[0]);
+      this._defaultHandler = args[0];
     }
     return this;
+  },
+  notFound: function (handler) {
+    this._notFoundHandler = handler;
   },
   resolve: function (current) {
     var handler, m;
@@ -145,6 +150,11 @@ Navigo.prototype = {
         handler(...(m.match.slice(1, m.match.length))) :
         handler(m.params);
       return m;
+    } else if (this._defaultHandler && (url === '' || url === '/')) {
+      this._defaultHandler();
+      return true;
+    } else if (this._notFoundHandler) {
+      this._notFoundHandler();
     }
     return false;
   },

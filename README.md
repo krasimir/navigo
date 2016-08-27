@@ -31,17 +31,18 @@ router
   })
   .resolve();
 ```
-or skip the first parameter and provide only a function and the router will fallback every non-existing URL to your handler. (suitable for displaying home page)
+
+### Adding a main/root handler
 
 ```js
 router
   .on(function () {
     // show home page here
-    // or handle page-not-found case
   })
   .resolve();
 ```
-or use the following to pass multiple routes at once:
+
+### Adding multiple routes
 
 ```js
 router
@@ -49,41 +50,6 @@ router
     '/products/list': function () { ... },
     '/products': function () { ... },
     ...
-  })
-  .resolve();
-```
-
-Navigo also supports a parameterized URLs:
-
-```js
-router
-  .on('/user/:id/:action', function (params) {
-    // If we have http://site.com/user/42/save as a url then
-    // params.id = 42
-    // params.action = save
-  })
-  .resolve();
-```
-
-We may also send a regular expression:
-
-```js
-router
-  .on(/users\/(\d+)\/(\w+)\/?/, function (id, action) {
-    // If we have http://site.com/user/42/save as a url then
-    // id = 42
-    // action = save
-  })
-  .resolve();
-```
-
-Wild card is also supported:
-
-```js
-router
-  .on('/user/*', function () {
-    // This function will be called on every
-    // URL that starts with /user
   })
   .resolve();
 ```
@@ -108,15 +74,49 @@ router
 
 It is important to add `products/:id` first because otherwise you may fall into `products` every time.
 
-*Have in mind that every call of `on` do not trigger a route check (anymore). You have to run `resolve` method manually to get the routing works.*
-
-### Fallback route
-
-You may need to provide a fallback handler. A handler that is fired if none of the routes match:
+### Parameterized URLs:
 
 ```js
-router.on(function fallback() {
-  // ...
+router
+  .on('/user/:id/:action', function (params) {
+    // If we have http://site.com/user/42/save as a url then
+    // params.id = 42
+    // params.action = save
+  })
+  .resolve();
+```
+
+### Using regular expression
+
+```js
+router
+  .on(/users\/(\d+)\/(\w+)\/?/, function (id, action) {
+    // If we have http://site.com/user/42/save as a url then
+    // id = 42
+    // action = save
+  })
+  .resolve();
+```
+
+Wild card is also supported:
+
+```js
+router
+  .on('/user/*', function () {
+    // This function will be called on every
+    // URL that starts with /user
+  })
+  .resolve();
+```
+
+*Have in mind that every call of `on` do not trigger a route check (anymore). You have to run `resolve` method manually to get the routing works.*
+
+### Not-found handler
+
+```js
+router.notFound(function () {
+  // called when there is path specified but
+  // there is no route matching
 });
 ```
 
@@ -192,7 +192,7 @@ The route will be changed to `/en/products` but if you have a handler for that p
 
 ## API
 
-* `router.on(function)` - adding a new route
+* `router.on(function)` - adding handler for root/main route
 * `router.on(string, function)` - adding a new route
 * `router.on(object)` - adding a new route
 * `router.navigate(path='', absolute=false)` - if `absolute` is `false` then Navigo finds the root path of your app based on the provided routes.
@@ -202,6 +202,7 @@ The route will be changed to `/en/products` but if you have a handler for that p
 * `router.pause(boolean)` - it gives you a chance to change the route without resolving. Make sure that you call `router.pause(false)` so you return to the previous working state.
 * `router.disableIfAPINotAvailable()` - well, it disables the route if History API is not supported
 * `router.updatePageLinks()` - it triggers the `data-navigo` links binding process
+* `router.notFound(function)` - adding a handler for not-found URL (404 page)
 
 ## Tests
 
