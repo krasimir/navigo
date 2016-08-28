@@ -201,7 +201,7 @@ There is an API that allows you to run functions before firing a route handler. 
 }
 ```
 
-You may specify only one (or both) hooks. The `before` hook accepts a function which you *must* invoke once you finish your job. Here are couple of examples:
+You may specify only one (or both) hooks. The `before` hook accepts a function which you *must* invoke once you finish your job. Here is an examples:
 
 ```
 router.on(
