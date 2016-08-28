@@ -84,6 +84,51 @@ function isPushStateAvailable() {
   );
 }
 
+function createRoute({ route, handler, name, hooks }) {
+  var fireHooks = function (callback) {
+    if (hooks) {
+      // having only before hook
+      if (hooks.before && !hooks.after) {
+        return hooks.before(() => callback());
+      }
+
+      // having both hooks
+      if (hooks.before && hooks.after) {
+        return hooks.before(() => {
+          let result = callback();
+
+          hooks.after();
+          return result;
+        });
+      }
+
+      // having only after hook
+      if (!hooks.before && hooks.after) {
+        let result = callback();
+
+        hooks.after();
+        return result;
+      }
+    } else {
+      return callback();
+    }
+  };
+
+  return {
+    fire: function (m) {
+      return fireHooks(() => {
+        route instanceof RegExp ?
+          handler(...(m.match.slice(1, m.match.length))) :
+          handler(m ? m.params : null);
+      });
+    },
+    route,
+    handler,
+    name,
+    hooks
+  };
+}
+
 function Navigo(r, useHash) {
   this._routes = [];
   this.root = useHash && r ? r.replace(/\/$/, '/#') : (r || null);
@@ -119,22 +164,28 @@ Navigo.prototype = {
     return this;
   },
   on: function (...args) {
-    if (args.length >= 2) {
-      this._add(args[0], args[1]);
+    if (args.length === 2) {
+      if (typeof args[0] === 'function' && typeof args[1] === 'object') {
+        this._defaultHandler = createRoute({ handler: args[0], hooks: args[1] });
+      } else {
+        this._add(...args);
+      }
+    } else if (args.length > 2) {
+      this._add(...args);
     } else if (typeof args[0] === 'object') {
       for (let route in args[0]) {
         this._add(route, args[0][route]);
       }
     } else if (typeof args[0] === 'function') {
-      this._defaultHandler = args[0];
+      this._defaultHandler = createRoute({ handler: args[0] });
     }
     return this;
   },
-  notFound: function (handler) {
-    this._notFoundHandler = handler;
+  notFound: function (handler, hooks) {
+    this._notFoundHandler = createRoute({ handler, hooks });
   },
   resolve: function (current) {
-    var handler, m;
+    var m;
     var url = (current || this._cLoc()).replace(this._getRoot(), '');
 
     if (this._paused || url === this._lastRouteResolved) return false;
@@ -145,16 +196,12 @@ Navigo.prototype = {
 
     if (m) {
       this._lastRouteResolved = url;
-      handler = m.route.handler;
-      m.route.route instanceof RegExp ?
-        handler(...(m.match.slice(1, m.match.length))) :
-        handler(m.params);
-      return m;
+      return m.route.fire(m);
     } else if (this._defaultHandler && (url === '' || url === '/')) {
-      this._defaultHandler();
+      this._defaultHandler.fire();
       return true;
     } else if (this._notFoundHandler) {
-      this._notFoundHandler();
+      this._notFoundHandler.fire();
     }
     return false;
   },
@@ -207,11 +254,11 @@ Navigo.prototype = {
       this.destroy();
     }
   },
-  _add: function (route, handler = null) {
+  _add: function (route, handler = null, hooks) {
     if (typeof handler === 'object') {
-      this._routes.push({ route, handler: handler.uses, name: handler.as });
+      this._routes.push(createRoute({ route, handler: handler.uses, name: handler.as, hooks }));
     } else {
-      this._routes.push({ route, handler });
+      this._routes.push(createRoute({ route, handler, hooks }));
     }
     return this._add;
   },
