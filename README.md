@@ -190,11 +190,47 @@ r.pause(false);
 
 The route will be changed to `/en/products` but if you have a handler for that path will not be executed.
 
+## Hooks
+
+There is an API that allows you to run functions before firing a route handler. The `hooks` object is in the format of:
+
+```
+{
+  before: function (done) { ... done(); }
+  after: function () { ... }
+}
+```
+
+You may specify only one (or both) hooks. The `before` hook accepts a function which you *must* invoke once you finish your job. Here is an examples:
+
+```
+router.on(
+  '/user/edit',
+  function () {
+    // show user edit page
+  },
+  {
+    before: function (done) {
+      // doing some async operation
+      done();
+    },
+    after: function () {
+      console.log('Data saved.');
+    }
+  }
+);
+```
+
+You may provide hooks in two other cases:
+
+* While specifying a main/root handler `router.on(function() { ... }, hooks)`
+* While specifying a not-found page handler `router.notFound(function() { ... }, hooks)`
+
 ## API
 
-* `router.on(function)` - adding handler for root/main route
-* `router.on(string, function)` - adding a new route
-* `router.on(object)` - adding a new route
+* `router.on(function, hooks)` - adding handler for root/main route
+* `router.on(string, function, hooks)` - adding a new route
+* `router.on(object)` - adding multiple routes
 * `router.navigate(path='', absolute=false)` - if `absolute` is `false` then Navigo finds the root path of your app based on the provided routes.
 * `router.resolve(currentURL=undefined)` - if `currentURL` is provided then the method tries resolving the registered routes to that URL and not `window.location.href`.
 * `router.destroy` - removes all the registered routes and stops the URL change listening.
@@ -202,7 +238,7 @@ The route will be changed to `/en/products` but if you have a handler for that p
 * `router.pause(boolean)` - it gives you a chance to change the route without resolving. Make sure that you call `router.pause(false)` so you return to the previous working state.
 * `router.disableIfAPINotAvailable()` - well, it disables the route if History API is not supported
 * `router.updatePageLinks()` - it triggers the `data-navigo` links binding process
-* `router.notFound(function)` - adding a handler for not-found URL (404 page)
+* `router.notFound(function, hooks)` - adding a handler for not-found URL (404 page)
 
 ## Tests
 
