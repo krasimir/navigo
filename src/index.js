@@ -39,6 +39,10 @@ function replaceDynamicURLParts(route) {
   return { regexp, paramNames };
 }
 
+function getUrlDepth(url) {
+  return url.replace(/\/$/).split('/').length
+}
+
 function findMatchedRoutes(url, routes = []) {
   return routes
     .map(route => {
@@ -122,7 +126,7 @@ Navigo.prototype = {
     if (args.length >= 2) {
       this._add(args[0], args[1]);
     } else if (typeof args[0] === 'object') {
-      for (let route in args[0]) {
+      for (let route in Object.keys(args[0]).sort(getUrlDepth)) {
         this._add(route, args[0][route]);
       }
     } else if (typeof args[0] === 'function') {

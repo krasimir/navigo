@@ -233,6 +233,20 @@ describe('Given an instance of Navigo', function () {
           .to.be.calledOnce
           .and.to.be.calledWith({ tripId: '42' });
       });
+      it('should set the routes in order of depth', function () {
+        var handler = sinon.spy();
+
+        router = new Navigo('http://site.com/', true);
+        router.on({
+          'products': { as: 'products', uses: handler },
+          'products/:productId': { as: 'products.id', uses: handler}
+        });
+        router.resolve('products/42');
+        console.log(handler.lastCall.args)
+        expect(handler)
+          .to.be.calledOnce
+          .and.to.be.calledWith({ productId: '42' })
+      });
     });
   });
 
