@@ -40,7 +40,11 @@ function replaceDynamicURLParts(route) {
 }
 
 function getUrlDepth(url) {
-  return url.replace(/\/$/).split('/').length
+  return url.replace(/\/$/).split('/').length;
+}
+
+function compareUrlDepth(urlA, urlB) {
+  return getUrlDepth(urlA) < getUrlDepth(urlB);
 }
 
 function findMatchedRoutes(url, routes = []) {
@@ -126,8 +130,10 @@ Navigo.prototype = {
     if (args.length >= 2) {
       this._add(args[0], args[1]);
     } else if (typeof args[0] === 'object') {
-      for (let route in Object.keys(args[0]).sort(getUrlDepth)) {
-        this._add(route, args[0][route]);
+      let orderedRoutes = Object.keys(args[0]).sort(compareUrlDepth);
+
+      for (let idx in orderedRoutes) {
+        this._add(orderedRoutes[idx], args[0][orderedRoutes[idx]]);
       }
     } else if (typeof args[0] === 'function') {
       this._defaultHandler = args[0];

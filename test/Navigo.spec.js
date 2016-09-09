@@ -242,7 +242,7 @@ describe('Given an instance of Navigo', function () {
           'products/:productId': { as: 'products.id', uses: handler}
         });
         router.resolve('products/42');
-        console.log(handler.lastCall.args)
+
         expect(handler)
           .to.be.calledOnce
           .and.to.be.calledWith({ productId: '42' })
