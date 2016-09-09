@@ -40,7 +40,7 @@ function replaceDynamicURLParts(route) {
 }
 
 function getUrlDepth(url) {
-  return url.replace(/\/$/).split('/').length;
+  return url.replace(/\/$/, '').split('/').length;
 }
 
 function compareUrlDepth(urlA, urlB) {
