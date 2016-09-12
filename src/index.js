@@ -132,9 +132,9 @@ Navigo.prototype = {
     } else if (typeof args[0] === 'object') {
       let orderedRoutes = Object.keys(args[0]).sort(compareUrlDepth);
 
-      for (let idx in orderedRoutes) {
-        this._add(orderedRoutes[idx], args[0][orderedRoutes[idx]]);
-      }
+      orderedRoutes.forEach(route => {
+        this._add(route, args[0][route]);
+      });
     } else if (typeof args[0] === 'function') {
       this._defaultHandler = args[0];
     }
