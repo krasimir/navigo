@@ -39,6 +39,14 @@ function replaceDynamicURLParts(route) {
   return { regexp, paramNames };
 }
 
+function getUrlDepth(url) {
+  return url.replace(/\/$/, '').split('/').length;
+}
+
+function compareUrlDepth(urlA, urlB) {
+  return getUrlDepth(urlA) < getUrlDepth(urlB);
+}
+
 function findMatchedRoutes(url, routes = []) {
   return routes
     .map(route => {
@@ -122,9 +130,11 @@ Navigo.prototype = {
     if (args.length >= 2) {
       this._add(args[0], args[1]);
     } else if (typeof args[0] === 'object') {
-      for (let route in args[0]) {
+      let orderedRoutes = Object.keys(args[0]).sort(compareUrlDepth);
+
+      orderedRoutes.forEach(route => {
         this._add(route, args[0][route]);
-      }
+      });
     } else if (typeof args[0] === 'function') {
       this._defaultHandler = args[0];
     }
