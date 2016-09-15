@@ -72,7 +72,7 @@ router
   .resolve();
 ```
 
-* Have in mind that the oder of the added routes using this method [does not](https://github.com/krasimir/navigo/pull/39) matter anymore. However, if we add series of routes by calling `on` multiple times we should consider the order of the calls.
+* Have in mind that the order of the added routes using this method [does not](https://github.com/krasimir/navigo/pull/39) matter anymore. However, if we add series of routes by calling `on` multiple times we should consider the order of the calls.
 
 ### Parameterized URLs:
 
