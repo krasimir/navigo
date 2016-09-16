@@ -110,6 +110,7 @@ describe('Given an instance of Navigo', function () {
           expect(action).to.be.equal('save');
           done();
         };
+
         router.on(/users\/(\d+)\/(\w+)\/?/, handler);
         router.resolve('site.com/app/users/42/save');
       });
@@ -118,6 +119,7 @@ describe('Given an instance of Navigo', function () {
     describe('and when we use the destroy method', function () {
       it('should not be able to resolve a route', function () {
         var handler = sinon.spy();
+
         router.on('/users', handler);
         router.resolve('site.com/app/users');
         router.destroy();
@@ -245,7 +247,7 @@ describe('Given an instance of Navigo', function () {
 
         expect(handler)
           .to.be.calledOnce
-          .and.to.be.calledWith({ productId: '42' })
+          .and.to.be.calledWith({ productId: '42' });
       });
     });
   });
@@ -268,6 +270,27 @@ describe('Given an instance of Navigo', function () {
       expect(normalRoute).to.be.calledOnce;
       expect(notFoundRoute).to.be.calledOnce;
       expect(defaultRoute).to.be.calledOnce;
+    });
+  });
+
+  describe('Given the issue #41 case', function () {
+    it('should resolve routes properly', function () {
+      var taskRoute = sinon.spy();
+      var defaultRoute = sinon.spy();
+
+      router = new Navigo('http://site.com/', true);
+      router.on('/task/:taskId/', taskRoute);
+      router.on(defaultRoute);
+
+      router.resolve('/task/frontend-1');
+      router.resolve('/');
+      router.resolve('/task/frontend-1');
+
+      expect(defaultRoute).to.be.calledOnce;
+      expect(taskRoute).to.be.calledTwice;
+      expect(taskRoute.firstCall).to.be.calledWith({ taskId: 'frontend-1' });
+      expect(taskRoute.secondCall).to.be.calledWith({ taskId: 'frontend-1' });
+
     });
   });
 
