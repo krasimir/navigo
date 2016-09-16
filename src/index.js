@@ -161,6 +161,7 @@ Navigo.prototype = {
         handler(m.params);
       return m;
     } else if (this._defaultHandler && (url === '' || url === '/')) {
+      this._lastRouteResolved = url;
       this._defaultHandler();
       return true;
     } else if (this._notFoundHandler) {
