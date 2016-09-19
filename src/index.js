@@ -2,7 +2,7 @@ const PARAMETER_REGEXP = /([:*])(\w+)/g;
 const WILDCARD_REGEXP = /\*/g;
 const REPLACE_VARIABLE_REGEXP = '([^\/]+)';
 const REPLACE_WILDCARD = '(?:.*)';
-const FOLLOWED_BY_SLASH_REGEXP = '(?:\/|$)';
+const FOLLOWED_BY_SLASH_REGEXP = '(?:\/$|$)';
 
 function clean(s) {
   if (s instanceof RegExp) return s;

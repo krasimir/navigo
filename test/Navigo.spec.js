@@ -92,15 +92,6 @@ describe('Given an instance of Navigo', function () {
         router.resolve('site.com/app/user/42/edit');
         expect(handler).to.be.calledWith({ id: '42', action: 'edit' });
       });
-      describe('and there are more stuff in the url after that', function () {
-        it('should call the handler by passing the parameters', function () {
-          handler = sinon.spy();
-          router.on({ '/user/:id/:action': handler });
-          router.resolve('site.com/app/user/42/edit/something/else');
-          expect(handler).to.be.called;
-          expect(handler).to.be.calledWith({ id: '42', action: 'edit' });
-        });
-      });
     });
 
     describe('and when we pass a regular expression as a pattern', function () {
@@ -187,7 +178,7 @@ describe('Given an instance of Navigo', function () {
         var handler = sinon.spy();
 
         router = new Navigo('http://site.com/my/app/path', true);
-        router._cLoc = sinon.stub().returns('http://site.com/my/app/path/something/else');
+        router._cLoc = sinon.stub().returns('http://site.com/my/app/path/something');
         router.on(':slug', handler).resolve();
         expect(handler).to.be.calledWith({ slug: 'something' });
       });
