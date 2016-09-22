@@ -9,47 +9,47 @@ const routes = (...args) => args.map(r => {
   return { route: r };
 });
 const rootTestCases = [
-  { 
+  {
     source: 'http://site.com', routes: routes(),
     expected: 'http://site.com'
   },
-  { 
+  {
     source: 'https://site.com', routes: routes(),
     expected: 'https://site.com'
   },
-  { 
+  {
     source: 'http://site.com/a/b', routes: routes(),
     expected: 'http://site.com/a/b'
   },
-  { 
+  {
     source: 'http://site.com/a/b/', routes: routes(),
     expected: 'http://site.com/a/b'
   },
-  { 
+  {
     source: 'http://site.com/a/b/', routes: routes('/b'),
     expected: 'http://site.com/a'
   },
-  { 
+  {
     source: 'http://site.com/a/b/', routes: routes('/b', '/a/b/'),
     expected: 'http://site.com'
   },
-  { 
+  {
     source: 'http://site.com/a/b/', routes: routes('/a/b/', '/b', '/c'),
     expected: 'http://site.com'
   },
-  { 
+  {
     source: 'http://site.com/a/b/', routes: routes('/d/', '/a/b/', '/b', '/c'),
     expected: 'http://site.com'
   },
-  { 
+  {
     source: 'http://site.com/something/else/brother/blah', routes: routes('/d/', '/a/b/', '/b', '/c'),
     expected: 'http://site.com/something/else/brother/blah'
   },
-  { 
+  {
     source: 'http://site.com/something/else', routes: routes(''),
     expected: 'http://site.com/something/else'
   },
-  { 
+  {
     source: 'http://site.com/something/else', routes: routes('*'),
     expected: 'http://site.com/something/else'
   }
@@ -84,14 +84,13 @@ describe('Given the helper methods', function () {
     it('should match multiple parameters', function () {
       expect(match('http://site.com/app/users/42/save', routes('/users/:id/:action')).params).to.be.deep.equal({ id: '42', action: 'save' });
     });
-    it('should match multiple parameters even if there are more parts of the url after that', function () {
-      expect(match(
-        'http://site.com/app/users/42/save/something/else',
-        routes('/users/:id/:action')).params
-      ).to.be.deep.equal({ id: '42', action: 'save' });
-    });
     it('should deal properly with multiple finds of same pattern', function () {
       expect(match('http://site.com/a/b/c/d', routes('/c')).match.index).to.be.equal(19);
+    });
+    it('should not greedily match extra parameters at the end of a url if not terminated by a wildcard', function () {
+      expect(match('/app/users/', routes('/app'))).to.be.false;
+      expect(match('/app/users/42/save/something/else', routes('/app/users/:id/:action'))).to.be.false;
+      expect(match('/app/something/users/blah', routes('/app/*/users'))).to.be.false;
     });
     it('should match if there is a wildcard used', function () {
       expect(match('/app/users/', routes('app/*'))).to.not.be.false;
@@ -107,7 +106,7 @@ describe('Given the helper methods', function () {
         source: ${testCase.source}
         routes: ${testCase.routes.map(r => r.route).join(', ')}`, function () {
          expect(root(testCase.source, testCase.routes)).to.be.equal(testCase.expected);
-      });  
-    });    
+      });
+    });
   });
 });
