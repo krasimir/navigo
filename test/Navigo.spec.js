@@ -264,7 +264,7 @@ describe('Given an instance of Navigo', function () {
     });
   });
 
-  describe('Given the issue #41 case', function () {
+  describe('Given the problem described in issue #41', function () {
     it('should resolve routes properly', function () {
       var taskRoute = sinon.spy();
       var defaultRoute = sinon.spy();
@@ -281,6 +281,22 @@ describe('Given an instance of Navigo', function () {
       expect(taskRoute).to.be.calledTwice;
       expect(taskRoute.firstCall).to.be.calledWith({ taskId: 'frontend-1' });
       expect(taskRoute.secondCall).to.be.calledWith({ taskId: 'frontend-1' });
+
+    });
+  });
+
+  describe('Given the problem described in issue #47', function () {
+    it('should resolve routes properly', function () {
+      var taskRoute = sinon.spy();
+
+      router = new Navigo('http://site.com/', true);
+      router.on('/foo/:foo/bar/:bar', taskRoute);
+
+      router.resolve('/foo/4/bar/5?a=c');
+
+      expect(taskRoute)
+        .to.be.calledOnce
+        .and.to.be.calledWith({ foo: '4', bar: '5' });
 
     });
   });

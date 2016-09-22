@@ -92,6 +92,10 @@ function isPushStateAvailable() {
   );
 }
 
+function removeGETParams(url) {
+  return url.replace(/\?(.*)?$/, '');
+}
+
 function Navigo(r, useHash) {
   this._routes = [];
   this.root = useHash && r ? r.replace(/\/$/, '/#') : (r || null);
@@ -151,6 +155,7 @@ Navigo.prototype = {
     if (this._useHash) {
       url = url.replace(/^\/#/, '/');
     }
+    url = removeGETParams(url);
     m = match(url, this._routes);
 
     if (m) {
