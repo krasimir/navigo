@@ -1,6 +1,6 @@
 {
   "name": "navigo",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "description": "A simple vanilla JavaScript router with a fallback for older browsers",
   "main": "lib/navigo.js",
   "jsnext:main": "src/index.js",
@@ -24,8 +24,7 @@
   "scripts": {
     "dev": "WEBPACK_ENV=dev ./node_modules/.bin/webpack --progress --colors --watch",
     "build": "WEBPACK_ENV=build ./node_modules/.bin/webpack",
-    "test": "mocha --compilers js:babel-core/register --colors -w ./test/*.spec.js",
-    "release": "./node_modules/.bin/webpack --progress --colors && npm run build && npm publish"
+    "test": "mocha --compilers js:babel-core/register --colors -w ./test/*.spec.js"
   },
   "devDependencies": {
     "babel": "6.3.26",

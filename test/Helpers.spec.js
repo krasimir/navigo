@@ -59,10 +59,10 @@ describe('Given the helper methods', function () {
 
   describe('when we use `clear` method', function () {
     it('should remove forward slashes', function () {
-      expect(clean('/test/something/')).to.be.equal('/test/something')
+      expect(clean('/test/something/')).to.be.equal('/test/something');
     });
     it('should remove multiple forward slashes', function () {
-      expect(clean('///test/something///')).to.be.equal('/test/something')
+      expect(clean('///test/something///')).to.be.equal('/test/something');
     });
     it('should leave the regular expression untouched', function () {
       expect(clean(/(\d)/).toString()).to.be.equal(/(\d)/.toString());
@@ -82,10 +82,11 @@ describe('Given the helper methods', function () {
       expect(match('http://site.com/app/users/42', routes('/users/:id')).params).to.be.deep.equal({ id: '42' });
     });
     it('should match multiple parameters', function () {
-      expect(match('http://site.com/app/users/42/save', routes('/users/:id/:action')).params).to.be.deep.equal({ id: '42', action: 'save' });
+      expect(match('http://site.com/app/users/42/save', routes('/users/:id/:action')).params)
+        .to.be.deep.equal({ id: '42', action: 'save' });
     });
     it('should deal properly with multiple finds of same pattern', function () {
-      expect(match('http://site.com/a/b/c/d', routes('/c')).match.index).to.be.equal(19);
+      expect(match('http://site.com/a/b/c/', routes('/c')).match.index).to.be.equal(19);
     });
     it('should not greedily match extra parameters at the end of a url if not terminated by a wildcard', function () {
       expect(match('/app/users/', routes('/app'))).to.be.false;
@@ -105,7 +106,7 @@ describe('Given the helper methods', function () {
       (testCase.only ? it.only : it)(`should get the root as ${testCase.expected} if we sent
         source: ${testCase.source}
         routes: ${testCase.routes.map(r => r.route).join(', ')}`, function () {
-         expect(root(testCase.source, testCase.routes)).to.be.equal(testCase.expected);
+        expect(root(testCase.source, testCase.routes)).to.be.equal(testCase.expected);
       });
     });
   });
