@@ -301,4 +301,82 @@ describe('Given an instance of Navigo', function () {
     });
   });
 
+  describe('when we use hooks', function () {
+    describe('and we provide both before and after hooks', function () {
+      it('should call before and after hooks + the handler', function () {
+        var beforeHook = sinon.stub();
+        var handler = sinon.spy();
+        var afterHook = sinon.spy();
+
+        router = new Navigo('http://site.com/', true);
+        router.on('/something', handler, { before: beforeHook, after: afterHook });
+        router.resolve('/something');
+
+        expect(beforeHook).to.be.calledOnce;
+        beforeHook.callArg(0);
+        expect(handler).to.be.calledOnce;
+        expect(afterHook).to.be.calledOnce;
+      });
+    });
+    describe('and we provide only before hook', function () {
+      it('should call before hook + the handler', function () {
+        var beforeHook = sinon.stub();
+        var handler = sinon.spy();
+
+        router = new Navigo('http://site.com/', true);
+        router.on('/something', handler, { before: beforeHook });
+        router.resolve('/something');
+
+        expect(beforeHook).to.be.calledOnce;
+        beforeHook.callArg(0);
+        expect(handler).to.be.calledOnce;
+      });
+    });
+    describe('and we provide only after hook', function () {
+      it('should call after hook + the handler', function () {
+        var afterHook = sinon.spy();
+        var handler = sinon.spy();
+
+        router = new Navigo('http://site.com/', true);
+        router.on('/something', handler, { after: afterHook });
+        router.resolve('/something');
+
+        expect(handler).to.be.calledOnce;
+        expect(afterHook).to.be.calledOnce;
+      });
+    });
+    describe('and we set hooks for the root/main route', function () {
+      it('should call before and after hooks + the handler', function () {
+        var beforeHook = sinon.stub();
+        var handler = sinon.spy();
+        var afterHook = sinon.spy();
+
+        router = new Navigo('http://site.com/', true);
+        router.on(handler, { before: beforeHook, after: afterHook });
+        router.resolve('/');
+
+        expect(beforeHook).to.be.calledOnce;
+        beforeHook.callArg(0);
+        expect(handler).to.be.calledOnce;
+        expect(afterHook).to.be.calledOnce;
+      });
+    });
+    describe('and we set hooks for the not-found route', function () {
+      it('should call before and after hooks + the handler', function () {
+        var beforeHook = sinon.stub();
+        var handler = sinon.spy();
+        var afterHook = sinon.spy();
+
+        router = new Navigo('http://site.com/', true);
+        router.notFound(handler, { before: beforeHook, after: afterHook });
+        router.resolve('/blah');
+
+        expect(beforeHook).to.be.calledOnce;
+        beforeHook.callArg(0);
+        expect(handler).to.be.calledOnce;
+        expect(afterHook).to.be.calledOnce;
+      });
+    });
+  });
+
 });

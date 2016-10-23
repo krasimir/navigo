@@ -190,6 +190,42 @@ r.pause(false);
 
 The route will be changed to `/en/products` but if you have a handler for that path will not be executed.
 
+### Hooks
+
+There is an API that allows you to run functions before firing a route handler. The `hooks` object is in the format of:
+
+```
+{
+  before: function (done) { ... done(); }
+  after: function () { ... }
+}
+```
+
+You may specify only one (or both) hooks. The `before` hook accepts a function which you *must* invoke once you finish your job. Here is an examples:
+
+```
+router.on(
+  '/user/edit',
+  function () {
+    // show user edit page
+  },
+  {
+    before: function (done) {
+      // doing some async operation
+      done();
+    },
+    after: function () {
+      console.log('Data saved.');
+    }
+  }
+);
+```
+
+You may provide hooks in two other cases:
+
+* While specifying a main/root handler `router.on(function() { ... }, hooks)`
+* While specifying a not-found page handler `router.notFound(function() { ... }, hooks)`
+
 ## API
 
 * `router.on(function)` - adding handler for root/main route

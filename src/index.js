@@ -96,6 +96,22 @@ function removeGETParams(url) {
   return url.replace(/\?(.*)?$/, '');
 }
 
+function manageHooks(handler, route) {
+  if (route && route.hooks && typeof route.hooks === 'object') {
+    if (route.hooks.before) {
+      route.hooks.before(() => {
+        handler();
+        route.hooks.after && route.hooks.after();
+      });
+    } else if (route.hooks.after) {
+      handler();
+      route.hooks.after && route.hooks.after();
+    }
+    return;
+  }
+  handler();
+};
+
 function Navigo(r, useHash) {
   this._routes = [];
   this.root = useHash && r ? r.replace(/\/$/, '/#') : (r || null);
@@ -131,21 +147,21 @@ Navigo.prototype = {
     return this;
   },
   on: function (...args) {
-    if (args.length >= 2) {
-      this._add(args[0], args[1]);
+    if (typeof args[0] === 'function') {
+      this._defaultHandler = { handler: args[0], hooks: args[1] };
+    } else if (args.length >= 2) {
+      this._add(args[0], args[1], args[2]);
     } else if (typeof args[0] === 'object') {
       let orderedRoutes = Object.keys(args[0]).sort(compareUrlDepth);
 
       orderedRoutes.forEach(route => {
         this._add(route, args[0][route]);
       });
-    } else if (typeof args[0] === 'function') {
-      this._defaultHandler = args[0];
     }
     return this;
   },
-  notFound: function (handler) {
-    this._notFoundHandler = handler;
+  notFound: function (handler, hooks) {
+    this._notFoundHandler = { handler, hooks: hooks };
   },
   resolve: function (current) {
     var handler, m;
@@ -161,16 +177,22 @@ Navigo.prototype = {
     if (m) {
       this._lastRouteResolved = url;
       handler = m.route.handler;
-      m.route.route instanceof RegExp ?
-        handler(...(m.match.slice(1, m.match.length))) :
-        handler(m.params);
+      manageHooks(() => {
+        m.route.route instanceof RegExp ?
+          handler(...(m.match.slice(1, m.match.length))) :
+          handler(m.params);
+      }, m.route);
       return m;
     } else if (this._defaultHandler && (url === '' || url === '/')) {
-      this._lastRouteResolved = url;
-      this._defaultHandler();
+      manageHooks(() => {
+        this._lastRouteResolved = url;
+        this._defaultHandler.handler();
+      }, this._defaultHandler);
       return true;
     } else if (this._notFoundHandler) {
-      this._notFoundHandler();
+      manageHooks(() => {
+        this._notFoundHandler.handler();
+      }, this._notFoundHandler);
     }
     return false;
   },
@@ -223,11 +245,11 @@ Navigo.prototype = {
       this.destroy();
     }
   },
-  _add: function (route, handler = null) {
+  _add: function (route, handler = null, hooks = null) {
     if (typeof handler === 'object') {
-      this._routes.push({ route, handler: handler.uses, name: handler.as });
+      this._routes.push({ route, handler: handler.uses, name: handler.as, hooks: hooks });
     } else {
-      this._routes.push({ route, handler });
+      this._routes.push({ route, handler, hooks: hooks });
     }
     return this._add;
   },
