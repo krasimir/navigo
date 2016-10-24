@@ -379,4 +379,47 @@ describe('Given an instance of Navigo', function () {
     });
   });
 
+  describe('when the url contains GET parameters', function () {
+    it('should pass the GET parameters to the matched route', function () {
+      var taskRoute = sinon.spy();
+
+      router = new Navigo('http://site.com/', true);
+      router.on('/task/:taskId/', taskRoute);
+
+      router.resolve('/task/navigo?p1=10&p2=20');
+
+      expect(taskRoute)
+        .to.be.calledOnce
+        .and.to.be.calledWith({ taskId: 'navigo' }, 'p1=10&p2=20');
+    });
+    describe('and we match the default URL', function () {
+      it('should pass the GET parameters to the matched route', function () {
+        var handler = sinon.spy();
+
+        router = new Navigo('http://site.com/', true);
+        router.on(handler);
+
+        router.resolve('?p1=10&p2=20');
+
+        expect(handler)
+          .to.be.calledOnce
+          .and.to.be.calledWith('p1=10&p2=20');
+      });
+    });
+    describe('and we match the not-found page', function () {
+      it('should pass the GET parameters to the matched route', function () {
+        var handler = sinon.spy();
+
+        router = new Navigo('http://site.com/', true);
+        router.notFound(handler);
+
+        router.resolve('/not/found/path?p1=10&p2=30');
+
+        expect(handler)
+          .to.be.calledOnce
+          .and.to.be.calledWith('p1=10&p2=30');
+      });
+    });
+  });
+
 });

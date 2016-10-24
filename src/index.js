@@ -92,8 +92,10 @@ function isPushStateAvailable() {
   );
 }
 
-function removeGETParams(url) {
-  return url.replace(/\?(.*)?$/, '');
+function extractGETParameters(url) {
+  var [ onlyURL, ...query ] = url.split(/\?(.*)?$/);
+
+  return { onlyURL, GETParameters: query.join('') };
 }
 
 function manageHooks(handler, route) {
@@ -171,27 +173,29 @@ Navigo.prototype = {
     if (this._useHash) {
       url = url.replace(/^\/#/, '/');
     }
-    url = removeGETParams(url);
-    m = match(url, this._routes);
+
+    let { onlyURL, GETParameters } = extractGETParameters(url);
+
+    m = match(onlyURL, this._routes);
 
     if (m) {
-      this._lastRouteResolved = url;
+      this._lastRouteResolved = onlyURL;
       handler = m.route.handler;
       manageHooks(() => {
         m.route.route instanceof RegExp ?
           handler(...(m.match.slice(1, m.match.length))) :
-          handler(m.params);
+          handler(m.params, GETParameters);
       }, m.route);
       return m;
-    } else if (this._defaultHandler && (url === '' || url === '/')) {
+    } else if (this._defaultHandler && (onlyURL === '' || onlyURL === '/')) {
       manageHooks(() => {
-        this._lastRouteResolved = url;
-        this._defaultHandler.handler();
+        this._lastRouteResolved = onlyURL;
+        this._defaultHandler.handler(GETParameters);
       }, this._defaultHandler);
       return true;
     } else if (this._notFoundHandler) {
       manageHooks(() => {
-        this._notFoundHandler.handler();
+        this._notFoundHandler.handler(GETParameters);
       }, this._notFoundHandler);
     }
     return false;

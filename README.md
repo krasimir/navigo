@@ -86,6 +86,28 @@ router
   .resolve();
 ```
 
+### Accessing GET parameters
+
+Every handler receives the GET parameters passed to the page.
+
+```js
+router
+  .on('/user/:id/:action', function (params, query) {
+    // If we have http://site.com/user/42/save?answer=42 as a url then
+    // params.id = 42
+    // params.action = save
+    // query = answer=42
+  })
+  .resolve();
+```
+
+In the case of the default handler and `notFound` handler the function receives only `query` as parameter. For example:
+```js
+router.notFound(function (query) {
+  // ...
+});
+```
+
 ### Using regular expression
 
 ```js
