@@ -169,17 +169,24 @@ Navigo.prototype = {
     var handler, m;
     var url = (current || this._cLoc()).replace(this._getRoot(), '');
 
-    if (this._paused || url === this._lastRouteResolved) return false;
     if (this._useHash) {
       url = url.replace(/^\/#/, '/');
     }
-
     let { onlyURL, GETParameters } = extractGETParameters(url);
+
+    if (
+      this._paused ||
+      (
+        this._lastRouteResolved &&
+        onlyURL === this._lastRouteResolved.url &&
+        GETParameters === this._lastRouteResolved.query
+      )
+    ) { return false; }
 
     m = match(onlyURL, this._routes);
 
     if (m) {
-      this._lastRouteResolved = onlyURL;
+      this._lastRouteResolved = { url: onlyURL, query: GETParameters };
       handler = m.route.handler;
       manageHooks(() => {
         m.route.route instanceof RegExp ?
@@ -189,7 +196,7 @@ Navigo.prototype = {
       return m;
     } else if (this._defaultHandler && (onlyURL === '' || onlyURL === '/')) {
       manageHooks(() => {
-        this._lastRouteResolved = onlyURL;
+        this._lastRouteResolved = { url: onlyURL, query: GETParameters };
         this._defaultHandler.handler(GETParameters);
       }, this._defaultHandler);
       return true;

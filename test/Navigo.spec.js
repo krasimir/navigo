@@ -422,4 +422,18 @@ describe('Given an instance of Navigo', function () {
     });
   });
 
+  describe('when the query string of the URL changes', function () {
+    it('should trigger a new resolving', function () {
+      var handler = sinon.spy();
+
+      router = new Navigo('http://site.com/', true);
+      router.on('/something/else', handler);
+
+      router.resolve('/something/else?p1=10&p2=30');
+      router.resolve('/something/else?p1=20&p2=40');
+
+      expect(handler).to.be.calledTwice;
+    });
+  });
+
 });
