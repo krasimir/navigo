@@ -4,8 +4,6 @@ A simple minimalistic JavaScript router with a fallback for older browsers.
 
 ---
 
-[Demo and official page](http://work.krasimirtsonev.com/git/navigo/download)
-
 ## Installation
 
 Via npm with `npm install navigo` or drop `lib/navigo.min.js` into your page.
