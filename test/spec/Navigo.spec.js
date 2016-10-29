@@ -5,7 +5,7 @@ import sinonChai from 'sinon-chai';
 // Notice that we are importing a lib file here.
 // Consider using:
 // import Navigo from '../src/';
-import Navigo from '../lib/navigo';
+import Navigo from '../../lib/navigo';
 
 var router, handler;
 
