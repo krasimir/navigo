@@ -92,6 +92,13 @@ function isPushStateAvailable() {
   );
 }
 
+function isHashChangeAPIAvailable() {
+  return !!(
+    typeof window !== 'undefined' &&
+    'onhashchange' in window
+  );
+}
+
 function extractGETParameters(url) {
   var [ onlyURL, ...query ] = url.split(/\?(.*)?$/);
 
@@ -123,7 +130,7 @@ function Navigo(r, useHash) {
   this._lastRouteResolved = null;
   this._notFoundHandler = null;
   this._defaultHandler = null;
-  this._ok = !useHash && isPushStateAvailable();
+  this._usePushState = !useHash && isPushStateAvailable();
   this._listen();
   this.updatePageLinks();
 }
@@ -138,7 +145,7 @@ Navigo.prototype = {
     var to;
 
     path = path || '';
-    if (this._ok) {
+    if (this._usePushState) {
       to = (!absolute ? this._getRoot() + '/' : '') + clean(path);
       to = to.replace(/([^:])(\/{2,})/g, '$1/');
       history[this._paused ? 'replaceState' : 'pushState']({}, '', to);
@@ -270,8 +277,12 @@ Navigo.prototype = {
     return this.root;
   },
   _listen: function () {
-    if (this._ok) {
+    if (this._usePushState) {
       window.onpopstate = () => {
+        this.resolve();
+      };
+    } else if (isHashChangeAPIAvailable()) {
+      window.onhashchange = () => {
         this.resolve();
       };
     } else {

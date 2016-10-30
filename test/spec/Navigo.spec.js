@@ -1,18 +1,6 @@
-import chai from 'chai';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
-
-// Notice that we are importing a lib file here.
-// Consider using:
-// import Navigo from '../src/';
 import Navigo from '../../lib/navigo';
 
 var router, handler;
-
-chai.expect();
-chai.use(sinonChai);
-
-const expect = chai.expect;
 
 describe('Given an instance of Navigo', function () {
 

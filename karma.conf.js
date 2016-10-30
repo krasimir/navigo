@@ -1,3 +1,10 @@
+var getBrowser = function () {
+  if (process.argv[2]) {
+    return process.argv[2].replace('--browser=', '');
+  }
+  return 'PhantomJS';
+};
+
 module.exports = function (config) {
   config.set({
     basePath: '.',
@@ -17,7 +24,7 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_ERROR,
     autoWatch: true,
-    browsers: ['Chrome'], // Chrome, PhantomJS
+    browsers: [ getBrowser() ], // Chrome, PhantomJS, Firefox
     singleRun: false,
     client: {
       captureConsole: true
