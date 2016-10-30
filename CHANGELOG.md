@@ -1,3 +1,7 @@
+## 3.3.1
+
+* Fixing #56 - When a `/` is given as a path it is considered as a default route handler.
+
 ## 3.3.0
 
 * Start using [`onhaschange`](https://developer.mozilla.org/en/docs/Web/API/WindowEventHandlers/onhashchange) API as a default for hash based routing.

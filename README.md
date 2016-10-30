@@ -265,6 +265,8 @@ You may provide hooks in two other cases:
 ```
 npm i
 npm test
+// or npm run test-chrome
+// or npm run test-firefox
 ```
 
 ## Inspiration

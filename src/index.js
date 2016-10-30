@@ -159,7 +159,11 @@ Navigo.prototype = {
     if (typeof args[0] === 'function') {
       this._defaultHandler = { handler: args[0], hooks: args[1] };
     } else if (args.length >= 2) {
-      this._add(args[0], args[1], args[2]);
+      if (args[0] === '/') {
+        this._defaultHandler = { handler: args[1], hooks: args[2] };
+      } else {
+        this._add(args[0], args[1], args[2]);
+      }
     } else if (typeof args[0] === 'object') {
       let orderedRoutes = Object.keys(args[0]).sort(compareUrlDepth);
 
@@ -171,6 +175,7 @@ Navigo.prototype = {
   },
   notFound: function (handler, hooks) {
     this._notFoundHandler = { handler, hooks: hooks };
+    return this;
   },
   resolve: function (current) {
     var handler, m;
