@@ -214,6 +214,7 @@ Navigo.prototype = {
       return true;
     } else if (this._notFoundHandler) {
       manageHooks(() => {
+        this._lastRouteResolved = { url: onlyURL, query: GETParameters };
         this._notFoundHandler.handler(GETParameters);
       }, this._notFoundHandler);
     }

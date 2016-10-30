@@ -39,10 +39,10 @@ describe('Given the Navigo library on the page', function () {
       var defaultHandler = sinon.spy();
 
       router
-      .notFound(notFoundHandler)
-      .on('modify', modifyHandler)
-      .on('modify/:name', modifyHandler)
-      .on('/', defaultHandler);
+        .notFound(notFoundHandler)
+        .on('modify', modifyHandler)
+        .on('modify/:name', modifyHandler)
+        .on('/', defaultHandler);
       router.resolve('/v1/a/b/c');
       router.resolve('/v1/modify');
       router.resolve('/v1/modify/test');
@@ -50,6 +50,26 @@ describe('Given the Navigo library on the page', function () {
       expect(defaultHandler).to.not.be.called;
       expect(notFoundHandler).to.be.called;
       expect(modifyHandler).to.be.calledTwice;
+    });
+  });
+  describe('and the problem described in issue #57', function () {
+    it('should not resolve any handler', function () {
+      var router = new Navigo('/', false);
+      var defaultHandler = sinon.spy();
+      var handler = sinon.spy();
+      var notFoundHandler = sinon.spy();
+
+      router
+        .on('something', handler)
+        .on(defaultHandler)
+        .notFound(notFoundHandler);
+
+      window.location.hash = 'tab1';
+      router.resolve();
+
+      expect(notFoundHandler).to.be.calledOnce;
+      expect(defaultHandler).to.not.be.calledOnce;
+      expect(handler).to.not.be.calledOnce;
     });
   });
 });
