@@ -108,7 +108,8 @@ function extractGETParameters(url) {
 function manageHooks(handler, route) {
   if (route && route.hooks && typeof route.hooks === 'object') {
     if (route.hooks.before) {
-      route.hooks.before(() => {
+      route.hooks.before((shouldRoute = true) => {
+        if (!shouldRoute) return;
         handler();
         route.hooks.after && route.hooks.after();
       });

@@ -319,6 +319,19 @@ describe('Given an instance of Navigo', function () {
         beforeHook.callArg(0);
         expect(handler).to.be.calledOnce;
       });
+      it('should not call the handler if the before hook returns false', function() {
+        var beforeHook = sinon.spy(function(cb) {
+          cb(false)
+        });
+        var handler = sinon.spy();
+
+        router = new Navigo('http://site.com/', true);
+        router.on('/something', handler, { before: beforeHook });
+        router.resolve('/something');
+
+        expect(beforeHook).to.be.calledOnce;
+        expect(handler).to.not.be.called;
+      })
     });
     describe('and we provide only after hook', function () {
       it('should call after hook + the handler', function () {

@@ -241,6 +241,26 @@ router.on(
 );
 ```
 
+You may prevent the handler to be resolved in the `before` hook by invoking `done(false)`:
+
+```
+router.on(
+  '/user/edit',
+  function () {
+    // show user edit page
+  },
+  {
+    before: function (done) {
+      if(!user.loggedIn) {
+        done(false);
+      } else {
+        done()
+      }
+    }
+  }
+);
+```
+
 You may provide hooks in two other cases:
 
 * While specifying a main/root handler `router.on(function() { ... }, hooks)`
