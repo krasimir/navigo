@@ -99,9 +99,12 @@ function isHashChangeAPIAvailable() {
   );
 }
 
-function extractGETParameters(url) {
+function extractGETParameters(url, useHash) {
   var [ onlyURL, ...query ] = url.split(/\?(.*)?$/);
 
+  if (!useHash) {
+    onlyURL = onlyURL.split('#')[0];
+  }
   return { onlyURL, GETParameters: query.join('') };
 }
 
@@ -184,7 +187,7 @@ Navigo.prototype = {
     if (this._useHash) {
       url = url.replace(/^\/#/, '/');
     }
-    let { onlyURL, GETParameters } = extractGETParameters(url);
+    let { onlyURL, GETParameters } = extractGETParameters(url, this._useHash);
 
     if (
       this._paused ||

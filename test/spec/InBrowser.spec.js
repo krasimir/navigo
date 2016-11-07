@@ -66,10 +66,12 @@ describe('Given the Navigo library on the page', function () {
 
       window.location.hash = 'tab1';
       router.resolve();
+      window.location.hash = 'tab2';
+      router.resolve();
 
       expect(notFoundHandler).to.be.calledOnce;
       expect(defaultHandler).to.not.be.calledOnce;
-      expect(handler).to.not.be.calledOnce;
+      expect(handler).to.not.be.called;
     });
   });
 });
