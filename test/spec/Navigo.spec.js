@@ -228,6 +228,29 @@ describe('Given an instance of Navigo', function () {
           .to.be.calledOnce
           .and.to.be.calledWith({ productId: '42' });
       });
+      it('should allow adding hooks', function () {
+        var handler = sinon.spy();
+        var before = sinon.spy();
+        var after = sinon.spy();
+
+        router = new Navigo('http://site.com/', false);
+        router.on({
+          'products': { as: 'products', uses: handler },
+          'products/:productId': {
+            as: 'products.id',
+            uses: handler,
+            hooks: { before, after }
+          }
+        });
+        router.resolve('products/42');
+
+        expect(before).to.be.calledOnce;
+        before.callArg(0);
+        expect(handler)
+          .to.be.calledOnce
+          .and.to.be.calledWith({ productId: '42' });
+        expect(after).to.be.calledOnce;
+      });
     });
   });
 

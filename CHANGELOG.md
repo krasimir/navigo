@@ -1,3 +1,7 @@
+## 3.4.1
+
+* Support of hooks in named routes. ([#60](https://github.com/krasimir/navigo/issues/60))
+
 ## 3.4.0
 
 * Merging [#58](https://github.com/krasimir/navigo/pull/58) where we can prevent the handler calling from a before hook.

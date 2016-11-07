@@ -188,6 +188,7 @@ Navigo.prototype = {
     if (this._useHash) {
       url = url.replace(/^\/#/, '/');
     }
+
     let { onlyURL, GETParameters } = extractGETParameters(url, this._useHash);
 
     if (
@@ -275,7 +276,12 @@ Navigo.prototype = {
   },
   _add: function (route, handler = null, hooks = null) {
     if (typeof handler === 'object') {
-      this._routes.push({ route, handler: handler.uses, name: handler.as, hooks: hooks });
+      this._routes.push({
+        route,
+        handler: handler.uses,
+        name: handler.as,
+        hooks: hooks || handler.hooks
+      });
     } else {
       this._routes.push({ route, handler, hooks: hooks });
     }
