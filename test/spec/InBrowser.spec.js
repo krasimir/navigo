@@ -74,4 +74,13 @@ describe('Given the Navigo library on the page', function () {
       expect(handler).to.not.be.called;
     });
   });
+  describe('and the problem described in issue #63', function () {
+    it('should keep the trailing slash at the end', function () {
+      var router = new Navigo();
+
+      router.navigate('/something/else/');
+
+      expect(window.location.href).to.match(/\/something\/else\//);
+    });
+  });
 });

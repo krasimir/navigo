@@ -1,3 +1,7 @@
+## 3.4.2
+
+* Fixing [#63](https://github.com/krasimir/navigo/issues/63/).
+
 ## 3.4.1
 
 * Support of hooks in named routes. ([#60](https://github.com/krasimir/navigo/issues/60))

@@ -150,7 +150,7 @@ Navigo.prototype = {
 
     path = path || '';
     if (this._usePushState) {
-      to = (!absolute ? this._getRoot() + '/' : '') + clean(path);
+      to = (!absolute ? this._getRoot() + '/' : '') + path.replace(/^\/+/, '/');
       to = to.replace(/([^:])(\/{2,})/g, '$1/');
       history[this._paused ? 'replaceState' : 'pushState']({}, '', to);
       this.resolve();
@@ -317,7 +317,7 @@ Navigo.prototype = {
   },
   _cLoc: function () {
     if (typeof window !== 'undefined') {
-      return window.location.href;
+      return clean(window.location.href);
     }
     return '';
   },
