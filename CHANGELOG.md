@@ -1,3 +1,7 @@
+## 3.5.0
+
+* Adding a `resume` method which is same as `.pause(false)`. `.pause` now acts as `.pause(true)` by default.
+
 ## 3.4.2
 
 * Fixing [#63](https://github.com/krasimir/navigo/issues/63/).

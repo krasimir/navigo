@@ -31,6 +31,23 @@ describe('Given the Navigo library on the page', function () {
       expect(handler).to.be.calledOnce;
     });
   });
+  describe('when using the pause and resume method', function () {
+    it('should NOT fire a handler', function () {
+      router = new Navigo('/', false);
+
+      let handler = sinon.spy();
+
+      router.pause();
+      router.on('page', handler);
+
+      history.pushState({}, '', 'page');
+      router.resolve();
+      router.resume();
+      router.resolve();
+
+      expect(handler).to.be.calledOnce;
+    });
+  });
   describe('and the problem described in issue #56', function () {
     it('should resolve the notFound handler', function () {
       var router = new Navigo('/v1');

@@ -266,8 +266,11 @@ Navigo.prototype = {
   link: function (path) {
     return this._getRoot() + path;
   },
-  pause: function (status) {
+  pause: function (status = true) {
     this._paused = status;
+  },
+  resume: function () {
+    this.pause(false);
   },
   disableIfAPINotAvailable: function () {
     if (!isPushStateAvailable()) {
