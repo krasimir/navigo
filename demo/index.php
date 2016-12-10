@@ -13,21 +13,11 @@
   <link rel="stylesheet" type="text/css" href="<?php echo $root; ?>styles.css" />
 
   <script type="text/content" id="content-about">
-    <p class="big center u-mb">
-      Lightweight JavaScript router<br />
-      <small>It does only one thing -<br />it maps a URL to a function.<br />That&#39;s it!</small>
+    <p>Navigo at GitHub:
+      <a href="https://github.com/krasimir/navigo" target="_blank">
+        https://github.com/krasimir/navigo
+      </a>
     </p>
-    <p>
-      <ul>
-        <li>Small file size (~3KB minified)</li>
-        <li>No dependencies.</li>
-        <li>Uses <a href="https://developer.mozilla.org/en-US/docs/Web/API/History_API" target="_blank">History API</a></li>
-        <li>Fallbacks to the good old hash based routing if History API is not supported</li>
-      </ul></p>
-    <p>
-    <hr />
-    <p>GitHub repository: <a href="https://github.com/krasimir/navigo" target="_blank">https://github.com/krasimir/navigo</a></p>
-    <p><iframe src="https://ghbtns.com/github-btn.html?user=krasimir&repo=navigo&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px"></iframe></p>
   </script>
 
   <script type="text/content" id="content-usage">
@@ -68,6 +58,7 @@ this/is/{{language}}/{{what}}</pre>
     </nav>
     <div class="js-content content"></div>
     <footer>
+      <a href="#" id="toDownload">Get Navigo</a><br />
       <a href="https://github.com/krasimir/navigo">github.com/krasimir/navigo</a><br /><br />
       <a href="this/is/javascript/router" data-navigo>Navigo is a lightweight JavaScript router</a>
     </footer>

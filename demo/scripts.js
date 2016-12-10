@@ -60,6 +60,11 @@ var switchModes = function () {
 
 var init = function () {
   routing(switchModes());
+
+  document.querySelector('#toDownload').addEventListener('click', function (e) {
+    e.preventDefault();
+    router.navigate('/download');
+  });
 };
 
 window.onload = init;
