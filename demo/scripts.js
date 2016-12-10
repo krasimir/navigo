@@ -1,4 +1,10 @@
 var router;
+var el = function (sel) {
+  return document.querySelector(sel);
+};
+var setContent = function (id, content) {
+  el('.js-content').innerHTML = content || el('#content-' + id).innerHTML;
+};
 var routing = function (mode) {
   router = new Navigo(null, mode === 'hash');
   router.on({
@@ -19,27 +25,12 @@ var routing = function (mode) {
         content = content.replace(new RegExp('{{' + key + '}}', 'g'), params[key]);
       });
       setContent(id, content);
-    },
-    'test-case/*': function() {},
-    'testing': function () {
-      var id = 'testing';
-
-      setContent(id, el('#content-' + id).innerHTML);
-      mocha.run();
     }
   });
-  router.on(function() {
+  router.on(function () {
     setContent('about');
   });
   router.resolve();
-};
-
-var el = function(sel) {
-  return document.querySelector(sel);
-}
-
-var setContent = function(id, content) {
-  el('.js-content').innerHTML = content || el('#content-' + id).innerHTML;
 };
 
 var switchModes = function () {
