@@ -184,19 +184,22 @@ describe('Given an instance of Navigo', function () {
   });
 
   describe('when we create a named router', function () {
-    it('should generate a proper link', function () {
+    it('should generate a proper link if useHash=true', function () {
       var handler = sinon.spy();
 
       router = new Navigo('http://site.com/', true);
       router.on('/trip/:tripId/edit', { as: 'trip.edit', uses: handler });
+      expect(router.generate('trip.edit', { tripId: 42 })).to.be.equal('#/trip/42/edit');
+    });
+    it('should generate a proper link if useHash=false', function () {
+      var handler = sinon.spy();
+
+      router = new Navigo('http://site.com/', false);
+      router.on('/trip/:tripId/edit', { as: 'trip.edit', uses: handler });
       expect(router.generate('trip.edit', { tripId: 42 })).to.be.equal('/trip/42/edit');
-      router.resolve('/trip/42/edit');
-      expect(handler)
-        .to.be.calledOnce
-        .and.to.be.calledWith({ tripId: '42' });
     });
     describe('and we set the routes via object', function () {
-      it('should generate a proper link', function () {
+      it('should resolve the proper handler', function () {
         var handler = sinon.spy();
 
         router = new Navigo('http://site.com/', true);
@@ -205,9 +208,6 @@ describe('Given an instance of Navigo', function () {
           '/trip/save': { as: 'trip.save', uses: handler },
           '/trip/:action/:tripId': { as: 'trip.action', uses: handler }
         });
-        expect(router.generate('trip.edit', { tripId: 42 })).to.be.equal('/trip/42/edit');
-        expect(router.generate('trip.action', { tripId: 42, action: 'save' })).to.be.equal('/trip/save/42');
-        expect(router.generate('trip.save')).to.be.equal('/trip/save');
         router.resolve('/trip/42/edit');
         expect(handler)
           .to.be.calledOnce

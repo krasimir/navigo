@@ -258,7 +258,7 @@ Navigo.prototype = {
     });
   },
   generate: function (name, data = {}) {
-    return this._routes.reduce((result, route) => {
+    var result = this._routes.reduce((result, route) => {
       var key;
 
       if (route.name === name) {
@@ -269,6 +269,8 @@ Navigo.prototype = {
       }
       return result;
     }, '');
+
+    return this._useHash ? '#' + result : result;
   },
   link: function (path) {
     return this._getRoot() + path;

@@ -1,3 +1,7 @@
+## 4.0.0
+
+That's a minor but a breaking change. The `generate` method now outputs proper strings base on the `useHash` parameter. Or in other words if the router is using hash based routing the generated URLs contain `#` in the beginning.
+
 ## 3.5.1
 
 * Proper initialization of the root when using `useHash = true`
