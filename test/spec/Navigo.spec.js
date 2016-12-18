@@ -5,17 +5,16 @@ var router, handler;
 describe('Given an instance of Navigo', function () {
 
   beforeEach(function () {
+    window.location.hash = '';
     router = new Navigo(null, true);
   });
 
   describe('when we give no routes', function () {
-
     describe('and when we call resolve method', function () {
       it('should return false', function () {
         expect(router.resolve('test')).to.be.false;
       });
     });
-
   });
 
   describe('when we give routes', function () {

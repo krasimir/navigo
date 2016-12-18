@@ -3,6 +3,11 @@ import Navigo from '../../lib/navigo';
 var router;
 
 describe('Given the Navigo library on the page', function () {
+  afterEach(function () {
+    window.location.hash = '';
+    history.pushState({}, '', '');
+  });
+
   describe('when using the hash based routing', function () {
     it('should handle page routing', function () {
       router = new Navigo('/', true);
@@ -98,6 +103,22 @@ describe('Given the Navigo library on the page', function () {
       router.navigate('/something/else/');
 
       expect(window.location.href).to.match(/\/something\/else\//);
+    });
+  });
+  describe('and the problem described in issue #70', function () {
+    it('should resolve the notFound handler', function () {
+      var router = new Navigo(null, true);
+      var notFoundHandler = sinon.spy();
+      var defaultHandler = sinon.spy();
+
+      window.location.hash = 'missing';
+
+      router.notFound(notFoundHandler);
+      router.on(defaultHandler);
+      router.resolve();
+
+      expect(defaultHandler).not.to.be.calledOnce;
+      expect(notFoundHandler).to.be.calledOnce;
     });
   });
 });

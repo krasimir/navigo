@@ -126,8 +126,8 @@ function manageHooks(handler, route) {
 };
 
 function Navigo(r, useHash) {
+  this.root = null;
   this._routes = [];
-  this.root = useHash && r ? r.replace(/\/$/, '/#') : (r || null);
   this._useHash = useHash;
   this._paused = false;
   this._destroyed = false;
@@ -135,6 +135,13 @@ function Navigo(r, useHash) {
   this._notFoundHandler = null;
   this._defaultHandler = null;
   this._usePushState = !useHash && isPushStateAvailable();
+
+  if (r) {
+    this.root = r.replace(/\/$/, '/#');
+  } else if (useHash) {
+    this.root = this._cLoc().split('#')[0].replace(/\/$/, '/#');
+  }
+
   this._listen();
   this.updatePageLinks();
 }
@@ -211,7 +218,7 @@ Navigo.prototype = {
           handler(m.params, GETParameters);
       }, m.route);
       return m;
-    } else if (this._defaultHandler && (onlyURL === '' || onlyURL === '/')) {
+    } else if (this._defaultHandler && (onlyURL === '' || onlyURL === '/' || onlyURL === '#')) {
       manageHooks(() => {
         this._lastRouteResolved = { url: onlyURL, query: GETParameters };
         this._defaultHandler.handler(GETParameters);

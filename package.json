@@ -1,6 +1,6 @@
 {
   "name": "navigo",
-  "version": "3.5.0",
+  "version": "3.5.1",
   "description": "A simple vanilla JavaScript router with a fallback for older browsers",
   "main": "lib/navigo.js",
   "jsnext:main": "src/index.js",
