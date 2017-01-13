@@ -15,7 +15,9 @@ Via npm with `npm install navigo` or drop `lib/navigo.min.js` into your page.
 ### Initialization
 
 ```js
-var router = new Navigo(root = null, useHash=false);
+var root = null;
+var useHash = false;
+var router = new Navigo(root, useHash);
 ```
 
 The constructor of the library accepts two argument - `root` and `useHash`. The first one is the main URL of your application. If you call the constructor without parameters then Navigo figures out the root URL based on your routes.
