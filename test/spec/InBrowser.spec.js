@@ -121,4 +121,15 @@ describe('Given the Navigo library on the page', function () {
       expect(notFoundHandler).to.be.calledOnce;
     });
   });
+  describe('and the problem described in issue #74', function () {
+    it('should resolve the handler', function () {
+      var router = new Navigo(null, true);
+      var handler = sinon.spy();
+
+      window.location.hash = '/محصولات/list';
+      router.on('/محصولات/list', handler).resolve();
+
+      expect(handler).to.be.calledOnce;
+    });
+  });
 });
