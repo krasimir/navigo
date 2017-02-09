@@ -44,7 +44,7 @@ function getUrlDepth(url) {
 }
 
 function compareUrlDepth(urlA, urlB) {
-  return getUrlDepth(urlA) < getUrlDepth(urlB);
+  return getUrlDepth(urlB) - getUrlDepth(urlA);
 }
 
 function findMatchedRoutes(url, routes = []) {
