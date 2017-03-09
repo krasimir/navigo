@@ -184,6 +184,18 @@ Navigo.prototype = {
     }
     return this;
   },
+  off: function (handler) {
+    if (this._defaultHandler !== null && handler === this._defaultHandler.handler) {
+      this._defaultHandler = null;
+    } else if (this._notFoundHandler !== null && handler === this._notFoundHandler.handler) {
+      this._notFoundHandler = null;
+    }
+    this._routes = this._routes.reduce((result, r) => {
+      if (r.handler !== handler) result.push(r);
+      return result;
+    }, []);
+    return this;
+  },
   notFound: function (handler, hooks) {
     this._notFoundHandler = { handler, hooks: hooks };
     return this;

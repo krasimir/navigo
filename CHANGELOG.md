@@ -1,3 +1,7 @@
+## 4.1.1
+
+* Adding `off` API method [#72](https://github.com/krasimir/navigo/issues/72).
+
 ## 4.0.1
 
 * Fixing [#77](https://github.com/krasimir/navigo/issues/77/).

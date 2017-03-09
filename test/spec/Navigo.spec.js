@@ -27,6 +27,16 @@ describe('Given an instance of Navigo', function () {
       });
     });
 
+    describe('and we use the off method', function () {
+      it('should remove the route handler', function () {
+        handler = sinon.spy();
+        router.on(handler).off(handler).resolve();
+        router.on('/test', handler).off(handler).resolve();
+        router.notFound(handler).off(handler).resolve();
+        expect(handler).to.not.be.calledOnce;
+      });
+    });
+
     describe('and when we pass handler with no matching pattern', function () {
       it('should call the handler', function () {
         handler = sinon.spy();
@@ -341,9 +351,9 @@ describe('Given an instance of Navigo', function () {
         beforeHook.callArg(0);
         expect(handler).to.be.calledOnce;
       });
-      it('should not call the handler if the before hook returns false', function() {
-        var beforeHook = sinon.spy(function(cb) {
-          cb(false)
+      it('should not call the handler if the before hook returns false', function () {
+        var beforeHook = sinon.spy(function (cb) {
+          cb(false);
         });
         var handler = sinon.spy();
 
@@ -353,7 +363,7 @@ describe('Given an instance of Navigo', function () {
 
         expect(beforeHook).to.be.calledOnce;
         expect(handler).to.not.be.called;
-      })
+      });
     });
     describe('and we provide only after hook', function () {
       it('should call after hook + the handler', function () {
