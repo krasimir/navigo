@@ -132,4 +132,27 @@ describe('Given the Navigo library on the page', function () {
       expect(handler).to.be.calledOnce;
     });
   });
+  describe('and the problem described in issue #79', function () {
+    it('should not resolve the handler', function (done) {
+      var router = new Navigo(null, true);
+      var handler = sinon.spy();
+
+      router
+        .on('r1', {
+          as: 'r1',
+          uses: handler,
+          hooks: {
+            before: function (done) {
+              done(false);
+            }
+          }
+        });
+
+      router.navigate('r1');
+      setTimeout(() => {
+        expect(handler).to.not.be.calledOnce;
+        done();
+      }, 100);
+    });
+  });
 });
