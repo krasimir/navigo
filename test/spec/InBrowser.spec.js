@@ -155,4 +155,29 @@ describe('Given the Navigo library on the page', function () {
       }, 100);
     });
   });
+  describe('and the problem described in issue #82', function () {
+    it('should accept only / and /product/xxx urls', function () {
+      var router = new Navigo('/');
+      var productHandler = sinon.spy();
+      var startPageHandler = sinon.spy();
+      var notFoundHandler = sinon.spy();
+
+      router
+        .on({
+          '/product/:id': productHandler,
+          '/': startPageHandler
+        })
+        .notFound(notFoundHandler);
+
+      router.resolve('/');
+      router.resolve('/product/AAA');
+      router.resolve('/foobar');
+
+      expect(startPageHandler).to.be.calledOnce;
+      expect(productHandler)
+        .to.be.calledOnce
+        .and.to.be.calledWith({ id: 'AAA' });
+      expect(notFoundHandler).to.be.calledOnce;
+    });
+  });
 });

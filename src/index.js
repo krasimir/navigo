@@ -179,7 +179,7 @@ Navigo.prototype = {
       let orderedRoutes = Object.keys(args[0]).sort(compareUrlDepth);
 
       orderedRoutes.forEach(route => {
-        this._add(route, args[0][route]);
+        this.on(route, args[0][route]);
       });
     }
     return this;
