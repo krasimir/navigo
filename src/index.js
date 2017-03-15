@@ -100,11 +100,12 @@ function isHashChangeAPIAvailable() {
 }
 
 function extractGETParameters(url, useHash, hash) {
-  if (typeof hash == 'undefined') {
-    // To preserve BC
-    hash = "#";
-  }
   var [ onlyURL, ...query ] = url.split(/\?(.*)?$/);
+
+  if (typeof hash === 'undefined') {
+    // To preserve BC
+    hash = '#';
+  }
 
   if (!useHash) {
     onlyURL = onlyURL.split(hash)[0];
@@ -133,7 +134,7 @@ function Navigo(r, useHash) {
   this.root = null;
   this._routes = [];
   this._useHash = useHash;
-  this._hash = "#";
+  this._hash = '#';
   this._paused = false;
   this._destroyed = false;
   this._lastRouteResolved = null;
@@ -144,7 +145,7 @@ function Navigo(r, useHash) {
   if (r) {
     this.root = r.replace(/\/$/, '/' + this._hash);
   } else if (useHash) {
-    this.root = this._cLoc().split(this._hash)[0].replace(/\/$/, '/'+this._hash);
+    this.root = this._cLoc().split(this._hash)[0].replace(/\/$/, '/' + this._hash);
   }
 
   this._listen();
@@ -167,7 +168,8 @@ Navigo.prototype = {
       history[this._paused ? 'replaceState' : 'pushState']({}, '', to);
       this.resolve();
     } else if (typeof window !== 'undefined') {
-      window.location.href = window.location.href.replace(new RegExp('/(?:'+this._hash+')+(.*)$/'), '') + this._hash + path;
+      window.location.href = window.location.href.replace(new RegExp('/(?:' + this._hash + ')+(.*)$/'), '') +
+        this._hash + path;
     }
     return this;
   },
@@ -198,7 +200,7 @@ Navigo.prototype = {
     var url = (current || this._cLoc()).replace(this._getRoot(), '');
 
     if (this._useHash) {
-      url = url.replace(new RegExp('/^\/'+this._hash+'/'), '/');
+      url = url.replace(new RegExp('/^\/' + this._hash + '/'), '/');
     }
 
     let { onlyURL, GETParameters } = extractGETParameters(url, this._useHash, this._hash);
