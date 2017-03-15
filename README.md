@@ -16,13 +16,17 @@ Via npm with `npm install navigo` or drop `lib/navigo.min.js` into your page.
 
 ```js
 var root = null;
-var useHash = false;
-var router = new Navigo(root, useHash);
+var useHash = true; // Defaults to: false
+var hash = '#!'; // Defaults to: '#'
+var router = new Navigo(root, useHash, hash);
 ```
 
-The constructor of the library accepts two argument - `root` and `useHash`. The first one is the main URL of your application. If you call the constructor without parameters then Navigo figures out the root URL based on your routes.
+The constructor of the library accepts three argument - `root`, `useHash` and `hash`. The first one is the main URL of 
+your application. If you call the constructor without parameters then Navigo figures out the root URL based on your routes.
 
-If `useHash` set to `true` then the router uses an old routing approach with hash in the URL. Navigo anyways falls back to this mode if there is no History API supported.
+If `useHash` set to `true` then the router uses an old routing approach with hash in the URL. Navigo anyways falls back
+to this mode if there is no History API supported. The `hash` parameter allows you to configure the hash character. To
+make your URLs crawlable by Google you should use use '#!'. Read more at [developers.google.com](https://developers.google.com/webmasters/ajax-crawling/docs/learn-more).
 
 ### Adding a route
 
