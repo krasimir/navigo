@@ -180,4 +180,15 @@ describe('Given the Navigo library on the page', function () {
       expect(notFoundHandler).to.be.calledOnce;
     });
   });
+  describe('and the problem described in issue #61', function () {
+    it('should resolve the parameter as just "page"', function () {
+      var router = new Navigo('/');
+      var handler = sinon.spy();
+
+      router.on('/:id', handler);
+      router.resolve('/page#');
+
+      expect(handler).to.be.calledOnce.and.to.be.calledWith({ id: 'page' });
+    });
+  });
 });
