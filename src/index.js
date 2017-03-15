@@ -130,11 +130,11 @@ function manageHooks(handler, route) {
   handler();
 };
 
-function Navigo(r, useHash) {
+function Navigo(r, useHash, hash) {
   this.root = null;
   this._routes = [];
   this._useHash = useHash;
-  this._hash = '#';
+  this._hash = typeof hash === 'undefined' ? '#' : hash;
   this._paused = false;
   this._destroyed = false;
   this._lastRouteResolved = null;
@@ -168,8 +168,7 @@ Navigo.prototype = {
       history[this._paused ? 'replaceState' : 'pushState']({}, '', to);
       this.resolve();
     } else if (typeof window !== 'undefined') {
-      window.location.href = window.location.href.replace(new RegExp('/(?:' + this._hash + ')+(.*)$/'), '') +
-        this._hash + path;
+      window.location.href = window.location.href.replace(new RegExp('(?:' + this._hash + ')+(.*)$'), '') + path;
     }
     return this;
   },
