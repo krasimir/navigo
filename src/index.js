@@ -99,11 +99,16 @@ function isHashChangeAPIAvailable() {
   );
 }
 
-function extractGETParameters(url, useHash) {
+function extractGETParameters(url, useHash, hash) {
   var [ onlyURL, ...query ] = url.split(/\?(.*)?$/);
 
+  if (typeof hash === 'undefined') {
+    // To preserve BC
+    hash = '#';
+  }
+
   if (!useHash) {
-    onlyURL = onlyURL.split('#')[0];
+    onlyURL = onlyURL.split(hash)[0];
   }
   return { onlyURL, GETParameters: query.join('') };
 }
@@ -125,10 +130,11 @@ function manageHooks(handler, route) {
   handler();
 };
 
-function Navigo(r, useHash) {
+function Navigo(r, useHash, hash) {
   this.root = null;
   this._routes = [];
   this._useHash = useHash;
+  this._hash = typeof hash === 'undefined' ? '#' : hash;
   this._paused = false;
   this._destroyed = false;
   this._lastRouteResolved = null;
@@ -137,9 +143,9 @@ function Navigo(r, useHash) {
   this._usePushState = !useHash && isPushStateAvailable();
 
   if (r) {
-    this.root = r.replace(/\/$/, '/#');
+    this.root = r.replace(/\/$/, '/' + this._hash);
   } else if (useHash) {
-    this.root = this._cLoc().split('#')[0].replace(/\/$/, '/#');
+    this.root = this._cLoc().split(this._hash)[0].replace(/\/$/, '/' + this._hash);
   }
 
   this._listen();
@@ -162,7 +168,7 @@ Navigo.prototype = {
       history[this._paused ? 'replaceState' : 'pushState']({}, '', to);
       this.resolve();
     } else if (typeof window !== 'undefined') {
-      window.location.href = window.location.href.replace(/#(.*)$/, '') + '#' + path;
+      window.location.href = window.location.href.replace(new RegExp('(?:' + this._hash + ')+(.*)$'), '') + path;
     }
     return this;
   },
@@ -205,10 +211,10 @@ Navigo.prototype = {
     var url = (current || this._cLoc()).replace(this._getRoot(), '');
 
     if (this._useHash) {
-      url = url.replace(/^\/#/, '/');
+      url = url.replace(new RegExp('/^\/' + this._hash + '/'), '/');
     }
 
-    let { onlyURL, GETParameters } = extractGETParameters(url, this._useHash);
+    let { onlyURL, GETParameters } = extractGETParameters(url, this._useHash, this._hash);
 
     if (
       this._paused ||
@@ -230,7 +236,7 @@ Navigo.prototype = {
           handler(m.params, GETParameters);
       }, m.route);
       return m;
-    } else if (this._defaultHandler && (onlyURL === '' || onlyURL === '/' || onlyURL === '#')) {
+    } else if (this._defaultHandler && (onlyURL === '' || onlyURL === '/' || onlyURL === this._hash)) {
       manageHooks(() => {
         this._lastRouteResolved = { url: onlyURL, query: GETParameters };
         this._defaultHandler.handler(GETParameters);
@@ -282,7 +288,7 @@ Navigo.prototype = {
       return result;
     }, '');
 
-    return this._useHash ? '#' + result : result;
+    return this._useHash ? this._hash + result : result;
   },
   link: function (path) {
     return this._getRoot() + path;
