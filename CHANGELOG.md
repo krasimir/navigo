@@ -1,3 +1,7 @@
+## 4.3.0
+
+* Support of custom hash string like `#!` for example. Read the [docs](https://github.com/krasimir/navigo/blob/master/README.md) for more information.
+
 ## 4.2.0
 
 * Fixing [#82](https://github.com/krasimir/navigo/issues/82/).

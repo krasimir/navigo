@@ -110,6 +110,7 @@ function extractGETParameters(url, useHash, hash) {
   if (!useHash) {
     onlyURL = onlyURL.split(hash)[0];
   }
+
   return { onlyURL, GETParameters: query.join('') };
 }
 
@@ -143,7 +144,7 @@ function Navigo(r, useHash, hash) {
   this._usePushState = !useHash && isPushStateAvailable();
 
   if (r) {
-    this.root = r.replace(/\/$/, '/' + this._hash);
+    this.root = useHash ? r.replace(/\/$/, '/' + this._hash) : r.replace(/\/$/, '');
   } else if (useHash) {
     this.root = this._cLoc().split(this._hash)[0].replace(/\/$/, '/' + this._hash);
   }
@@ -168,7 +169,8 @@ Navigo.prototype = {
       history[this._paused ? 'replaceState' : 'pushState']({}, '', to);
       this.resolve();
     } else if (typeof window !== 'undefined') {
-      window.location.href = window.location.href.replace(new RegExp('(?:' + this._hash + ')+(.*)$'), '') + path;
+      window.location.href =
+        window.location.href.replace(new RegExp('(#|' + this._hash + ')(.*)$'), '') + this._hash + path;
     }
     return this;
   },
@@ -211,7 +213,7 @@ Navigo.prototype = {
     var url = (current || this._cLoc()).replace(this._getRoot(), '');
 
     if (this._useHash) {
-      url = url.replace(new RegExp('/^\/' + this._hash + '/'), '/');
+      url = url.replace(new RegExp('^\/' + this._hash), '/');
     }
 
     let { onlyURL, GETParameters } = extractGETParameters(url, this._useHash, this._hash);

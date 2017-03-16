@@ -469,4 +469,21 @@ describe('Given an instance of Navigo', function () {
     });
   });
 
+  describe('when we are using custom hash', function () {
+    it('should handle the routing properly', function () {
+      var handler = sinon.spy();
+      var myCustomHash = '#!@';
+
+      router = new Navigo('/', true, myCustomHash);
+      router.on('/something', handler);
+
+      router.navigate('/something');
+      router.resolve('/something');
+
+      expect(router.root).to.equal('/' + myCustomHash);
+      expect(handler).to.be.calledOnce;
+      expect(window.location.hash).to.equal(myCustomHash + '/something');
+    });
+  });
+
 });
