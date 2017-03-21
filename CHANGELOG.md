@@ -1,3 +1,7 @@
+## 4.3.1
+
+* Make sure we have a function when using named routes #86 (by Tobias Nyholm (@Nyholm))
+
 ## 4.3.0
 
 * Support of custom hash string like `#!` for example. Read the [docs](https://github.com/krasimir/navigo/blob/master/README.md) for more information.

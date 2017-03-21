@@ -179,7 +179,8 @@ Navigo.prototype = {
       this._defaultHandler = { handler: args[0], hooks: args[1] };
     } else if (args.length >= 2) {
       if (args[0] === '/') {
-        var func = args[1];
+        let func = args[1];
+
         if (typeof args[1] === 'object') {
           func = args[1].uses;
         }
