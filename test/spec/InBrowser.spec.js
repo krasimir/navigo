@@ -191,4 +191,18 @@ describe('Given the Navigo library on the page', function () {
       expect(handler).to.be.calledOnce.and.to.be.calledWith({ id: 'foo' });
     });
   });
+  describe('and the problem described in issue #87', function () {
+    it('should produce a url without has', function () {
+      var router = new Navigo('/', true);
+      var handler = sinon.spy();
+
+      router.on({
+        '/foo': { as: 'foo', uses: handler }
+      });
+
+      router.navigate(router.generate('foo'));
+
+      expect(window.location.hash).to.be.equal('#/foo');
+    });
+  });
 });

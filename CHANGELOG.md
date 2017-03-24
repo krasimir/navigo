@@ -1,3 +1,7 @@
+## 4.3.2
+
+* Fixing [#87](https://github.com/krasimir/navigo/issues/87)
+
 ## 4.3.1
 
 * Make sure we have a function when using named routes #86 (by Tobias Nyholm (@Nyholm))
