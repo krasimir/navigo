@@ -169,7 +169,7 @@ Navigo.prototype = {
       history[this._paused ? 'replaceState' : 'pushState']({}, '', to);
       this.resolve();
     } else if (typeof window !== 'undefined') {
-      path = path.replace(/^#/, '');
+      path = path.replace(new RegExp('^' + this._hash), '');
       window.location.href =
         window.location.href.replace(new RegExp('(#|' + this._hash + ')(.*)$'), '') + this._hash + path;
     }
