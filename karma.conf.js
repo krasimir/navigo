@@ -25,7 +25,7 @@ module.exports = function (config) {
     logLevel: config.LOG_ERROR,
     autoWatch: true,
     browsers: [ getBrowser() ], // Chrome, PhantomJS, Firefox
-    singleRun: false,
+    singleRun: true,
     client: {
       captureConsole: true
     },
