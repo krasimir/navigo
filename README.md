@@ -21,7 +21,7 @@ var hash = '#!'; // Defaults to: '#'
 var router = new Navigo(root, useHash, hash);
 ```
 
-The constructor of the library accepts three argument - `root`, `useHash` and `hash`. The first one is the main URL of 
+The constructor of the library accepts three argument - `root`, `useHash` and `hash`. The first one is the main URL of
 your application. If you call the constructor without parameters then Navigo figures out the root URL based on your routes.
 
 If `useHash` set to `true` then the router uses an old routing approach with hash in the URL. Navigo anyways falls back
@@ -224,7 +224,7 @@ There is an API that allows you to run functions before firing a route handler. 
 
 ```
 {
-  before: function (done) { ... done(); }
+  before: function (done) { ... done(); },
   after: function () { ... }
 }
 ```
