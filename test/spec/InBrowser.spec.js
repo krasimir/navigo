@@ -205,4 +205,25 @@ describe('Given the Navigo library on the page', function () {
       expect(window.location.hash).to.be.equal('#/foo');
     });
   });
+  describe('and the problem described in issue #56-2', function () {
+    it('should fire the notFound handler', function () {
+      var router = new Navigo(null, false, '#!');
+      var notFoundHandler = sinon.spy();
+      var homeHandler = sinon.spy();
+      var postsHandler = sinon.spy();
+
+      router
+        .notFound(notFoundHandler)
+        .on({
+          '/': homeHandler,
+          '/my-posts': postsHandler
+        });
+
+      router.resolve();
+      router.resolve('asdf');
+
+      expect(homeHandler).to.be.calledOnce;
+      expect(notFoundHandler).to.be.calledOnce;
+    });
+  });
 });
