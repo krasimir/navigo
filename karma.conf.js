@@ -1,9 +1,6 @@
-var getBrowser = function () {
-  if (process.argv[2]) {
-    return process.argv[2].replace('--browser=', '');
-  }
-  return 'PhantomJS';
-};
+var args = require('./test/args');
+var getBrowser = args.getBrowser;
+var isWatching = args.isWatching;
 
 module.exports = function (config) {
   config.set({
@@ -25,7 +22,7 @@ module.exports = function (config) {
     logLevel: config.LOG_ERROR,
     autoWatch: true,
     browsers: [ getBrowser() ], // Chrome, PhantomJS, Firefox
-    singleRun: true,
+    singleRun: !isWatching(),
     client: {
       captureConsole: true
     },
@@ -50,3 +47,4 @@ module.exports = function (config) {
     ]
   });
 };
+module.exports.getBrowser = getBrowser;
