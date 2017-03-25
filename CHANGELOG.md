@@ -1,3 +1,7 @@
+## 4.3.4
+
+* A path because of the latest release. It covers the case where we are using a custom hash. [#92](https://github.com/krasimir/navigo/issues/92)
+
 ## 4.3.2, 4.3.3
 
 * Fixing [#87](https://github.com/krasimir/navigo/issues/87)
