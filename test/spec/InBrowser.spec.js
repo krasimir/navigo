@@ -1,6 +1,8 @@
 import Navigo from '../../lib/navigo';
+import { getBrowser } from '../args';
 
 var router;
+var browser = getBrowser();
 
 describe('Given the Navigo library on the page', function () {
   afterEach(function () {
@@ -122,7 +124,7 @@ describe('Given the Navigo library on the page', function () {
     });
   });
   describe('and the problem described in issue #74', function () {
-    it('should resolve the handler', function () {
+    (browser === 'PhantomJS' ? it.skip : it)('should resolve the handler', function () {
       var router = new Navigo(null, true);
       var handler = sinon.spy();
 

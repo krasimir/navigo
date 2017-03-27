@@ -314,6 +314,9 @@ Navigo.prototype = {
     }
   },
   _add: function (route, handler = null, hooks = null) {
+    if (typeof route === 'string') {
+      route = encodeURI(route);
+    }
     if (typeof handler === 'object') {
       this._routes.push({
         route,
