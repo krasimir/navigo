@@ -2,6 +2,8 @@
 
 A simple minimalistic JavaScript router with a fallback for older browsers.
 
+![Travis](https://travis-ci.org/krasimir/navigo.svg?branch=master)
+
 *([Demo source files](./demo))*
 
 ---
