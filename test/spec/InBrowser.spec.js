@@ -23,6 +23,24 @@ describe('Given the Navigo library on the page', function () {
 
       expect(handler).to.be.calledOnce;
     });
+    it('should not removing existing hashchange handlers', function(done){
+
+      var existingHandler = sinon.spy();
+      window.onhashchange = existingHandler;
+
+      var router = new Navigo(null, true);
+      router
+        .on({
+          '/posts': function() {}
+        });
+
+      window.location.hash = 'posts';
+
+      setTimeout(function(){
+            expect(existingHandler).to.be.called;
+            done();
+      }, 1);
+    });
   });
   describe('when using the history API based routing', function () {
     it('should handle page routing', function () {
