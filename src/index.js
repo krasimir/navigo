@@ -340,9 +340,7 @@ Navigo.prototype = {
         this.resolve();
       };
     } else if (isHashChangeAPIAvailable()) {
-      window.onhashchange = () => {
-        this.resolve();
-      };
+      window.addEventListener('hashchange', () => { this.resolve() });
     } else {
       let cached = this._cLoc(), current, check;
 
