@@ -1,3 +1,7 @@
+## 4.3.6
+
+* [#95](https://github.com/krasimir/navigo/pull/95) - keeping the already defined handler of `onhashchange`
+
 ## 4.3.4
 
 * A path because of the latest release. It covers the case where we are using a custom hash. [#92](https://github.com/krasimir/navigo/issues/92)
