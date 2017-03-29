@@ -23,22 +23,21 @@ describe('Given the Navigo library on the page', function () {
 
       expect(handler).to.be.calledOnce;
     });
-    it('should not removing existing hashchange handlers', function(done){
-
+    it('should not removing existing hashchange handlers', function (done) {
       var existingHandler = sinon.spy();
-      window.onhashchange = existingHandler;
-
       var router = new Navigo(null, true);
+
+      window.onhashchange = existingHandler;
       router
         .on({
-          '/posts': function() {}
+          '/posts': function () {}
         });
 
       window.location.hash = 'posts';
 
-      setTimeout(function(){
-            expect(existingHandler).to.be.called;
-            done();
+      setTimeout(function () {
+        expect(existingHandler).to.be.called;
+        done();
       }, 1);
     });
   });
@@ -244,6 +243,42 @@ describe('Given the Navigo library on the page', function () {
 
       expect(homeHandler).to.be.calledOnce;
       expect(notFoundHandler).to.be.calledOnce;
+    });
+  });
+  describe('and the problem described in issue #89', function () {
+    it('should fire the notFound handler', function (ready) {
+      var router = new Navigo(null, true);
+      var search = sinon.spy();
+      var home = sinon.spy();
+
+      router
+        .on('/search', search, {
+          before: function (done) {
+            document.title = 'Search';
+            done();
+          }
+        })
+        .on('/home', home, {
+          before: function (done) {
+            document.title = 'Home';
+            done();
+          }
+        });
+
+      router.navigate('/search');
+      router.resolve();
+      expect(document.title).to.be.equal('Search');
+      router.navigate('/home');
+      router.resolve();
+      expect(document.title).to.be.equal('Home');
+      history.back();
+
+      setTimeout(() => {
+        expect(search).to.be.calledTwice;
+        expect(home).to.be.calledOnce;
+        expect(document.title).to.be.equal('Search');
+        ready();
+      }, 500);
     });
   });
 });
