@@ -9,6 +9,10 @@ describe('Given an instance of Navigo', function () {
     router = new Navigo(null, true);
   });
 
+  afterEach(function(){
+    router.destroy();
+  });
+
   describe('when we give no routes', function () {
     describe('and when we call resolve method', function () {
       it('should return false', function () {

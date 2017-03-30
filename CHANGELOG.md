@@ -1,3 +1,7 @@
+## 4.3.7
+
+* [#97](https://github.com/krasimir/navigo/pull/97) - similar to #95 we are now using `addEventListener` when listening for browser API events.
+
 ## 4.3.6
 
 * [#95](https://github.com/krasimir/navigo/pull/95) - keeping the already defined handler of `onhashchange`

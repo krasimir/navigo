@@ -5,9 +5,15 @@ var router;
 var browser = getBrowser();
 
 describe('Given the Navigo library on the page', function () {
-  afterEach(function () {
+
+  beforeEach(function () {
     window.location.hash = '';
     history.pushState({}, '', '');
+  });
+
+  afterEach(function () {
+    router.destroy();
+    window.onpopstate = window.onhashchange =  null;
   });
 
   describe('when using the hash based routing', function () {
@@ -25,18 +31,31 @@ describe('Given the Navigo library on the page', function () {
     });
     it('should not removing existing hashchange handlers', function (done) {
       var existingHandler = sinon.spy();
-      var router = new Navigo(null, true);
 
       window.onhashchange = existingHandler;
-      router
-        .on({
-          '/posts': function () {}
-        });
+
+      router = new Navigo('/', true);
+      router.on('/posts', function () {});
 
       window.location.hash = 'posts';
 
       setTimeout(function () {
         expect(existingHandler).to.be.called;
+        done();
+      }, 1);
+    });
+
+    it('should remove event listeners on destroy', function (done) {
+      router = new Navigo('/', true);
+      router.resolve = sinon.spy();
+      router.on('page', function () {});
+
+      router.destroy();
+
+      window.location.hash = 'page';
+
+      setTimeout(function () {
+        expect(router.resolve).to.not.be.called;
         done();
       }, 1);
     });
@@ -53,6 +72,38 @@ describe('Given the Navigo library on the page', function () {
       router.resolve();
 
       expect(handler).to.be.calledOnce;
+    });
+    it('should not removing existing popstate handlers', function (done) {
+
+      var existingHandler = sinon.spy();
+
+      window.onpopstate = existingHandler;
+
+      router = new Navigo('/', false);
+      router.on('page', function () {});
+
+      history.pushState({}, '', 'page');
+      history.back();
+
+      setTimeout(function () {
+        expect(existingHandler).to.be.called;
+        done();
+      }, 500);
+    });
+    it('should remove event listeners on destroy', function (done) {
+      router = new Navigo('/', false);
+      router.resolve = sinon.spy();
+      router.on('page', function () {});
+
+      router.destroy();
+
+      history.pushState({}, '', 'page');
+      history.back();
+
+      setTimeout(function () {
+        expect(router.resolve).to.not.be.called;
+        done();
+      }, 1);
     });
   });
   describe('when using the pause and resume method', function () {
