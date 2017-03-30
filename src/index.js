@@ -1,12 +1,12 @@
-const PARAMETER_REGEXP = /([:*])(\w+)/g;
-const WILDCARD_REGEXP = /\*/g;
+const PARAMETER_REGEXP = /([:*])(\w+)/gi;
+const WILDCARD_REGEXP = /\*/gi;
 const REPLACE_VARIABLE_REGEXP = '([^\/]+)';
 const REPLACE_WILDCARD = '(?:.*)';
 const FOLLOWED_BY_SLASH_REGEXP = '(?:\/$|$)';
 
 function clean(s) {
   if (s instanceof RegExp) return s;
-  return s.replace(/\/+$/, '').replace(/^\/+/, '/');
+  return s.replace(/\/+$/, '').replace(/^\/+/, '/').toLowerCase();
 }
 
 function regExpResultToParams(match, names) {
