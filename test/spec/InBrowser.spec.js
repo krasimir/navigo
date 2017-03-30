@@ -281,4 +281,18 @@ describe('Given the Navigo library on the page', function () {
       }, 500);
     });
   });
+  describe('and the problem described in issue #96 where we have a query parameter', function () {
+    it('should pass the query parameter to the handler', function () {
+      var router = new Navigo(null, false);
+      var handler = sinon.spy();
+
+      router.on(handler);
+
+      router.resolve('/?answer=42');
+
+      expect(handler)
+        .to.be.calledOnce
+        .and.to.be.calledWith('answer=42');
+    });
+  });
 });
