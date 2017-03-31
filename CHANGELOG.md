@@ -1,3 +1,7 @@
+## 4.5.0
+
+* Adding `lastRouteResolved` public API ([#101](https://github.com/krasimir/navigo/pull/101))
+
 ## 4.4.0
 
 * Providing an API for case insensitive route handling ([#100](https://github.com/krasimir/navigo/pull/100))

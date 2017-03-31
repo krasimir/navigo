@@ -503,5 +503,26 @@ describe('Given an instance of Navigo', function () {
       expect(handler).to.be.calledOnce;
     });
   });
+  describe('when we have a complex route matching', function () {
+    it('should access easily the matched URL', function () {
+      var handler = sinon.spy();
+
+      router = new Navigo();
+      router.on('/user/:action/:id', handler);
+
+      router.navigate('/user/answer/42').resolve();
+
+      expect(handler)
+        .to.be.calledOnce
+        .and.be.calledWith({
+          action: 'answer',
+          id: '42'
+        }, '');
+      expect(router.lastRouteResolved()).to.deep.equal({
+        url: '/user/answer/42',
+        query: ''
+      });
+    });
+  });
 
 });

@@ -290,6 +290,7 @@ You may provide hooks in two other cases:
 * `router.disableIfAPINotAvailable()` - well, it disables the route if History API is not supported
 * `router.updatePageLinks()` - it triggers the `data-navigo` links binding process
 * `router.notFound(function)` - adding a handler for not-found URL (404 page)
+* `router.lastRouteResolved()` - returns an object with the format of `{ url: <string>, query: <string> }` matching the latest resolved route
 
 There are couple of static properties. You'll probably never need to touch them but here're they:
 

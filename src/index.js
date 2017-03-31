@@ -311,6 +311,9 @@ Navigo.prototype = {
       this.destroy();
     }
   },
+  lastRouteResolved() {
+    return this._lastRouteResolved;
+  },
   _add: function (route, handler = null, hooks = null) {
     if (typeof route === 'string') {
       route = encodeURI(route);
