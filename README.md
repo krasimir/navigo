@@ -291,6 +291,19 @@ You may provide hooks in two other cases:
 * `router.updatePageLinks()` - it triggers the `data-navigo` links binding process
 * `router.notFound(function)` - adding a handler for not-found URL (404 page)
 
+There are couple of static properties. You'll probably never need to touch them but here're they:
+
+```
+Navigo.PARAMETER_REGEXP = /([:*])(\w+)/g;
+Navigo.WILDCARD_REGEXP = /\*/g;
+Navigo.REPLACE_VARIABLE_REGEXP = '([^\/]+)';
+Navigo.REPLACE_WILDCARD = '(?:.*)';
+Navigo.FOLLOWED_BY_SLASH_REGEXP = '(?:\/$|$)';
+Navigo.MATCH_REGEXP_FLAGS = '';
+```
+
+`Navigo.MATCH_REGEXP_FLAGS` could be useful when you want a case insensitive route matching. Simple use `Navigo.MATCH_REGEXP_FLAGS = 'i'`.
+
 ## Tests
 
 ```

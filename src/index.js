@@ -1,8 +1,33 @@
-const PARAMETER_REGEXP = /([:*])(\w+)/g;
-const WILDCARD_REGEXP = /\*/g;
-const REPLACE_VARIABLE_REGEXP = '([^\/]+)';
-const REPLACE_WILDCARD = '(?:.*)';
-const FOLLOWED_BY_SLASH_REGEXP = '(?:\/$|$)';
+function isPushStateAvailable() {
+  return !!(
+    typeof window !== 'undefined' &&
+    window.history &&
+    window.history.pushState
+  );
+}
+
+function Navigo(r, useHash, hash) {
+  this.root = null;
+  this._routes = [];
+  this._useHash = useHash;
+  this._hash = typeof hash === 'undefined' ? '#' : hash;
+  this._paused = false;
+  this._destroyed = false;
+  this._lastRouteResolved = null;
+  this._notFoundHandler = null;
+  this._defaultHandler = null;
+  this._usePushState = !useHash && isPushStateAvailable();
+  this._onLocationChange = this._onLocationChange.bind(this);
+
+  if (r) {
+    this.root = useHash ? r.replace(/\/$/, '/' + this._hash) : r.replace(/\/$/, '');
+  } else if (useHash) {
+    this.root = this._cLoc().split(this._hash)[0].replace(/\/$/, '/' + this._hash);
+  }
+
+  this._listen();
+  this.updatePageLinks();
+}
 
 function clean(s) {
   if (s instanceof RegExp) return s;
@@ -29,12 +54,12 @@ function replaceDynamicURLParts(route) {
   } else {
     regexp = new RegExp(
       clean(route)
-      .replace(PARAMETER_REGEXP, function (full, dots, name) {
+      .replace(Navigo.PARAMETER_REGEXP, function (full, dots, name) {
         paramNames.push(name);
-        return REPLACE_VARIABLE_REGEXP;
+        return Navigo.REPLACE_VARIABLE_REGEXP;
       })
-      .replace(WILDCARD_REGEXP, REPLACE_WILDCARD) + FOLLOWED_BY_SLASH_REGEXP
-    );
+      .replace(Navigo.WILDCARD_REGEXP, Navigo.REPLACE_WILDCARD) + Navigo.FOLLOWED_BY_SLASH_REGEXP
+    , Navigo.MATCH_REGEXP_FLAGS);
   }
   return { regexp, paramNames };
 }
@@ -84,14 +109,6 @@ function root(url, routes) {
   return fallbackURL;
 }
 
-function isPushStateAvailable() {
-  return !!(
-    typeof window !== 'undefined' &&
-    window.history &&
-    window.history.pushState
-  );
-}
-
 function isHashChangeAPIAvailable() {
   return !!(
     typeof window !== 'undefined' &&
@@ -130,29 +147,6 @@ function manageHooks(handler, route) {
   }
   handler();
 };
-
-function Navigo(r, useHash, hash) {
-  this.root = null;
-  this._routes = [];
-  this._useHash = useHash;
-  this._hash = typeof hash === 'undefined' ? '#' : hash;
-  this._paused = false;
-  this._destroyed = false;
-  this._lastRouteResolved = null;
-  this._notFoundHandler = null;
-  this._defaultHandler = null;
-  this._usePushState = !useHash && isPushStateAvailable();
-  this._onLocationChange = this._onLocationChange.bind(this);
-
-  if (r) {
-    this.root = useHash ? r.replace(/\/$/, '/' + this._hash) : r.replace(/\/$/, '');
-  } else if (useHash) {
-    this.root = this._cLoc().split(this._hash)[0].replace(/\/$/, '/' + this._hash);
-  }
-
-  this._listen();
-  this.updatePageLinks();
-}
 
 Navigo.prototype = {
   helpers: {
@@ -370,5 +364,12 @@ Navigo.prototype = {
     this.resolve();
   }
 };
+
+Navigo.PARAMETER_REGEXP = /([:*])(\w+)/g;
+Navigo.WILDCARD_REGEXP = /\*/g;
+Navigo.REPLACE_VARIABLE_REGEXP = '([^\/]+)';
+Navigo.REPLACE_WILDCARD = '(?:.*)';
+Navigo.FOLLOWED_BY_SLASH_REGEXP = '(?:\/$|$)';
+Navigo.MATCH_REGEXP_FLAGS = '';
 
 export default Navigo;

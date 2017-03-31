@@ -7,6 +7,7 @@ describe('Given an instance of Navigo', function () {
   beforeEach(function () {
     window.location.hash = '';
     router = new Navigo(null, true);
+    Navigo.MATCH_REGEXP_FLAGS = '';
   });
 
   afterEach(function(){
@@ -487,6 +488,19 @@ describe('Given an instance of Navigo', function () {
       expect(router.root).to.equal('/' + myCustomHash);
       expect(handler).to.be.calledOnce;
       expect(window.location.hash).to.equal(myCustomHash + '/something');
+    });
+  });
+  describe('when we are using case insensitive route handling', function () {
+    it('should handle the routing properly', function () {
+      var handler = sinon.spy();
+
+      Navigo.MATCH_REGEXP_FLAGS = 'i';
+      router = new Navigo();
+      router.on('/something', handler);
+
+      router.navigate('/sOmEtHinG').resolve();
+
+      expect(handler).to.be.calledOnce;
     });
   });
 

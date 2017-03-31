@@ -1,3 +1,7 @@
+## 4.4.0
+
+* Providing an API for case insensitive route handling ([#100](https://github.com/krasimir/navigo/pull/100))
+
 ## 4.3.7
 
 * [#97](https://github.com/krasimir/navigo/pull/97) - similar to #95 we are now using `addEventListener` when listening for browser API events.
