@@ -1,3 +1,7 @@
+## 4.5.1
+
+* A bug fix for [#96](https://github.com/krasimir/navigo/pull/96) which was about a proper extracting of the GET parameters
+
 ## 4.5.0
 
 * Adding `lastRouteResolved` public API ([#101](https://github.com/krasimir/navigo/pull/101))

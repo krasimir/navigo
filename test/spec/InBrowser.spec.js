@@ -1,3 +1,4 @@
+/* global beforeEach, afterEach */
 import Navigo from '../../lib/navigo';
 import { getBrowser } from '../args';
 
@@ -13,7 +14,7 @@ describe('Given the Navigo library on the page', function () {
 
   afterEach(function () {
     router.destroy();
-    window.onpopstate = window.onhashchange =  null;
+    window.onpopstate = window.onhashchange = null;
   });
 
   describe('when using the hash based routing', function () {
@@ -334,12 +335,17 @@ describe('Given the Navigo library on the page', function () {
   });
   describe('and the problem described in issue #96 where we have a query parameter', function () {
     it('should pass the query parameter to the handler', function () {
-      var router = new Navigo(null, false);
       var handler = sinon.spy();
+
+      router = new Navigo(null, false);
+
+      window.__NAVIGO_WINDOW_LOCATION_MOCK__ = 'http://site.com?answer=42';
 
       router.on(handler);
 
-      router.resolve('/?answer=42');
+      router.resolve();
+
+      delete window.__NAVIGO_WINDOW_LOCATION_MOCK__;
 
       expect(handler)
         .to.be.calledOnce

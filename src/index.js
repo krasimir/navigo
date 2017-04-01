@@ -116,8 +116,12 @@ function isHashChangeAPIAvailable() {
   );
 }
 
-function extractGETParameters(url, useHash, hash) {
-  var [ onlyURL, ...query ] = url.split(/\?(.*)?$/);
+function extractGETParameters(url) {
+  return url.split(/\?(.*)?$/).slice(1).join('');
+}
+
+function getOnlyURL(url, useHash, hash) {
+  var onlyURL = url.split(/\?(.*)?$/)[0];
 
   if (typeof hash === 'undefined') {
     // To preserve BC
@@ -128,7 +132,7 @@ function extractGETParameters(url, useHash, hash) {
     onlyURL = onlyURL.split(hash)[0];
   }
 
-  return { onlyURL, GETParameters: query.join('') };
+  return onlyURL;
 }
 
 function manageHooks(handler, route) {
@@ -218,7 +222,8 @@ Navigo.prototype = {
       url = url.replace(new RegExp('^\/' + this._hash), '/');
     }
 
-    let { onlyURL, GETParameters } = extractGETParameters(url, this._useHash, this._hash);
+    let GETParameters = extractGETParameters(current || this._cLoc());
+    let onlyURL = getOnlyURL(url, this._useHash, this._hash);
 
     if (
       this._paused ||
@@ -356,6 +361,9 @@ Navigo.prototype = {
   },
   _cLoc: function () {
     if (typeof window !== 'undefined') {
+      if (typeof window.__NAVIGO_WINDOW_LOCATION_MOCK__ !== 'undefined') {
+        return window.__NAVIGO_WINDOW_LOCATION_MOCK__;
+      }
       return clean(window.location.href);
     }
     return '';
