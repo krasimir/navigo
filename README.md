@@ -3,6 +3,7 @@
 A simple minimalistic JavaScript router with a fallback for older browsers.
 
 ![Travis](https://travis-ci.org/krasimir/navigo.svg?branch=master)
+![npm downloads](https://img.shields.io/npm/dm/navigo.svg?style=flat-square)](https://www.npmjs.com/package/navigo)
 
 *([Demo source files](./demo))*
 
