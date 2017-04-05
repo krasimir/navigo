@@ -128,7 +128,7 @@ function getOnlyURL(url, useHash, hash) {
     hash = '#';
   }
 
-  if (!useHash) {
+  if (isPushStateAvailable() && !useHash) {
     onlyURL = onlyURL.split(hash)[0];
   }
 
