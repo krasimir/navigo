@@ -242,7 +242,7 @@ Navigo.prototype = {
       manageHooks(() => {
         m.route.route instanceof RegExp ?
           handler(...(m.match.slice(1, m.match.length))) :
-          handler(m.params, GETParameters);
+          handler(m.params, GETParameters, m.match[0]);
       }, m.route);
       return m;
     } else if (this._defaultHandler && (onlyURL === '' || onlyURL === '/' || onlyURL === this._hash)) {
