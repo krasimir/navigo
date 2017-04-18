@@ -155,13 +155,13 @@ router.notFound(function () {
 
 Use the `navigate` method:
 
-```
+```js
 router.navigate('/products/list');
 ```
 
 You may also specify an absolute path. For example:
 
-```
+```js
 router.navigate('http://site.com/products/list', true);
 ```
 
@@ -225,7 +225,7 @@ The route will be changed to `/en/products` but if you have a handler for that p
 
 There is an API that allows you to run functions before firing a route handler. The `hooks` object is in the format of:
 
-```
+```js
 {
   before: function (done) { ... done(); },
   after: function () { ... }
@@ -234,7 +234,7 @@ There is an API that allows you to run functions before firing a route handler. 
 
 You may specify only one (or both) hooks. The `before` hook accepts a function which you *must* invoke once you finish your job. Here is an examples:
 
-```
+```js
 router.on(
   '/user/edit',
   function () {
@@ -254,7 +254,7 @@ router.on(
 
 You may prevent the handler to be resolved in the `before` hook by invoking `done(false)`:
 
-```
+```js
 router.on(
   '/user/edit',
   function () {
@@ -295,7 +295,7 @@ You may provide hooks in two other cases:
 
 There are couple of static properties. You'll probably never need to touch them but here're they:
 
-```
+```js
 Navigo.PARAMETER_REGEXP = /([:*])(\w+)/g;
 Navigo.WILDCARD_REGEXP = /\*/g;
 Navigo.REPLACE_VARIABLE_REGEXP = '([^\/]+)';
