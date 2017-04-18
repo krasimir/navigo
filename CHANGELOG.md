@@ -1,3 +1,7 @@
+## 4.6.0
+
+* Parameters from the parameterized routes are sent to hooks' handlers [#108](https://github.com/krasimir/navigo/pull/108)
+
 ## 4.5.2
 
 * Fixing a bug under IE9 [#104](https://github.com/krasimir/navigo/pull/104)

@@ -227,8 +227,8 @@ There is an API that allows you to run functions before firing a route handler. 
 
 ```js
 {
-  before: function (done) { ... done(); },
-  after: function () { ... }
+  before: function (done, params) { ... done(); },
+  after: function (params) { ... }
 }
 ```
 
@@ -241,11 +241,11 @@ router.on(
     // show user edit page
   },
   {
-    before: function (done) {
+    before: function (done, params) {
       // doing some async operation
       done();
     },
-    after: function () {
+    after: function (params) {
       console.log('Data saved.');
     }
   }
@@ -261,7 +261,7 @@ router.on(
     // show user edit page
   },
   {
-    before: function (done) {
+    before: function (done, params) {
       if(!user.loggedIn) {
         done(false);
       } else {
@@ -276,6 +276,8 @@ You may provide hooks in two other cases:
 
 * While specifying a main/root handler `router.on(function() { ... }, hooks)`
 * While specifying a not-found page handler `router.notFound(function() { ... }, hooks)`
+
+*Also notice that both hooks receive `params` in case they are attached to a parameterized route.*
 
 ## API
 

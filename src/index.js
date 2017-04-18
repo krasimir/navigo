@@ -135,17 +135,17 @@ function getOnlyURL(url, useHash, hash) {
   return onlyURL;
 }
 
-function manageHooks(handler, route) {
+function manageHooks(handler, route, params) {
   if (route && route.hooks && typeof route.hooks === 'object') {
     if (route.hooks.before) {
       route.hooks.before((shouldRoute = true) => {
         if (!shouldRoute) return;
         handler();
-        route.hooks.after && route.hooks.after();
-      });
+        route.hooks.after && route.hooks.after(params);
+      }, params);
     } else if (route.hooks.after) {
       handler();
-      route.hooks.after && route.hooks.after();
+      route.hooks.after && route.hooks.after(params);
     }
     return;
   }
@@ -243,7 +243,7 @@ Navigo.prototype = {
         m.route.route instanceof RegExp ?
           handler(...(m.match.slice(1, m.match.length))) :
           handler(m.params, GETParameters);
-      }, m.route);
+      }, m.route, m.params);
       return m;
     } else if (this._defaultHandler && (onlyURL === '' || onlyURL === '/' || onlyURL === this._hash)) {
       manageHooks(() => {

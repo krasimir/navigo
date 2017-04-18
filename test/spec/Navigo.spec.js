@@ -415,6 +415,29 @@ describe('Given an instance of Navigo', function () {
         expect(afterHook).to.be.calledOnce;
       });
     });
+    describe('and we set hooks within parameterized route', function () {
+      it('should access the parameters in the hooks', function () {
+        var beforeHook = sinon.stub();
+        var afterHook = sinon.spy();
+        var handler = sinon.spy();
+        var expectedParams = { id: '42', action: 'answer' };
+
+        router = new Navigo('http://site.com/', true);
+        router.on('/something/:id/:action', handler, { before: beforeHook, after: afterHook });
+        router.resolve('/something/42/answer');
+
+        expect(beforeHook)
+          .to.be.calledOnce
+          .and.to.be.calledWith(sinon.match.func, expectedParams);
+        beforeHook.callArg(0);
+        expect(handler)
+          .to.be.calledOnce
+          .and.to.be.calledWith(expectedParams);
+        expect(afterHook)
+          .to.be.calledOnce
+          .and.to.be.calledWith(expectedParams);
+      });
+    });
   });
 
   describe('when the url contains GET parameters', function () {
