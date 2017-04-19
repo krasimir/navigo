@@ -152,6 +152,20 @@ function manageHooks(handler, route, params) {
   handler();
 };
 
+function isHashedRoot(url, useHash, hash) {
+  var split = url.split(hash);
+
+  if (isPushStateAvailable() && !useHash) {
+    return false;
+  }
+
+  if (split.length < 2 || split[1] === '') {
+    return true;
+  }
+
+  return false;
+};
+
 Navigo.prototype = {
   helpers: {
     match,
@@ -245,7 +259,12 @@ Navigo.prototype = {
           handler(m.params, GETParameters);
       }, m.route, m.params);
       return m;
-    } else if (this._defaultHandler && (onlyURL === '' || onlyURL === '/' || onlyURL === this._hash)) {
+    } else if (this._defaultHandler && (
+        onlyURL === '' ||
+        onlyURL === '/' ||
+        onlyURL === this._hash ||
+        isHashedRoot(onlyURL, this._useHash, this._hash)
+    )) {
       manageHooks(() => {
         this._lastRouteResolved = { url: onlyURL, query: GETParameters };
         this._defaultHandler.handler(GETParameters);
