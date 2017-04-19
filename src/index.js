@@ -153,11 +153,15 @@ function manageHooks(handler, route, params) {
 };
 
 function isHashedRoot(url, useHash, hash) {
-  var split = url.split(hash);
-
   if (isPushStateAvailable() && !useHash) {
     return false;
   }
+
+  if (!url.match(hash)) {
+    return false;
+  }
+
+  let split = url.split(hash);
 
   if (split.length < 2 || split[1] === '') {
     return true;
