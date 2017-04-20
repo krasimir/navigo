@@ -170,7 +170,7 @@ Navigo.prototype = {
     } else if (typeof window !== 'undefined') {
       path = path.replace(new RegExp('^' + this._hash), '');
       window.location.href =
-        window.location.href.replace(new RegExp('(#|' + this._hash + ')(.*)$'), '') + this._hash + path;
+        window.location.href.replace(new RegExp(this._hash + '.*$'), '') + this._hash + path;
     }
     return this;
   },
