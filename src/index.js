@@ -171,7 +171,9 @@ Navigo.prototype = {
     } else if (typeof window !== 'undefined') {
       path = path.replace(/^#/, '');
       window.location.href =
-        window.location.href.replace(new RegExp(this._hash + '.*$'), '') + this._hash + path;
+        window.location.href
+          .replace(/#$/, '')
+          .replace(new RegExp(this._hash + '.*$'), '') + this._hash + path;
     }
     return this;
   },
@@ -273,7 +275,7 @@ Navigo.prototype = {
     this._findLinks().forEach(link => {
       if (!link.hasListenerAttached) {
         link.addEventListener('click', function (e) {
-          var location = link.getAttribute('href');
+          var location = link.pathname;
 
           if (!self._destroyed) {
             e.preventDefault();

@@ -1,3 +1,7 @@
+## 4.3.4
+
+* Using relative URLs in navigation [#109](https://github.com/krasimir/navigo/issues/109)
+
 ## 4.3.2, 4.3.3
 
 * Fixing [#87](https://github.com/krasimir/navigo/issues/87)
