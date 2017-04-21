@@ -1,3 +1,7 @@
+## 4.6.1
+
+* Using relative URLs in navigation [#109](https://github.com/krasimir/navigo/issues/109)
+
 ## 4.6.0
 
 * Parameters from the parameterized routes are sent to hooks' handlers [#108](https://github.com/krasimir/navigo/pull/108)
@@ -29,6 +33,7 @@
 ## 4.3.4
 
 * A path because of the latest release. It covers the case where we are using a custom hash. [#92](https://github.com/krasimir/navigo/issues/92)
+>>>>>>> origin/master
 
 ## 4.3.2, 4.3.3
 
