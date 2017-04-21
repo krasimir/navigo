@@ -1,3 +1,7 @@
+## 4.6.2
+
+* Fixing a bug in IE9 [#110](https://github.com/krasimir/navigo/pull/110)
+
 ## 4.6.1
 
 * Using relative URLs in navigation [#109](https://github.com/krasimir/navigo/issues/109)
