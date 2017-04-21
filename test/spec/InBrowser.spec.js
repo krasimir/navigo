@@ -1,11 +1,20 @@
+/* global beforeEach, afterEach */
 import Navigo from '../../lib/navigo';
+import { getBrowser } from '../args';
 
 var router;
+var browser = getBrowser();
 
 describe('Given the Navigo library on the page', function () {
-  afterEach(function () {
+
+  beforeEach(function () {
     window.location.hash = '';
     history.pushState({}, '', '');
+  });
+
+  afterEach(function () {
+    router.destroy();
+    window.onpopstate = window.onhashchange = null;
   });
 
   describe('when using the hash based routing', function () {
@@ -21,6 +30,36 @@ describe('Given the Navigo library on the page', function () {
 
       expect(handler).to.be.calledOnce;
     });
+    it('should not removing existing hashchange handlers', function (done) {
+      var existingHandler = sinon.spy();
+
+      window.onhashchange = existingHandler;
+
+      router = new Navigo('/', true);
+      router.on('/posts', function () {});
+
+      window.location.hash = 'posts';
+
+      setTimeout(function () {
+        expect(existingHandler).to.be.called;
+        done();
+      }, 1);
+    });
+
+    it('should remove event listeners on destroy', function (done) {
+      router = new Navigo('/', true);
+      router.resolve = sinon.spy();
+      router.on('page', function () {});
+
+      router.destroy();
+
+      window.location.hash = 'page';
+
+      setTimeout(function () {
+        expect(router.resolve).to.not.be.called;
+        done();
+      }, 1);
+    });
   });
   describe('when using the history API based routing', function () {
     it('should handle page routing', function () {
@@ -34,6 +73,38 @@ describe('Given the Navigo library on the page', function () {
       router.resolve();
 
       expect(handler).to.be.calledOnce;
+    });
+    it('should not removing existing popstate handlers', function (done) {
+
+      var existingHandler = sinon.spy();
+
+      window.onpopstate = existingHandler;
+
+      router = new Navigo('/', false);
+      router.on('page', function () {});
+
+      history.pushState({}, '', 'page');
+      history.back();
+
+      setTimeout(function () {
+        expect(existingHandler).to.be.called;
+        done();
+      }, 500);
+    });
+    it('should remove event listeners on destroy', function (done) {
+      router = new Navigo('/', false);
+      router.resolve = sinon.spy();
+      router.on('page', function () {});
+
+      router.destroy();
+
+      history.pushState({}, '', 'page');
+      history.back();
+
+      setTimeout(function () {
+        expect(router.resolve).to.not.be.called;
+        done();
+      }, 1);
     });
   });
   describe('when using the pause and resume method', function () {
@@ -122,7 +193,7 @@ describe('Given the Navigo library on the page', function () {
     });
   });
   describe('and the problem described in issue #74', function () {
-    it('should resolve the handler', function () {
+    (browser === 'PhantomJS' ? it.skip : it)('should resolve the handler', function () {
       var router = new Navigo(null, true);
       var handler = sinon.spy();
 
@@ -224,6 +295,61 @@ describe('Given the Navigo library on the page', function () {
 
       expect(homeHandler).to.be.calledOnce;
       expect(notFoundHandler).to.be.calledOnce;
+    });
+  });
+  describe('and the problem described in issue #89', function () {
+    it('should fire the notFound handler', function (ready) {
+      var router = new Navigo(null, true);
+      var search = sinon.spy();
+      var home = sinon.spy();
+
+      router
+        .on('/search', search, {
+          before: function (done) {
+            document.title = 'Search';
+            done();
+          }
+        })
+        .on('/home', home, {
+          before: function (done) {
+            document.title = 'Home';
+            done();
+          }
+        });
+
+      router.navigate('/search');
+      router.resolve();
+      expect(document.title).to.be.equal('Search');
+      router.navigate('/home');
+      router.resolve();
+      expect(document.title).to.be.equal('Home');
+      history.back();
+
+      setTimeout(() => {
+        expect(search).to.be.calledTwice;
+        expect(home).to.be.calledOnce;
+        expect(document.title).to.be.equal('Search');
+        ready();
+      }, 500);
+    });
+  });
+  describe('and the problem described in issue #96 where we have a query parameter', function () {
+    it('should pass the query parameter to the handler', function () {
+      var handler = sinon.spy();
+
+      router = new Navigo(null, false);
+
+      window.__NAVIGO_WINDOW_LOCATION_MOCK__ = 'http://site.com?answer=42';
+
+      router.on(handler);
+
+      router.resolve();
+
+      delete window.__NAVIGO_WINDOW_LOCATION_MOCK__;
+
+      expect(handler)
+        .to.be.calledOnce
+        .and.to.be.calledWith('answer=42');
     });
   });
 });

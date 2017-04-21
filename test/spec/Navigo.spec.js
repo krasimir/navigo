@@ -6,6 +6,12 @@ describe('Given an instance of Navigo', function () {
 
   beforeEach(function () {
     window.location.hash = '';
+    router = new Navigo(null, true);
+    Navigo.MATCH_REGEXP_FLAGS = '';
+  });
+
+  afterEach(function(){
+    router.destroy();
   });
 
   describe('when we give no routes', function () {
@@ -421,6 +427,29 @@ describe('Given an instance of Navigo', function () {
         expect(afterHook).to.be.calledOnce;
       });
     });
+    describe('and we set hooks within parameterized route', function () {
+      it('should access the parameters in the hooks', function () {
+        var beforeHook = sinon.stub();
+        var afterHook = sinon.spy();
+        var handler = sinon.spy();
+        var expectedParams = { id: '42', action: 'answer' };
+
+        router = new Navigo('http://site.com/', true);
+        router.on('/something/:id/:action', handler, { before: beforeHook, after: afterHook });
+        router.resolve('/something/42/answer');
+
+        expect(beforeHook)
+          .to.be.calledOnce
+          .and.to.be.calledWith(sinon.match.func, expectedParams);
+        beforeHook.callArg(0);
+        expect(handler)
+          .to.be.calledOnce
+          .and.to.be.calledWith(expectedParams);
+        expect(afterHook)
+          .to.be.calledOnce
+          .and.to.be.calledWith(expectedParams);
+      });
+    });
   });
 
   describe('when the url contains GET parameters', function () {
@@ -494,6 +523,40 @@ describe('Given an instance of Navigo', function () {
       expect(router.root).to.equal('/' + myCustomHash);
       expect(handler).to.be.calledOnce;
       expect(window.location.hash).to.equal(myCustomHash + '/something');
+    });
+  });
+  describe('when we are using case insensitive route handling', function () {
+    it('should handle the routing properly', function () {
+      var handler = sinon.spy();
+
+      Navigo.MATCH_REGEXP_FLAGS = 'i';
+      router = new Navigo();
+      router.on('/something', handler);
+
+      router.navigate('/sOmEtHinG').resolve();
+
+      expect(handler).to.be.calledOnce;
+    });
+  });
+  describe('when we have a complex route matching', function () {
+    it('should access easily the matched URL', function () {
+      var handler = sinon.spy();
+
+      router = new Navigo();
+      router.on('/user/:action/:id', handler);
+
+      router.navigate('/user/answer/42').resolve();
+
+      expect(handler)
+        .to.be.calledOnce
+        .and.be.calledWith({
+          action: 'answer',
+          id: '42'
+        }, '');
+      expect(router.lastRouteResolved()).to.deep.equal({
+        url: '/user/answer/42',
+        query: ''
+      });
     });
   });
 

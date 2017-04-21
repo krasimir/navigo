@@ -2,6 +2,9 @@
 
 A simple minimalistic JavaScript router with a fallback for older browsers.
 
+![Travis](https://travis-ci.org/krasimir/navigo.svg?branch=master)
+[![npm downloads](https://img.shields.io/npm/dm/navigo.svg?style=flat-square)](https://www.npmjs.com/package/navigo)
+
 *([Demo source files](./demo))*
 
 ---
@@ -152,13 +155,13 @@ router.notFound(function () {
 
 Use the `navigate` method:
 
-```
+```js
 router.navigate('/products/list');
 ```
 
 You may also specify an absolute path. For example:
 
-```
+```js
 router.navigate('http://site.com/products/list', true);
 ```
 
@@ -222,27 +225,27 @@ The route will be changed to `/en/products` but if you have a handler for that p
 
 There is an API that allows you to run functions before firing a route handler. The `hooks` object is in the format of:
 
-```
+```js
 {
-  before: function (done) { ... done(); },
-  after: function () { ... }
+  before: function (done, params) { ... done(); },
+  after: function (params) { ... }
 }
 ```
 
 You may specify only one (or both) hooks. The `before` hook accepts a function which you *must* invoke once you finish your job. Here is an examples:
 
-```
+```js
 router.on(
   '/user/edit',
   function () {
     // show user edit page
   },
   {
-    before: function (done) {
+    before: function (done, params) {
       // doing some async operation
       done();
     },
-    after: function () {
+    after: function (params) {
       console.log('Data saved.');
     }
   }
@@ -251,14 +254,14 @@ router.on(
 
 You may prevent the handler to be resolved in the `before` hook by invoking `done(false)`:
 
-```
+```js
 router.on(
   '/user/edit',
   function () {
     // show user edit page
   },
   {
-    before: function (done) {
+    before: function (done, params) {
       if(!user.loggedIn) {
         done(false);
       } else {
@@ -274,6 +277,8 @@ You may provide hooks in two other cases:
 * While specifying a main/root handler `router.on(function() { ... }, hooks)`
 * While specifying a not-found page handler `router.notFound(function() { ... }, hooks)`
 
+*Also notice that both hooks receive `params` in case they are attached to a parameterized route.*
+
 ## API
 
 * `router.on(function)` - adding handler for root/main route
@@ -288,6 +293,20 @@ You may provide hooks in two other cases:
 * `router.disableIfAPINotAvailable()` - well, it disables the route if History API is not supported
 * `router.updatePageLinks()` - it triggers the `data-navigo` links binding process
 * `router.notFound(function)` - adding a handler for not-found URL (404 page)
+* `router.lastRouteResolved()` - returns an object with the format of `{ url: <string>, query: <string> }` matching the latest resolved route
+
+There are couple of static properties. You'll probably never need to touch them but here're they:
+
+```js
+Navigo.PARAMETER_REGEXP = /([:*])(\w+)/g;
+Navigo.WILDCARD_REGEXP = /\*/g;
+Navigo.REPLACE_VARIABLE_REGEXP = '([^\/]+)';
+Navigo.REPLACE_WILDCARD = '(?:.*)';
+Navigo.FOLLOWED_BY_SLASH_REGEXP = '(?:\/$|$)';
+Navigo.MATCH_REGEXP_FLAGS = '';
+```
+
+`Navigo.MATCH_REGEXP_FLAGS` could be useful when you want a case insensitive route matching. Simple use `Navigo.MATCH_REGEXP_FLAGS = 'i'`.
 
 ## Tests
 

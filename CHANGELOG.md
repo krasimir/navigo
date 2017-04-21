@@ -1,6 +1,39 @@
-## 4.3.4
+## 4.6.1
 
 * Using relative URLs in navigation [#109](https://github.com/krasimir/navigo/issues/109)
+
+## 4.6.0
+
+* Parameters from the parameterized routes are sent to hooks' handlers [#108](https://github.com/krasimir/navigo/pull/108)
+
+## 4.5.2
+
+* Fixing a bug under IE9 [#104](https://github.com/krasimir/navigo/pull/104)
+
+## 4.5.1
+
+* A bug fix for [#96](https://github.com/krasimir/navigo/pull/96) which was about a proper extracting of the GET parameters
+
+## 4.5.0
+
+* Adding `lastRouteResolved` public API ([#101](https://github.com/krasimir/navigo/pull/101))
+
+## 4.4.0
+
+* Providing an API for case insensitive route handling ([#100](https://github.com/krasimir/navigo/pull/100))
+
+## 4.3.7
+
+* [#97](https://github.com/krasimir/navigo/pull/97) - similar to #95 we are now using `addEventListener` when listening for browser API events.
+
+## 4.3.6
+
+* [#95](https://github.com/krasimir/navigo/pull/95) - keeping the already defined handler of `onhashchange`
+
+## 4.3.4
+
+* A path because of the latest release. It covers the case where we are using a custom hash. [#92](https://github.com/krasimir/navigo/issues/92)
+>>>>>>> origin/master
 
 ## 4.3.2, 4.3.3
 
