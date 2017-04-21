@@ -41,7 +41,7 @@ function regExpResultToParams(match, names) {
     .slice(1, match.length)
     .reduce((params, value, index) => {
       if (params === null) params = {};
-      params[names[index]] = decodeURI(value);
+      params[names[index]] = decodeURIComponent(value);
       return params;
     }, null);
 }
