@@ -17,6 +17,7 @@ describe('Given an instance of Navigo', function () {
   describe('when we give no routes', function () {
     describe('and when we call resolve method', function () {
       it('should return false', function () {
+        router = new Navigo(null, true);
         expect(router.resolve('test')).to.be.false;
       });
     });
@@ -26,6 +27,7 @@ describe('Given an instance of Navigo', function () {
 
     describe('and when we pass only a handler', function () {
       it('should call the default handler', function () {
+        router = new Navigo(null, true);
         handler = sinon.spy();
         router.on(handler).resolve();
         expect(handler).to.be.calledOnce;
@@ -34,6 +36,7 @@ describe('Given an instance of Navigo', function () {
 
     describe('and we use the off method', function () {
       it('should remove the route handler', function () {
+        router = new Navigo(null, true);
         handler = sinon.spy();
         router.on(handler).off(handler).resolve();
         router.on('/test', handler).off(handler).resolve();
@@ -44,6 +47,7 @@ describe('Given an instance of Navigo', function () {
 
     describe('and when we pass handler with no matching pattern', function () {
       it('should call the handler', function () {
+        router = new Navigo(null, true);
         handler = sinon.spy();
         router.on('/missing/route', handler);
         router.resolve('test');
@@ -56,6 +60,7 @@ describe('Given an instance of Navigo', function () {
 
       testCases.forEach(route => {
         it(`should call the handler if we pass ${route}`, function () {
+          router = new Navigo(null, true);
           handler = sinon.spy();
           router.on({ [route]: handler });
           router.resolve('/someapp/route');
@@ -66,6 +71,7 @@ describe('Given an instance of Navigo', function () {
 
       it('should call the handler only once even though it resolves twice', function () {
         handler = sinon.spy();
+        router = new Navigo(null, true);
         router.on('/user/edit', handler);
         router.resolve('/user/edit');
         router.resolve('/user/edit');
@@ -77,6 +83,7 @@ describe('Given an instance of Navigo', function () {
 
     describe('and when we pass matching handler with dynamic parameters', function () {
       it('should call the handler by passing the parameters', function () {
+        router = new Navigo(null, true);
         handler = sinon.spy();
         router.on({ '/user/:id': handler });
         router.resolve('site.com/app/users/42');
@@ -89,6 +96,7 @@ describe('Given an instance of Navigo', function () {
 
     describe('and when we pass matching handler with multiple dynamic parameters', function () {
       it('should call the handler by passing the parameters', function () {
+        router = new Navigo(null, true);
         handler = sinon.spy();
         router.on({ '/user/:id/:action': handler });
         router.resolve('site.com/app/user/42/edit');
@@ -104,6 +112,8 @@ describe('Given an instance of Navigo', function () {
           done();
         };
 
+        router = new Navigo(null, true);
+
         router.on(/users\/(\d+)\/(\w+)\/?/, handler);
         router.resolve('site.com/app/users/42/save');
       });
@@ -112,6 +122,8 @@ describe('Given an instance of Navigo', function () {
     describe('and when we use the destroy method', function () {
       it('should not be able to resolve a route', function () {
         var handler = sinon.spy();
+
+        router = new Navigo(null, true);
 
         router.on('/users', handler);
         router.resolve('site.com/app/users');
