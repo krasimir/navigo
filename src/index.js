@@ -301,7 +301,7 @@ Navigo.prototype = {
     this._findLinks().forEach(link => {
       if (!link.hasListenerAttached) {
         link.addEventListener('click', function (e) {
-          var location = link.pathname;
+          var location = self.getLinkPath(link);
 
           if (!self._destroyed) {
             e.preventDefault();
@@ -343,6 +343,9 @@ Navigo.prototype = {
   },
   lastRouteResolved() {
     return this._lastRouteResolved;
+  },
+  getLinkPath(link) {
+    return link.pathname || link.getAttribute('href');
   },
   _add: function (route, handler = null, hooks = null) {
     if (typeof route === 'string') {

@@ -294,6 +294,7 @@ You may provide hooks in two other cases:
 * `router.updatePageLinks()` - it triggers the `data-navigo` links binding process
 * `router.notFound(function)` - adding a handler for not-found URL (404 page)
 * `router.lastRouteResolved()` - returns an object with the format of `{ url: <string>, query: <string> }` matching the latest resolved route
+* `router.getLinkPath` - you may overwrite that function to provide a different mechanism for fetching paths from links which are currently on the page (with `data-navigo` attribute)
 
 There are couple of static properties. You'll probably never need to touch them but here're they:
 

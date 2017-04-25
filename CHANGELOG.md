@@ -1,3 +1,7 @@
+## 4.7.0
+
+* Adding `getLinkPath` function to cover [#120](https://github.com/krasimir/navigo/issues/120)
+
 ## 4.6.2
 
 * Fixing a bug in IE9 [#110](https://github.com/krasimir/navigo/pull/110)

@@ -352,4 +352,30 @@ describe('Given the Navigo library on the page', function () {
         .and.to.be.calledWith('answer=42');
     });
   });
+  describe('and the problem described in #120', function () {
+    it('should use a custom function for fetching link\'s url', function () {
+      var event = new MouseEvent('click', {
+        'view': window,
+        'bubbles': true,
+        'cancelable': true
+      });
+      var link = document.createElement('LINK');
+      var body = document.querySelector('body');
+
+      link.setAttribute('id', 'myLink');
+      link.setAttribute('href', 'overview/getting-started');
+      link.setAttribute('data-custom-url', 'foo/bar');
+      link.setAttribute('data-navigo', 'yes');
+      body.appendChild(link);
+
+      router = new Navigo(null, true);
+      router.getLinkPath = function (link) {
+        return link.getAttribute('data-custom-url');
+      };
+      link.dispatchEvent(event);
+
+      expect(window.location.href.split('#')[1]).to.be.equal('foo/bar');
+      body.removeChild(link);
+    });
+  });
 });
