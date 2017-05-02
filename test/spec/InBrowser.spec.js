@@ -9,6 +9,7 @@ describe('Given the Navigo library on the page', function () {
 
   beforeEach(function () {
     window.location.hash = '';
+    delete window.__NAVIGO_WINDOW_LOCATION_MOCK__;
     history.pushState({}, '', '');
   });
 
@@ -376,6 +377,17 @@ describe('Given the Navigo library on the page', function () {
 
       expect(window.location.href.split('#')[1]).to.be.equal('foo/bar');
       body.removeChild(link);
+    });
+  });
+  describe('and the problem described in #122', function () {
+    it('should set a proper root', function () {
+      var handler = sinon.spy();
+
+      window.__NAVIGO_WINDOW_LOCATION_MOCK__ = 'http://site.com/members?test=42';
+      router = new Navigo('', false);
+
+      router.on('/members', handler).resolve();
+      expect(handler).to.be.calledOnce;
     });
   });
 });

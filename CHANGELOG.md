@@ -1,3 +1,7 @@
+## 4.7.1
+
+* Fixing the bug described in [#122](https://github.com/krasimir/navigo/issues/122)
+
 ## 4.7.0
 
 * Adding `getLinkPath` function to cover [#120](https://github.com/krasimir/navigo/issues/120)

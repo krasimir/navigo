@@ -365,7 +365,7 @@ Navigo.prototype = {
   },
   _getRoot: function () {
     if (this.root !== null) return this.root;
-    this.root = root(this._cLoc(), this._routes);
+    this.root = root(this._cLoc().split('?')[0], this._routes);
     return this.root;
   },
   _listen: function () {
