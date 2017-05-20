@@ -319,7 +319,7 @@ Navigo.prototype = {
       if (route.name === name) {
         result = route.route;
         for (key in data) {
-          result = result.replace(':' + key, data[key]);
+          result = result.toString().replace(':' + key, data[key]);
         }
       }
       return result;

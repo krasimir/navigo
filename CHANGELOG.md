@@ -1,3 +1,7 @@
+## 4.7.3
+
+* Making sure that `generate` doesn't fail if there's a regex as a route [#125](https://github.com/krasimir/navigo/issues/125)
+
 ## 4.7.2
 
 * Proper handling of the encoded URL parameter [#116](https://github.com/krasimir/navigo/issues/116)

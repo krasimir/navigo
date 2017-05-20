@@ -264,7 +264,7 @@ describe('Given the Navigo library on the page', function () {
     });
   });
   describe('and the problem described in issue #87', function () {
-    it('should produce a url without has', function () {
+    it('should produce a url without hash', function () {
       var router = new Navigo('/', true);
       var handler = sinon.spy();
 
