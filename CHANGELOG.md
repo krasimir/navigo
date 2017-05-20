@@ -1,3 +1,7 @@
+## 4.7.2
+
+* Proper handling of the encoded URL parameter [#116](https://github.com/krasimir/navigo/issues/116)
+
 ## 4.7.1
 
 * Fixing the bug described in [#122](https://github.com/krasimir/navigo/issues/122)
