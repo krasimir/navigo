@@ -1,3 +1,7 @@
+## 4.8.0
+
+* Adding generic hooks + leave hook [#107](https://github.com/krasimir/navigo/issues/107).
+
 ## 4.7.4
 
 * Clear the `navigate` method. It is not calling `resolve` automatically. Related to [#115](https://github.com/krasimir/navigo/issues/115).

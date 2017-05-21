@@ -18,6 +18,7 @@ function Navigo(r, useHash, hash) {
   this._defaultHandler = null;
   this._usePushState = !useHash && isPushStateAvailable();
   this._onLocationChange = this._onLocationChange.bind(this);
+  this._genericHooks = null;
 
   if (r) {
     this.root = useHash ? r.replace(/\/$/, '/' + this._hash) : r.replace(/\/$/, '');
@@ -135,17 +136,17 @@ function getOnlyURL(url, useHash, hash) {
   return onlyURL;
 }
 
-function manageHooks(handler, route, params) {
-  if (route && route.hooks && typeof route.hooks === 'object') {
-    if (route.hooks.before) {
-      route.hooks.before((shouldRoute = true) => {
+function manageHooks(handler, hooks, params) {
+  if (hooks && typeof hooks === 'object') {
+    if (hooks.before) {
+      hooks.before((shouldRoute = true) => {
         if (!shouldRoute) return;
         handler();
-        route.hooks.after && route.hooks.after(params);
+        hooks.after && hooks.after(params);
       }, params);
-    } else if (route.hooks.after) {
+    } else if (hooks.after) {
       handler();
-      route.hooks.after && route.hooks.after(params);
+      hooks.after && hooks.after(params);
     }
     return;
   }
@@ -256,13 +257,16 @@ Navigo.prototype = {
     m = match(onlyURL, this._routes);
 
     if (m) {
-      this._lastRouteResolved = { url: onlyURL, query: GETParameters };
+      this._callLeave();
+      this._lastRouteResolved = { url: onlyURL, query: GETParameters, hooks: m.route.hooks };
       handler = m.route.handler;
       manageHooks(() => {
-        m.route.route instanceof RegExp ?
-          handler(...(m.match.slice(1, m.match.length))) :
-          handler(m.params, GETParameters);
-      }, m.route, m.params);
+        manageHooks(() => {
+          m.route.route instanceof RegExp ?
+            handler(...(m.match.slice(1, m.match.length))) :
+            handler(m.params, GETParameters);
+        }, m.route.hooks, m.params, this._genericHooks);
+      }, this._genericHooks);
       return m;
     } else if (this._defaultHandler && (
         onlyURL === '' ||
@@ -271,15 +275,21 @@ Navigo.prototype = {
         isHashedRoot(onlyURL, this._useHash, this._hash)
     )) {
       manageHooks(() => {
-        this._lastRouteResolved = { url: onlyURL, query: GETParameters };
-        this._defaultHandler.handler(GETParameters);
-      }, this._defaultHandler);
+        manageHooks(() => {
+          this._callLeave();
+          this._lastRouteResolved = { url: onlyURL, query: GETParameters, hooks: this._defaultHandler.hooks };
+          this._defaultHandler.handler(GETParameters);
+        }, this._defaultHandler.hooks);
+      }, this._genericHooks);
       return true;
     } else if (this._notFoundHandler) {
       manageHooks(() => {
-        this._lastRouteResolved = { url: onlyURL, query: GETParameters };
-        this._notFoundHandler.handler(GETParameters);
-      }, this._notFoundHandler);
+        manageHooks(() => {
+          this._callLeave();
+          this._lastRouteResolved = { url: onlyURL, query: GETParameters, hooks: this._notFoundHandler.hooks };
+          this._notFoundHandler.handler(GETParameters);
+        }, this._notFoundHandler.hooks);
+      }, this._genericHooks);
     }
     return false;
   },
@@ -346,6 +356,9 @@ Navigo.prototype = {
   getLinkPath(link) {
     return link.pathname || link.getAttribute('href');
   },
+  hooks(hooks) {
+    this._genericHooks = hooks;
+  },
   _add: function (route, handler = null, hooks = null) {
     if (typeof route === 'string') {
       route = encodeURI(route);
@@ -400,6 +413,11 @@ Navigo.prototype = {
   },
   _onLocationChange: function () {
     this.resolve();
+  },
+  _callLeave() {
+    if (this._lastRouteResolved && this._lastRouteResolved.hooks && this._lastRouteResolved.hooks.leave) {
+      this._lastRouteResolved.hooks.leave();
+    }
   }
 };
 

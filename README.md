@@ -228,11 +228,12 @@ There is an API that allows you to run functions before firing a route handler. 
 ```js
 {
   before: function (done, params) { ... done(); },
-  after: function (params) { ... }
+  after: function (params) { ... },
+  leave: function (params) { ... }
 }
 ```
 
-You may specify only one (or both) hooks. The `before` hook accepts a function which you *must* invoke once you finish your job. Here is an examples:
+You may specify only one of the hooks. The `before` hook accepts a function which you *must* invoke once you finish your job. Here is an examples:
 
 ```js
 router.on(
@@ -246,7 +247,10 @@ router.on(
       done();
     },
     after: function (params) {
-      console.log('Data saved.');
+      // after resolving
+    },
+    leave: function (params) {
+      // when you are going out of the that route
     }
   }
 );
@@ -276,6 +280,18 @@ You may provide hooks in two other cases:
 
 * While specifying a main/root handler `router.on(function() { ... }, hooks)`
 * While specifying a not-found page handler `router.notFound(function() { ... }, hooks)`
+
+#### Generic hooks
+
+It is possible to set a `before` and/or `after` hooks for all the routes:
+
+```js
+var router = new Navigo();
+router.hooks({
+  before: () => { ... }),
+  after: () => { ... })
+});
+```
 
 *Also notice that both hooks receive `params` in case they are attached to a parameterized route.*
 
