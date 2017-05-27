@@ -59,10 +59,10 @@ describe('Given the helper methods', function () {
 
   describe('when we use `clear` method', function () {
     it('should remove forward slashes', function () {
-      expect(clean('/test/something/')).to.be.equal('/test/something');
+      expect(clean('/test/something/')).to.be.equal('^/test/something');
     });
     it('should remove multiple forward slashes', function () {
-      expect(clean('///test/something///')).to.be.equal('/test/something');
+      expect(clean('///test/something///')).to.be.equal('^/test/something');
     });
     it('should leave the regular expression untouched', function () {
       expect(clean(/(\d)/).toString()).to.be.equal(/(\d)/.toString());
@@ -79,14 +79,11 @@ describe('Given the helper methods', function () {
       expect(match('http://site.com/app/users/', routes('missing'))).to.be.false;
     });
     it('should match and return parameters', function () {
-      expect(match('http://site.com/app/users/42', routes('/users/:id')).params).to.be.deep.equal({ id: '42' });
+      expect(match('http://site.com/app/users/42', routes('http://site.com/app/users/:id')).params).to.be.deep.equal({ id: '42' });
     });
     it('should match multiple parameters', function () {
-      expect(match('http://site.com/app/users/42/save', routes('/users/:id/:action')).params)
+      expect(match('http://site.com/app/users/42/save', routes('http://site.com/app/users/:id/:action')).params)
         .to.be.deep.equal({ id: '42', action: 'save' });
-    });
-    it('should deal properly with multiple finds of same pattern', function () {
-      expect(match('http://site.com/a/b/c/', routes('/c')).match.index).to.be.equal(19);
     });
     it('should not greedily match extra parameters at the end of a url if not terminated by a wildcard', function () {
       expect(match('/app/users/', routes('/app'))).to.be.false;

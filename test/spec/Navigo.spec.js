@@ -63,7 +63,7 @@ describe('Given an instance of Navigo', function () {
           router = new Navigo(null, true);
           handler = sinon.spy();
           router.on({ [route]: handler });
-          router.resolve('/someapp/route');
+          router.resolve('/route');
           expect(handler).to.be.calledOnce;
           handler.reset();
         });
@@ -99,7 +99,7 @@ describe('Given an instance of Navigo', function () {
         router = new Navigo(null, true);
         handler = sinon.spy();
         router.on({ '/user/:id/:action': handler });
-        router.resolve('site.com/app/user/42/edit');
+        router.resolve('/user/42/edit');
         expect(handler).to.be.calledWith({ id: '42', action: 'edit' });
       });
     });
@@ -126,9 +126,9 @@ describe('Given an instance of Navigo', function () {
         router = new Navigo(null, true);
 
         router.on('/users', handler);
-        router.resolve('site.com/app/users');
+        router.resolve('/users');
         router.destroy();
-        router.resolve('site.com/app/users');
+        router.resolve('/users');
         expect(handler).to.be.calledOnce;
       });
     });
@@ -141,7 +141,7 @@ describe('Given an instance of Navigo', function () {
             var r = new Navigo('site.com', true);
 
             r.on('/:foo', handler);
-            r.resolve('site.com/' + bit);
+            r.resolve('/' + bit);
             expect(handler).to.be.calledOnce.and.to.be.calledWith({ foo: 'bar' });
           });
         });

@@ -32,7 +32,7 @@ function Navigo(r, useHash, hash) {
 
 function clean(s) {
   if (s instanceof RegExp) return s;
-  return s.replace(/\/+$/, '').replace(/^\/+/, '/');
+  return s.replace(/\/+$/, '').replace(/^\/+/, '^/');
 }
 
 function regExpResultToParams(match, names) {
@@ -54,8 +54,7 @@ function replaceDynamicURLParts(route) {
     regexp = route;
   } else {
     regexp = new RegExp(
-      clean(route)
-      .replace(Navigo.PARAMETER_REGEXP, function (full, dots, name) {
+      route.replace(Navigo.PARAMETER_REGEXP, function (full, dots, name) {
         paramNames.push(name);
         return Navigo.REPLACE_VARIABLE_REGEXP;
       })
@@ -76,8 +75,8 @@ function compareUrlDepth(urlA, urlB) {
 function findMatchedRoutes(url, routes = []) {
   return routes
     .map(route => {
-      var { regexp, paramNames } = replaceDynamicURLParts(route.route);
-      var match = url.match(regexp);
+      var { regexp, paramNames } = replaceDynamicURLParts(clean(route.route));
+      var match = url.replace(/^\/+/, '/').match(regexp);
       var params = regExpResultToParams(match, paramNames);
 
       return match ? { match, route, params } : false;
@@ -90,22 +89,18 @@ function match(url, routes) {
 }
 
 function root(url, routes) {
-  var matched = findMatchedRoutes(
-    url,
-    routes.filter(route => {
-      let u = clean(route.route);
-
-      return u !== '' && u !== '*';
-    })
+  var matched = routes.map(
+    route => route.route === '' || route.route === '*' ? url : url.split(new RegExp(route.route + '($|\/)'))[0]
   );
   var fallbackURL = clean(url);
 
-  if (matched.length > 0) {
-    return matched
-      .map(m => clean(url.substr(0, m.match.index)))
-      .reduce((root, current) => {
-        return current.length < root.length ? current : root;
-      }, fallbackURL);
+  if (matched.length > 1) {
+    return matched.reduce((result, url) => {
+      if (result.length > url.length) result = url;
+      return result;
+    }, matched[0]);
+  } else if (matched.length === 1) {
+    return matched[0];
   }
   return fallbackURL;
 }
@@ -122,7 +117,7 @@ function extractGETParameters(url) {
 }
 
 function getOnlyURL(url, useHash, hash) {
-  var onlyURL = url.split(/\?(.*)?$/)[0];
+  var onlyURL = url.split(/\?(.*)?$/)[0], split;
 
   if (typeof hash === 'undefined') {
     // To preserve BC
@@ -131,6 +126,9 @@ function getOnlyURL(url, useHash, hash) {
 
   if (isPushStateAvailable() && !useHash) {
     onlyURL = onlyURL.split(hash)[0];
+  } else {
+    split = onlyURL.split(hash);
+    onlyURL = split.length > 1 ? onlyURL.split(hash)[1] : split[0];
   }
 
   return onlyURL;
