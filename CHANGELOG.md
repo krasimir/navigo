@@ -1,3 +1,7 @@
+## 5.0.1
+
+It looks like calling History push or replace state doesn't trigger a popstate event. So we indeed have to call `resolve`. This version fixes that and `navigate` works again.
+
 ## 5.0.0
 
 Issue [#128](https://github.com/krasimir/navigo/issues/128) made me rethink how Navigo handles routes. The route matching is based on regular expressions and one of them was not quite ok. That's now fixed as part of this latest release. However, these updates change how Navigo uses the registered routes so it may break your app.

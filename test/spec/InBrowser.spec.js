@@ -63,6 +63,22 @@ describe('Given the Navigo library on the page', function () {
     });
   });
   describe('when using the history API based routing', function () {
+    describe('and we use the navigate method', function () {
+      it('should handle page routing', function (done) {
+        router = new Navigo('/', false);
+
+        let handler = sinon.spy();
+
+        router.on('page', handler);
+
+        router.navigate('page');
+
+        setTimeout(function () {
+          expect(handler).to.be.calledOnce;
+          done();
+        }, 200);
+      });
+    });
     it('should handle page routing', function () {
       router = new Navigo('/', false);
 

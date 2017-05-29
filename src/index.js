@@ -183,6 +183,7 @@ Navigo.prototype = {
       to = (!absolute ? this._getRoot() + '/' : '') + path.replace(/^\/+/, '/');
       to = to.replace(/([^:])(\/{2,})/g, '$1/');
       history[this._paused ? 'replaceState' : 'pushState']({}, '', to);
+      this.resolve();
     } else if (typeof window !== 'undefined') {
       path = path.replace(new RegExp('^' + this._hash), '');
       window.location.href =
