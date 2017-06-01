@@ -313,7 +313,7 @@ Navigo.prototype = {
 
           if (!self._destroyed) {
             e.preventDefault();
-            self.navigate(clean(location));
+            self.navigate(location.replace(/\/+$/, '').replace(/^\/+/, '/'));
           }
         });
         link.hasListenerAttached = true;

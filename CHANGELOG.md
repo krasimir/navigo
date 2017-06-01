@@ -1,3 +1,7 @@
+## 5.0.2
+
+Good call by [Daniel Bernhard](https://github.com/huevoncito) that my updates on the `clear` method actually breaks the links with `data-navigo`. This release fixes that.
+
 ## 5.0.1
 
 It looks like calling History push or replace state doesn't trigger a popstate event. So we indeed have to call `resolve`. This version fixes that and `navigate` works again.
