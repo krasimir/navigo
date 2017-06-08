@@ -244,20 +244,24 @@ Navigo.prototype = {
     let GETParameters = extractGETParameters(current || this._cLoc());
     let onlyURL = getOnlyURL(url, this._useHash, this._hash);
 
+    if (this._paused) return false;
+
     if (
-      this._paused ||
-      (
         this._lastRouteResolved &&
         onlyURL === this._lastRouteResolved.url &&
         GETParameters === this._lastRouteResolved.query
-      )
-    ) { return false; }
+    ) {
+      if (this._lastRouteResolved.hooks && this._lastRouteResolved.hooks.already) {
+        this._lastRouteResolved.hooks.already(this._lastRouteResolved.params);
+      }
+      return false;
+    }
 
     m = match(onlyURL, this._routes);
 
     if (m) {
       this._callLeave();
-      this._lastRouteResolved = { url: onlyURL, query: GETParameters, hooks: m.route.hooks };
+      this._lastRouteResolved = { url: onlyURL, query: GETParameters, hooks: m.route.hooks, params: m.params };
       handler = m.route.handler;
       manageHooks(() => {
         manageHooks(() => {

@@ -1,3 +1,7 @@
+## 5.1.0
+
+Adding `already` hook. [#136](https://github.com/krasimir/navigo/issues/136)
+
 ## 5.0.2
 
 Good call by [Daniel Bernhard](https://github.com/huevoncito) that my updates on the `clear` method actually breaks the links with `data-navigo`. This release fixes that.

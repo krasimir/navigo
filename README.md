@@ -229,7 +229,8 @@ There is an API that allows you to run functions before firing a route handler. 
 {
   before: function (done, params) { ... done(); },
   after: function (params) { ... },
-  leave: function (params) { ... }
+  leave: function (params) { ... },
+  already: function (params) { ... }
 }
 ```
 
