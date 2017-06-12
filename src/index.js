@@ -269,7 +269,7 @@ Navigo.prototype = {
             handler(...(m.match.slice(1, m.match.length))) :
             handler(m.params, GETParameters);
         }, m.route.hooks, m.params, this._genericHooks);
-      }, this._genericHooks);
+      }, this._genericHooks, m.params);
       return m;
     } else if (this._defaultHandler && (
         onlyURL === '' ||

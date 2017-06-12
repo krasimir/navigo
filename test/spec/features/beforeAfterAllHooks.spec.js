@@ -22,12 +22,22 @@ describe('Given the Navigo library on the page', function () {
       handler = sinon.spy();
       router.on({ '/user/:name': handler });
       router.resolve('/user/Krasimir%20Tsonev');
-      expect(handler).be.called;
-      expect(handler).be.calledWith({
-        name: 'Krasimir Tsonev'
-      });
-      expect(beforeAll).to.be.calledOnce;
-      expect(afterAll).to.be.calledOnce;
+      expect(handler)
+        .be.calledOnce
+        .and.to.be.calledWith({
+          name: 'Krasimir Tsonev'
+        });
+      expect(beforeAll)
+        .to.be.calledOnce
+        .and.to.be.calledWith(
+          sinon.match.func,
+          { name: 'Krasimir Tsonev' }
+        );
+      expect(afterAll)
+        .to.be.calledOnce
+        .and.to.be.calledWith({
+          name: 'Krasimir Tsonev'
+        });
     });
   });
   describe('and we set beforeAll and afterAll hooks on a defaultHandler handler', function () {

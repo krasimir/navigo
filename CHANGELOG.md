@@ -1,3 +1,7 @@
+## 5.2.0
+
+Sending matched route parameters to the general hooks. [#137](https://github.com/krasimir/navigo/issues/137)
+
 ## 5.1.0
 
 Adding `already` hook. [#136](https://github.com/krasimir/navigo/issues/136)
