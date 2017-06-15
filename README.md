@@ -290,7 +290,7 @@ It is possible to set a `before` and/or `after` hooks for all the routes:
 var router = new Navigo();
 router.hooks({
   before: (done, params) => { ... }),
-  after: (done, params) => { ... })
+  after: (params) => { ... })
 });
 ```
 
