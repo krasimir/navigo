@@ -1,12 +1,12 @@
 import Navigo from '../../../lib/navigo';
-// import { getBrowser } from '../../args';
+import { getBrowser } from '../../args';
 
 var router;
-// var browser = getBrowser();
+var browser = getBrowser();
 
 describe('Given the Navigo library on the page', function () {
   describe('and the feature described in #147', function () {
-    it('should provide an API for changing the history API method', function () {
+    (browser === 'PhantomJS' ? it.skip : it)('should provide an API for changing the history API method', function () {
 
       sinon.spy(window.history, 'pushState');
       sinon.spy(window.history, 'replaceState');
