@@ -404,6 +404,8 @@ describe('Given the Navigo library on the page', function () {
 
       router.on('/members', handler).resolve();
       expect(handler).to.be.calledOnce;
+
+      delete window.__NAVIGO_WINDOW_LOCATION_MOCK__;
     });
   });
 });

@@ -312,6 +312,7 @@ router.hooks({
 * `router.notFound(function)` - adding a handler for not-found URL (404 page)
 * `router.lastRouteResolved()` - returns an object with the format of `{ url: <string>, query: <string> }` matching the latest resolved route
 * `router.getLinkPath` - you may overwrite that function to provide a different mechanism for fetching paths from links which are currently on the page (with `data-navigo` attribute)
+* `router.historyAPIUpdateMethod` - by default Navigo uses History.pushState and changes that to History.replaceState if the router is `pause`d. If you need to always use `pushState` even if the router is `pause`d use this method like `router.historyAPIUpdateMethod('pushState')` after calling `pause`.
 
 There are couple of static properties. You'll probably never need to touch them but here're they:
 

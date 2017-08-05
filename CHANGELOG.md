@@ -1,3 +1,7 @@
+## 5.3.0
+
+Adding a new API method `historyAPIUpdateMethod`.
+
 ## 5.2.0
 
 Sending matched route parameters to the general hooks. [#137](https://github.com/krasimir/navigo/issues/137)

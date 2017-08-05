@@ -19,6 +19,7 @@ function Navigo(r, useHash, hash) {
   this._usePushState = !useHash && isPushStateAvailable();
   this._onLocationChange = this._onLocationChange.bind(this);
   this._genericHooks = null;
+  this._historyAPIUpdateMethod = 'pushState';
 
   if (r) {
     this.root = useHash ? r.replace(/\/$/, '/' + this._hash) : r.replace(/\/$/, '');
@@ -182,7 +183,7 @@ Navigo.prototype = {
     if (this._usePushState) {
       to = (!absolute ? this._getRoot() + '/' : '') + path.replace(/^\/+/, '/');
       to = to.replace(/([^:])(\/{2,})/g, '$1/');
-      history[this._paused ? 'replaceState' : 'pushState']({}, '', to);
+      history[this._historyAPIUpdateMethod]({}, '', to);
       this.resolve();
     } else if (typeof window !== 'undefined') {
       path = path.replace(new RegExp('^' + this._hash), '');
@@ -344,9 +345,19 @@ Navigo.prototype = {
   },
   pause: function (status = true) {
     this._paused = status;
+    if (status) {
+      this._historyAPIUpdateMethod = 'replaceState';
+    } else {
+      this._historyAPIUpdateMethod = 'pushState';
+    }
   },
   resume: function () {
     this.pause(false);
+  },
+  historyAPIUpdateMethod: function (value) {
+    if (typeof value === 'undefined') return this._historyAPIUpdateMethod;
+    this._historyAPIUpdateMethod = value;
+    return value;
   },
   disableIfAPINotAvailable: function () {
     if (!isPushStateAvailable()) {
