@@ -239,6 +239,7 @@ describe('Given an instance of Navigo', function () {
         expect(handler)
           .to.be.calledOnce
           .and.to.be.calledWith({ tripId: '42' });
+        expect(router.lastRouteResolved().name).to.equal('trip.edit');
       });
       it('should set the routes in order of depth', function () {
         var handler = sinon.spy();

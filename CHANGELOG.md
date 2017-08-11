@@ -1,3 +1,7 @@
+## 5.3.1
+
+The `lastRouteResolved` now returns a `name` property for the [named routes](https://github.com/krasimir/navigo#named-routes).
+
 ## 5.3.0
 
 Adding a new API method `historyAPIUpdateMethod`.

@@ -262,7 +262,13 @@ Navigo.prototype = {
 
     if (m) {
       this._callLeave();
-      this._lastRouteResolved = { url: onlyURL, query: GETParameters, hooks: m.route.hooks, params: m.params };
+      this._lastRouteResolved = {
+        url: onlyURL,
+        query: GETParameters,
+        hooks: m.route.hooks,
+        params: m.params,
+        name: m.route.name
+      };
       handler = m.route.handler;
       manageHooks(() => {
         manageHooks(() => {
@@ -300,7 +306,7 @@ Navigo.prototype = {
   destroy: function () {
     this._routes = [];
     this._destroyed = true;
-    clearTimeout(this._listenningInterval);
+    clearTimeout(this._listeningInterval);
     if (typeof window !== 'undefined') {
       window.removeEventListener('popstate', this._onLocationChange);
       window.removeEventListener('hashchange', this._onLocationChange);
@@ -408,7 +414,7 @@ Navigo.prototype = {
           cached = current;
           this.resolve();
         }
-        this._listenningInterval = setTimeout(check, 200);
+        this._listeningInterval = setTimeout(check, 200);
       };
       check();
     }
