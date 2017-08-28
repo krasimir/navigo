@@ -178,12 +178,16 @@ Navigo.prototype = {
   },
   navigate: function (path, absolute) {
     var to;
+    var this2 = this;
 
     path = path || '';
     if (this._usePushState) {
       to = (!absolute ? this._getRoot() + '/' : '') + path.replace(/^\/+/, '/');
       to = to.replace(/([^:])(\/{2,})/g, '$1/');
-      history[this._historyAPIUpdateMethod]({}, '', to);
+      this._canLeave(function () {
+        history[this2._historyAPIUpdateMethod]({}, '', to);
+        this2.resolve();
+      });
       this.resolve();
     } else if (typeof window !== 'undefined') {
       path = path.replace(new RegExp('^' + this._hash), '');
@@ -284,18 +288,18 @@ Navigo.prototype = {
         onlyURL === this._hash ||
         isHashedRoot(onlyURL, this._useHash, this._hash)
     )) {
+      this._callLeave();
       manageHooks(() => {
         manageHooks(() => {
-          this._callLeave();
           this._lastRouteResolved = { url: onlyURL, query: GETParameters, hooks: this._defaultHandler.hooks };
           this._defaultHandler.handler(GETParameters);
         }, this._defaultHandler.hooks);
       }, this._genericHooks);
       return true;
     } else if (this._notFoundHandler) {
+      this._callLeave();
       manageHooks(() => {
         manageHooks(() => {
-          this._callLeave();
           this._lastRouteResolved = { url: onlyURL, query: GETParameters, hooks: this._notFoundHandler.hooks };
           this._notFoundHandler.handler(GETParameters);
         }, this._notFoundHandler.hooks);
@@ -438,6 +442,22 @@ Navigo.prototype = {
     if (this._lastRouteResolved && this._lastRouteResolved.hooks && this._lastRouteResolved.hooks.leave) {
       this._lastRouteResolved.hooks.leave();
     }
+  },
+  _canLeave: function _canLeave(callBack) {
+    if (this._lastRouteResolved && this._lastRouteResolved.hooks && this._lastRouteResolved.hooks.canLeave) {
+      this._lastRouteResolved.hooks.canLeave(function (resolve) {
+
+        var shouldResolve = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+        if (shouldResolve) {
+          return callBack();
+        }
+        return false;
+      });
+    } else {
+      return callBack();
+    }
+
   }
 };
 
