@@ -118,19 +118,22 @@ function extractGETParameters(url) {
 }
 
 function getOnlyURL(url, useHash, hash) {
-  var onlyURL = url.split(/\?(.*)?$/)[0], split;
+  var onlyURL, split;
 
   if (typeof hash === 'undefined') {
     // To preserve BC
     hash = '#';
   }
 
-  split = onlyURL.split(hash);
+  split = url.split(hash);
   if (isPushStateAvailable() && !useHash) {
     onlyURL = split[0];
   } else {
     onlyURL = split.length > 1 ? split[1] : split[0];
   }
+
+  // remove query string
+  onlyURL = onlyURL.split(/\?(.*)?$/)[0];
 
   return onlyURL;
 }
