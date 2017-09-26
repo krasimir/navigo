@@ -9,14 +9,14 @@ function isPushStateAvailable() {
 function Navigo(r, useHash, hash) {
   this.root = null;
   this._routes = [];
-  this._useHash = useHash;
-  this._hash = typeof hash === 'undefined' ? '#' : hash;
   this._paused = false;
   this._destroyed = false;
   this._lastRouteResolved = null;
   this._notFoundHandler = null;
   this._defaultHandler = null;
-  this._usePushState = !useHash && isPushStateAvailable();
+  this._usePushState = useHash !== true && isPushStateAvailable();
+  this._useHash = !this._usePushState;
+  this._hash = typeof hash === 'undefined' ? '#' : hash;
   this._onLocationChange = this._onLocationChange.bind(this);
   this._genericHooks = null;
   this._historyAPIUpdateMethod = 'pushState';
@@ -118,19 +118,22 @@ function extractGETParameters(url) {
 }
 
 function getOnlyURL(url, useHash, hash) {
-  var onlyURL = url.split(/\?(.*)?$/)[0], split;
+  var onlyURL, split;
 
   if (typeof hash === 'undefined') {
     // To preserve BC
     hash = '#';
   }
 
+  split = url.split(hash);
   if (isPushStateAvailable() && !useHash) {
-    onlyURL = onlyURL.split(hash)[0];
+    onlyURL = split[0];
   } else {
-    split = onlyURL.split(hash);
-    onlyURL = split.length > 1 ? onlyURL.split(hash)[1] : split[0];
+    onlyURL = split.length > 1 ? split[1] : split[0];
   }
+
+  // remove query string
+  onlyURL = onlyURL.split(/\?(.*)?$/)[0];
 
   return onlyURL;
 }
