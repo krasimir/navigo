@@ -125,11 +125,11 @@ function getOnlyURL(url, useHash, hash) {
     hash = '#';
   }
 
+  split = onlyURL.split(hash);
   if (isPushStateAvailable() && !useHash) {
-    onlyURL = onlyURL.split(hash)[0];
+    onlyURL = split[0];
   } else {
-    split = onlyURL.split(hash);
-    onlyURL = split.length > 1 ? onlyURL.split(hash)[1] : split[0];
+    onlyURL = split.length > 1 ? split[1] : split[0];
   }
 
   return onlyURL;
