@@ -118,7 +118,7 @@ function extractGETParameters(url) {
 }
 
 function getOnlyURL(url, useHash, hash) {
-  var onlyURL = url.split(/\?(.*)?$/)[0], split;
+  var onlyURL = url, split;
 
   if (typeof hash === 'undefined') {
     // To preserve BC
@@ -126,10 +126,10 @@ function getOnlyURL(url, useHash, hash) {
   }
 
   if (isPushStateAvailable() && !useHash) {
-    onlyURL = onlyURL.split(hash)[0];
+    onlyURL = url.split(/\?(.*)?$/)[0].split(hash)[0];
   } else {
-    split = onlyURL.split(hash);
-    onlyURL = split.length > 1 ? onlyURL.split(hash)[1] : split[0];
+    split = url.split(hash);
+    onlyURL = split.length > 1 ? split[1] : split[0];
   }
 
   return onlyURL;
@@ -174,7 +174,8 @@ Navigo.prototype = {
   helpers: {
     match,
     root,
-    clean
+    clean,
+    getOnlyURL
   },
   navigate: function (path, absolute) {
     var to;

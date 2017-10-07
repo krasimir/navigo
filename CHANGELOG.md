@@ -1,3 +1,7 @@
+## 5.3.2
+
+Fixing the behavior of `getOnlyURL` function.
+
 ## 5.3.1
 
 The `lastRouteResolved` now returns a `name` property for the [named routes](https://github.com/krasimir/navigo#named-routes).
