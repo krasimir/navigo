@@ -119,6 +119,7 @@ function extractGETParameters(url) {
 
 function getOnlyURL(url, useHash, hash) {
   var onlyURL = url, split;
+  var cleanGETParam = str => str.split(/\?(.*)?$/)[0];
 
   if (typeof hash === 'undefined') {
     // To preserve BC
@@ -126,10 +127,10 @@ function getOnlyURL(url, useHash, hash) {
   }
 
   if (isPushStateAvailable() && !useHash) {
-    onlyURL = url.split(/\?(.*)?$/)[0].split(hash)[0];
+    onlyURL = cleanGETParam(url).split(hash)[0];
   } else {
     split = url.split(hash);
-    onlyURL = split.length > 1 ? split[1] : split[0];
+    onlyURL = split.length > 1 ? cleanGETParam(split[1]) : cleanGETParam(split[0]);
   }
 
   return onlyURL;

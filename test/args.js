@@ -1,7 +1,7 @@
 module.exports = {
   getBrowser: function () {
-    if (process.argv[2]) {
-      return process.argv[2].replace('--browser=', '');
+    if (process.env.TESTING_IN) {
+      return process.env.TESTING_IN;
     }
     return 'PhantomJS';
   },

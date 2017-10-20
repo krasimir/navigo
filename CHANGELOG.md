@@ -1,3 +1,7 @@
+## 5.3.3
+
+Resolving the route when we use hash based URL and have no dynamic route [#162](https://github.com/krasimir/navigo/issues/162)
+
 ## 5.3.2
 
 Fixing the behavior of `getOnlyURL` function.
