@@ -1,3 +1,7 @@
+## 6.0.0
+
+When using a `data-navigo` links we now read from the `href` attribute only. The router is not using `pathname` anymore. I again got the pros and cons of both approaches and I see that using `pathname` actually does not make a lot of sense now.
+
 ## 5.3.3
 
 Resolving the route when we use hash based URL and have no dynamic route [#162](https://github.com/krasimir/navigo/issues/162)

@@ -376,7 +376,7 @@ Navigo.prototype = {
     return this._lastRouteResolved;
   },
   getLinkPath(link) {
-    return link.pathname || link.getAttribute('href');
+    return link.getAttribute('href');
   },
   hooks(hooks) {
     this._genericHooks = hooks;
