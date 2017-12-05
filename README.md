@@ -25,7 +25,7 @@ var router = new Navigo(root, useHash, hash);
 ```
 
 The constructor of the library accepts three argument - `root`, `useHash` and `hash`. The first one is the main URL of
-your application. If you call the constructor without parameters then Navigo figures out the root URL based on your routes.
+your application. If you call the constructor without parameters then Navigo figures out the root URL based on your routes. However, this proves to lead to bugs so I strongly recommend to set a `root` value.
 
 If `useHash` set to `true` then the router uses an old routing approach with hash in the URL. Navigo anyways falls back
 to this mode if there is no History API supported. The `hash` parameter allows you to configure the hash character. To
