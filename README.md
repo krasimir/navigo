@@ -11,7 +11,20 @@ A simple minimalistic JavaScript router with a fallback for older browsers.
 
 ## Installation
 
-Via npm with `npm install navigo` or drop `lib/navigo.min.js` into your page.
+Drop the following into your page:
+
+```html
+<script src="//unpkg.com/navigo@6"></script>
+``` 
+
+or use via npm:
+
+```bash
+npm install navigo --save
+```
+
+
+
 
 ## Usage
 
