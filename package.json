@@ -2,7 +2,8 @@
   "name": "navigo",
   "version": "6.0.0",
   "description": "A simple vanilla JavaScript router with a fallback for older browsers",
-  "main": "lib/navigo.js",
+  "main": "lib/navigo.js",  
+  "browser": "lib/navigo.min.js",  
   "jsnext:main": "src/index.js",
   "dependencies": {},
   "author": {
