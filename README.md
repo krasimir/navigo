@@ -23,9 +23,6 @@ or use via npm:
 npm install navigo --save
 ```
 
-
-
-
 ## Usage
 
 ### Initialization

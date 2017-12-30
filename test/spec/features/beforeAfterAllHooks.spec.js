@@ -103,7 +103,7 @@ describe('Given the Navigo library on the page', function () {
       expect(after).to.be.calledOnce;
       router.navigate('/something/else');
       setTimeout(() => {
-        expect(leave).to.be.calledOnce;
+        expect(leave).to.be.calledOnce.and.to.be.calledWith({ name: 'Krasimir Tsonev' });
         expect(notFound).to.be.calledOnce;
         done();
       }, 200);

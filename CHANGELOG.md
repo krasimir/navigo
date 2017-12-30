@@ -1,3 +1,7 @@
+## 6.0.2
+
+Make sure that the `leave` hook receives the URL params.
+
 ## 6.0.1
 
 unpkg as CDN.

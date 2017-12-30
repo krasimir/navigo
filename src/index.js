@@ -438,7 +438,7 @@ Navigo.prototype = {
   },
   _callLeave() {
     if (this._lastRouteResolved && this._lastRouteResolved.hooks && this._lastRouteResolved.hooks.leave) {
-      this._lastRouteResolved.hooks.leave();
+      this._lastRouteResolved.hooks.leave(this._lastRouteResolved.params);
     }
   }
 };
