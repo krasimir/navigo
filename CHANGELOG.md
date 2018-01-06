@@ -1,3 +1,7 @@
+## 7.0.0
+
+Fixing the behavior of the hooks #182 #174
+
 ## 6.0.2
 
 Make sure that the `leave` hook receives the URL params.
