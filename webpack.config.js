@@ -14,7 +14,7 @@ if (env === 'build') {
   outputFile = appName + '.js';
 }
 
-var config = {
+module.exports = {
   entry: __dirname + '/src/index.js',
   devtool: 'source-map',
   output: {
@@ -33,7 +33,7 @@ var config = {
       },
       {
         test: /(\.jsx|\.js)$/,
-        loader: "eslint-loader",
+        loader: 'eslint-loader',
         exclude: /node_modules/
       }
     ]
@@ -44,5 +44,3 @@ var config = {
   },
   plugins: plugins
 };
-
-module.exports = config;

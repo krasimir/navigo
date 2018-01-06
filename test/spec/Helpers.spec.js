@@ -1,5 +1,5 @@
 import chai from 'chai';
-import Navigo from '../../lib/navigo';
+import Navigo from '../../src';
 
 chai.expect();
 

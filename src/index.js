@@ -144,11 +144,12 @@ function manageHooks(handler, hooks, params) {
         handler();
         hooks.after && hooks.after(params);
       }, params);
+      return;
     } else if (hooks.after) {
       handler();
       hooks.after && hooks.after(params);
+      return;
     }
-    return;
   }
   handler();
 };
@@ -308,6 +309,8 @@ Navigo.prototype = {
   destroy: function () {
     this._routes = [];
     this._destroyed = true;
+    this._lastRouteResolved = null;
+    this._genericHooks = null;
     clearTimeout(this._listeningInterval);
     if (typeof window !== 'undefined') {
       window.removeEventListener('popstate', this._onLocationChange);

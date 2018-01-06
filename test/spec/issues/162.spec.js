@@ -1,4 +1,4 @@
-import Navigo from '../../../lib/navigo';
+import Navigo from '../../../src';
 
 describe('Given the Navigo library on the page and the bug described in #162', function () {
   it('should properly resolve the route handler even tho there is no dynamic param', function () {

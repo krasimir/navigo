@@ -1,5 +1,5 @@
 /* global beforeEach, afterEach */
-import Navigo from '../../lib/navigo';
+import Navigo from '../../src';
 import { getBrowser } from '../args';
 
 var router;
@@ -222,8 +222,9 @@ describe('Given the Navigo library on the page', function () {
   });
   describe('and the problem described in issue #79', function () {
     it('should not resolve the handler', function (done) {
-      var router = new Navigo(null, true);
       var handler = sinon.spy();
+
+      router = new Navigo(null, true);
 
       router
         .on('r1', {

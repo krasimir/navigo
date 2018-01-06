@@ -1,13 +1,17 @@
 /* global beforeEach, afterEach */
-import Navigo from '../../../lib/navigo';
+import Navigo from '../../../src';
 // import { getBrowser } from '../../args';
 
 var router;
 // var browser = getBrowser();
 
 describe('Given the Navigo library on the page', function () {
-  beforeEach(function () {});
-  afterEach(function () {});
+  beforeEach(function () {
+    
+  });
+  afterEach(function () {
+    router.destroy();
+  });
   describe('and we set beforeAll and afterAll hooks', function () {
     it('should call the hooks', function () {
       var handler = sinon.spy();
@@ -19,9 +23,9 @@ describe('Given the Navigo library on the page', function () {
         before: beforeAll,
         after: afterAll
       });
-      handler = sinon.spy();
       router.on({ '/user/:name': handler });
       router.resolve('/user/Krasimir%20Tsonev');
+
       expect(handler)
         .be.calledOnce
         .and.to.be.calledWith({

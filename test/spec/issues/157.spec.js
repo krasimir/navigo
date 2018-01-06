@@ -1,4 +1,4 @@
-import Navigo from '../../../lib/navigo';
+import Navigo from '../../../src';
 
 describe('Given the getOnlyURL helper', function () {
   describe('when we use a hash based URL', function () {

@@ -1,5 +1,4 @@
-import Navigo from '../../../lib/navigo';
-// import { getBrowser } from '../../args';
+import Navigo from '../../../src';
 
 var router;
 // var browser = getBrowser();

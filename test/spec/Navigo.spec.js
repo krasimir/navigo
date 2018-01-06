@@ -1,4 +1,4 @@
-import Navigo from '../../lib/navigo';
+import Navigo from '../../src';
 
 var router, handler;
 
@@ -10,7 +10,7 @@ describe('Given an instance of Navigo', function () {
     Navigo.MATCH_REGEXP_FLAGS = '';
   });
 
-  afterEach(function(){
+  afterEach(function () {
     router.destroy();
   });
 

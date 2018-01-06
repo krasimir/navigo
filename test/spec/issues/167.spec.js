@@ -1,4 +1,4 @@
-import Navigo from '../../../lib/navigo';
+import Navigo from '../../../src';
 
 describe('Given the issue #167', function () {
   it('should have parameterized routes that work', function () {
