@@ -1,18 +1,5 @@
-var webpack = require('webpack');
-var UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
-var env = process.env.WEBPACK_ENV;
-var path = require('path');
-
 var appName = 'navigo';
-
-var plugins = [], outputFile;
-
-if (env === 'build') {
-  plugins.push(new UglifyJsPlugin({ minimize: true }));
-  outputFile = appName + '.min.js';
-} else {
-  outputFile = appName + '.js';
-}
+var outputFile = appName + '.js';
 
 module.exports = {
   entry: __dirname + '/src/index.js',
@@ -20,7 +7,7 @@ module.exports = {
   output: {
     path: __dirname + '/lib',
     filename: outputFile,
-    library: 'Navigo',
+    library: appName,
     libraryTarget: 'umd',
     umdNamedDefine: true
   },
@@ -28,7 +15,7 @@ module.exports = {
     loaders: [
       {
         test: /(\.jsx|\.js)$/,
-        loader: 'babel',
+        loader: 'babel-loader',
         exclude: /(node_modules|bower_components)/
       },
       {
@@ -37,10 +24,5 @@ module.exports = {
         exclude: /node_modules/
       }
     ]
-  },
-  resolve: {
-    root: path.resolve('./src'),
-    extensions: ['', '.js']
-  },
-  plugins: plugins
+  }
 };

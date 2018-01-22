@@ -59,8 +59,8 @@ function replaceDynamicURLParts(route) {
         paramNames.push(name);
         return Navigo.REPLACE_VARIABLE_REGEXP;
       })
-      .replace(Navigo.WILDCARD_REGEXP, Navigo.REPLACE_WILDCARD) + Navigo.FOLLOWED_BY_SLASH_REGEXP
-    , Navigo.MATCH_REGEXP_FLAGS);
+        .replace(Navigo.WILDCARD_REGEXP, Navigo.REPLACE_WILDCARD) + Navigo.FOLLOWED_BY_SLASH_REGEXP
+      , Navigo.MATCH_REGEXP_FLAGS);
   }
   return { regexp, paramNames };
 }
@@ -107,10 +107,7 @@ function root(url, routes) {
 }
 
 function isHashChangeAPIAvailable() {
-  return !!(
-    typeof window !== 'undefined' &&
-    'onhashchange' in window
-  );
+  return typeof window !== 'undefined' && 'onhashchange' in window;
 }
 
 function extractGETParameters(url) {
@@ -152,7 +149,7 @@ function manageHooks(handler, hooks, params) {
     }
   }
   handler();
-};
+}
 
 function isHashedRoot(url, useHash, hash) {
   if (isPushStateAvailable() && !useHash) {
@@ -165,12 +162,8 @@ function isHashedRoot(url, useHash, hash) {
 
   let split = url.split(hash);
 
-  if (split.length < 2 || split[1] === '') {
-    return true;
-  }
-
-  return false;
-};
+  return split.length < 2 || split[1] === '';
+}
 
 Navigo.prototype = {
   helpers: {
@@ -251,7 +244,7 @@ Navigo.prototype = {
     if (this._paused) return false;
 
     if (
-        this._lastRouteResolved &&
+      this._lastRouteResolved &&
         onlyURL === this._lastRouteResolved.url &&
         GETParameters === this._lastRouteResolved.query
     ) {
@@ -282,7 +275,7 @@ Navigo.prototype = {
       }, this._genericHooks, m.params);
       return m;
     } else if (this._defaultHandler && (
-        onlyURL === '' ||
+      onlyURL === '' ||
         onlyURL === '/' ||
         onlyURL === this._hash ||
         isHashedRoot(onlyURL, this._useHash, this._hash)
@@ -388,16 +381,15 @@ Navigo.prototype = {
     if (typeof route === 'string') {
       route = encodeURI(route);
     }
-    if (typeof handler === 'object') {
-      this._routes.push({
+    this._routes.push(
+      typeof handler === 'object' ? {
         route,
         handler: handler.uses,
         name: handler.as,
         hooks: hooks || handler.hooks
-      });
-    } else {
-      this._routes.push({ route, handler, hooks: hooks });
-    }
+      } : { route, handler, hooks: hooks }
+    );
+
     return this._add;
   },
   _getRoot: function () {
@@ -440,8 +432,10 @@ Navigo.prototype = {
     this.resolve();
   },
   _callLeave() {
-    if (this._lastRouteResolved && this._lastRouteResolved.hooks && this._lastRouteResolved.hooks.leave) {
-      this._lastRouteResolved.hooks.leave(this._lastRouteResolved.params);
+    const lastRouteResolved = this._lastRouteResolved;
+
+    if (lastRouteResolved && lastRouteResolved.hooks && lastRouteResolved.hooks.leave) {
+      lastRouteResolved.hooks.leave(lastRouteResolved.params);
     }
   }
 };

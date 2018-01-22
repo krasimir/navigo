@@ -10,23 +10,23 @@ function loadHTML(url, id) {
   req.open('GET', url);
   req.send();
   req.onload = () => {
-    $id(id).innerHTML = req.responseText; 
-  }
+    $id(id).innerHTML = req.responseText;
+  };
 }
 
 // use #! to hash
 router = new Navigo(null, true, '#!');
 router.on({
   // 'view' is the id of the div element inside which we render the HTML
-  'firstroute': () => { loadHTML('./templates/first.html', 'view') },
-  'secondroute': () => { loadHTML('./templates/second.html', 'view') },
-  'thirdroute': () => { loadHTML('./templates/third.html', 'view') }  
+  'firstroute': () => { loadHTML('./templates/first.html', 'view'); },
+  'secondroute': () => { loadHTML('./templates/second.html', 'view'); },
+  'thirdroute': () => { loadHTML('./templates/third.html', 'view'); }
 });
 
 // set the default route
 router.on(() => { $id('view').innerHTML = '<h2>Here by default</h2>'; });
 
 // set the 404 route
-router.notFound((query) => { $id('view').innerHTML = '<h3>Couldn\'t find the page you\'re looking for...</h3>'; })
+router.notFound((query) => { $id('view').innerHTML = '<h3>Couldn\'t find the page you\'re looking for...</h3>'; });
 
 router.resolve();
