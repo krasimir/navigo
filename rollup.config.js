@@ -46,8 +46,14 @@ if (process.env.BUILD === 'production') {
 } else {
   outputs.push({
     name: 'Navigo',
-    format: 'cjs',
+    format: 'umd',
     file: path.join(__dirname, 'lib', 'navigo.js'),
+    sourcemap: false
+  });
+  outputs.push({
+    name: 'Navigo',
+    format: 'cjs',
+    file: path.join(__dirname, 'lib', 'navigo.cjs.js'),
     sourcemap: false
   });
   outputs.push({
