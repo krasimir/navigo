@@ -2,7 +2,7 @@
 
   $path = str_replace('index.php', '' , $_SERVER['SCRIPT_NAME']);
   $root = "http://".$_SERVER['HTTP_HOST'].$path;
-  $navigoURL = '../lib/navigo.js';
+  $navigoURL = '../../lib/navigo.js';
 
 ?><!DOCTYPE html>
 <html lang="en">
