@@ -212,9 +212,9 @@ The resolving of the routes happen when `resolve` method is fired which happen:
 [Sometimes](https://github.com/krasimir/navigo/issues/18) you need to update the URL but you don't want to resolve your callbacks. In such cases you may call `.pause()` and do `.navigate('new/url/here')`. For example:
 
 ```js
-r.pause();
-r.navigate('/en/products');
-r.resume(); // or .pause(false)
+router.pause();
+router.navigate('/en/products');
+router.resume(); // or .pause(false)
 ```
 
 The route will be changed to `/en/products` but if you have a handler for that path will not be executed.
