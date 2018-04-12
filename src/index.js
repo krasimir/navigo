@@ -318,6 +318,7 @@ Navigo.prototype = {
     this._findLinks().forEach(link => {
       if (!link.hasListenerAttached) {
         link.addEventListener('click', function (e) {
+          if((e.ctrlKey || e.metaKey) && e.target.tagName.toLowerCase() == 'a'){ return false; }
           var location = self.getLinkPath(link);
 
           if (!self._destroyed) {
