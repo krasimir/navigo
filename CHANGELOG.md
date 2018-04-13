@@ -1,3 +1,7 @@
+## 7.1.2
+
+Open in new tab when Ctrl-key is pressed (#199)
+
 ## 7.0.0
 
 Fixing the behavior of the hooks #182 #174
