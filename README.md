@@ -38,8 +38,7 @@ The constructor of the library accepts three argument - `root`, `useHash` and `h
 your application. If you call the constructor without parameters then Navigo figures out the root URL based on your routes. However, this proves to lead to bugs so I strongly recommend to set a `root` value.
 
 If `useHash` set to `true` then the router uses an old routing approach with hash in the URL. Navigo anyways falls back
-to this mode if there is no History API supported. The `hash` parameter allows you to configure the hash character. To
-make your URLs crawlable by Google you should use use '#!'. Read more at [developers.google.com](https://developers.google.com/webmasters/ajax-crawling/docs/learn-more).
+to this mode if there is no History API supported. The `hash` parameter allows you to configure the hash character.
 
 ### Adding a route
 
