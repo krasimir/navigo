@@ -263,7 +263,8 @@ Navigo.prototype = {
         query: GETParameters,
         hooks: m.route.hooks,
         params: m.params,
-        name: m.route.name
+        name: m.route.name,
+        route: m.route.route
       };
       handler = m.route.handler;
       manageHooks(() => {
