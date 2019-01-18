@@ -34,10 +34,10 @@ var hash = '#!'; // Defaults to: '#'
 var router = new Navigo(root, useHash, hash);
 ```
 
-The constructor of the library accepts three argument - `root`, `useHash` and `hash`. The first one is the main URL of
+The constructor of the library accepts three arguments - `root`, `useHash` and `hash`. The first one is the main URL of
 your application. If you call the constructor without parameters then Navigo figures out the root URL based on your routes. However, this proves to lead to bugs so I strongly recommend to set a `root` value.
 
-If `useHash` set to `true` then the router uses an old routing approach with hash in the URL. Navigo anyways falls back
+If `useHash` is set to `true` then the router uses an old routing approach with hash in the URL. Navigo anyways falls back
 to this mode if there is no History API supported. The `hash` parameter allows you to configure the hash character.
 
 ### Adding a route
@@ -118,7 +118,7 @@ router.notFound(function (query) {
 
 ```js
 router
-  .on(/users\/(\d+)\/(\w+)\/?/, function (id, action) {
+  .on(/user\/(\d+)\/(\w+)\/?/, function (id, action) {
     // If we have http://site.com/user/42/save as a url then
     // id = 42
     // action = save
