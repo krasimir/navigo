@@ -185,6 +185,7 @@ Navigo.prototype = {
       path = path.replace(new RegExp('^' + this._hash), '');
       window.location.href =
         window.location.href
+          .replace(window.location.origin,'')
           .replace(/#$/, '')
           .replace(new RegExp(this._hash + '.*$'), '') + this._hash + path;
     }
