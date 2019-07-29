@@ -1,8 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<head></head>
+<head>
+
+    <style>
+        p > a {
+          border: solid 1px #555;
+          padding: 5px 25px;
+          display: inline-block;
+          max-width: 100px;
+          text-decoration: none;
+          font-size: 1.3rem;
+          margin: 0px 4px;
+          border-radius: 25px;
+      }
+
+      p>a:hover, p>a:active {
+    color: #FFF;
+    background-color: #551a8b;
+    border-color: #551a8b;
+}
+        </style>
+
+</head>
 <body>
+  <p style="padding: 10px;">
+    <a href="#!firstroute">firstroute</a> 
+    <a href="#!secondroute">secondroute</a> 
+    <a href="#!thirdroute">thirdroute</a> 
+  </p>
+  
   <h1>Hello routing world</h1>
   <div id="view"></div>
   <script src="../../lib/navigo.js"></script>
