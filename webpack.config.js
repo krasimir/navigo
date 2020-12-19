@@ -1,13 +1,11 @@
 /* global __dirname, require, module*/
 
-const webpack = require("webpack");
 const path = require("path");
 const yargs = require("yargs");
 const env = yargs.argv.env; // use --env with webpack 2
-const pkg = require("./package.json");
 const shouldExportToAMD = yargs.argv.amd;
 
-let libraryName = pkg.name;
+let libraryName = "Navigo";
 
 let outputFile, mode;
 
@@ -25,13 +23,14 @@ if (env === "build") {
 
 const config = {
   mode: mode,
-  entry: __dirname + "/src/index.js",
+  entry: __dirname + "/src/index.ts",
   devtool: "source-map",
   output: {
     path: __dirname + "/lib",
     filename: outputFile,
     library: libraryName,
     libraryTarget: shouldExportToAMD ? "amd" : "umd",
+    libraryExport: "default",
     umdNamedDefine: true,
     globalObject: "typeof self !== 'undefined' ? self : this",
   },
