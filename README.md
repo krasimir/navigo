@@ -1,3 +1,3 @@
 # Navigo
 
-Dependency-free JavaScript router
+Vanilla JavaScript router
