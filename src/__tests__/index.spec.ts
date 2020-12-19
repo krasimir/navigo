@@ -49,11 +49,46 @@ describe("Given the Navigo library", () => {
   });
   describe("when resolving routes", () => {
     [
-      ["", "", {}],
+      ["", "", { data: null, params: null }],
       ["", "/foo/bar", false],
-      ["/foo/bar", "/foo/bar", {}],
-      ["/foo/bar", "/foo/bar/", {}],
+      ["/foo/bar", "/foo/bar", { data: null, params: null }],
+      ["/foo/bar", "/foo/bar/", { data: null, params: null }],
       ["/foo/bar", "/foo/moo", false],
+      ["/foo/bar", "/foo/:name", { data: { name: "bar" }, params: null }],
+      [
+        "/foo/a/b",
+        "/foo/:id/:name",
+        { data: { id: "a", name: "b" }, params: null },
+      ],
+      [
+        "/foo/a/b?m=n&k=z",
+        "/foo/:id/:name",
+        { data: { id: "a", name: "b" }, params: { m: "n", k: "z" } },
+      ],
+      [
+        "/foo/a/b?zzz=%D0%BE%D1%81%D1%82%D0%B0%D0%B2%D0%BA%D0%B0&building=Empire%20State%20Building%26something&animal=bear&",
+        "/foo/:id/:name",
+        {
+          data: { id: "a", name: "b" },
+          params: {
+            animal: "bear",
+            building: "Empire State Building&something",
+            zzz: "оставка",
+          },
+        },
+      ],
+      [
+        "/foo/a/b?m=n&k=z&k=y",
+        "/foo/:id/:name",
+        { data: { id: "a", name: "b" }, params: { m: "n", k: ["z", "y"] } },
+      ],
+      [
+        "/yes-it-works/",
+        ":foo",
+        { data: { foo: "yes-it-works" }, params: null },
+      ],
+      ["/foo/a/b?m=n", "/foo/*", { data: null, params: { m: "n" } }],
+      ["/foo/a/b?m=n", "*", { data: null, params: { m: "n" } }],
     ].forEach(([location, path, expectedResult]) => {
       it(`should ${
         expectedResult ? "match" : "not match"
