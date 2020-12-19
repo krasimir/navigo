@@ -1,0 +1,47 @@
+{
+    "name": "@types/eslint",
+    "version": "7.2.6",
+    "description": "TypeScript definitions for eslint",
+    "license": "MIT",
+    "contributors": [
+        {
+            "name": "Pierre-Marie Dartus",
+            "url": "https://github.com/pmdartus",
+            "githubUsername": "pmdartus"
+        },
+        {
+            "name": "Jed Fox",
+            "url": "https://github.com/j-f1",
+            "githubUsername": "j-f1"
+        },
+        {
+            "name": "Saad Quadri",
+            "url": "https://github.com/saadq",
+            "githubUsername": "saadq"
+        },
+        {
+            "name": "Jason Kwok",
+            "url": "https://github.com/JasonHK",
+            "githubUsername": "JasonHK"
+        },
+        {
+            "name": "Brad Zacher",
+            "url": "https://github.com/bradzacher",
+            "githubUsername": "bradzacher"
+        }
+    ],
+    "main": "",
+    "types": "index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+        "directory": "types/eslint"
+    },
+    "scripts": {},
+    "dependencies": {
+        "@types/estree": "*",
+        "@types/json-schema": "*"
+    },
+    "typesPublisherContentHash": "cc723455fed3f546efa58b85cf25e998118c610b26cbe13b5edfbd7012a0aac5",
+    "typeScriptVersion": "3.3"
+}

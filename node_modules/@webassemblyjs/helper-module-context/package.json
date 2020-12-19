@@ -1,0 +1,27 @@
+{
+  "name": "@webassemblyjs/helper-module-context",
+  "version": "1.9.1",
+  "description": "",
+  "main": "lib/index.js",
+  "module": "esm/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xtuc/webassemblyjs.git"
+  },
+  "dependencies": {
+    "@webassemblyjs/ast": "1.9.1"
+  },
+  "devDependencies": {
+    "@webassemblyjs/wast-parser": "1.9.1",
+    "mamacro": "^0.0.7"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Sven Sauleau",
+  "license": "MIT",
+  "gitHead": "697a5f63048049e9ecb3205d789c1e80eaadf478"
+}
