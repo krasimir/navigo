@@ -1,0 +1,6 @@
+{
+  "name": "navigo-example",
+  "scripts": {
+    "start": "node ./server.js"
+  }
+}

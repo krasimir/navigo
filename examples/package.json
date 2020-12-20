@@ -1,0 +1,12 @@
+{
+  "name": "navigo-examples",
+  "version": "0.1.0",
+  "description": "Examples of the Navigo router",
+  "main": "index.js",
+  "author": "Krasimir Tsonev",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "express": "4.17.1"
+  }
+}

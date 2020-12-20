@@ -1,12 +1,3 @@
-type Route = {
-  path: string;
-  handler: Function;
-};
-type Match = {
-  data: Object | null;
-  params: Object | null;
-};
-
 const PARAMETER_REGEXP = /([:*])(\w+)/g;
 const WILDCARD_REGEXP = /\*/g;
 const REPLACE_VARIABLE_REGEXP = "([^/]+)";
@@ -62,6 +53,9 @@ function matchRoute(currentPath: string, route: Route): false | Match {
   const match = current.match(regexp);
   if (match) {
     return {
+      url: current,
+      queryString: GETParams,
+      route: route,
       data: regExpResultToParams(match, paramNames),
       params: GETParams === "" ? null : parseQuery(GETParams),
     };
@@ -71,6 +65,7 @@ function matchRoute(currentPath: string, route: Route): false | Match {
 
 export default function Navigo(r?: string) {
   let root: string = "/";
+  let current: Match = null;
   const routes: Route[] = [];
 
   if (!r) {
@@ -80,7 +75,6 @@ export default function Navigo(r?: string) {
   } else {
     root = r;
   }
-
   function on(path: string | Function | Object, handler?: Function) {
     if (typeof path === "object") {
       Object.keys(path).forEach((p) => this.on(p, path[p]));
@@ -92,14 +86,31 @@ export default function Navigo(r?: string) {
     routes.push({ path: clean(path as string), handler });
     return this;
   }
-  function resolve(currentLocationPath?: string) {
-    if (typeof currentLocationPath !== "undefined") {
+  function resolve(currentLocationPath?: string): boolean | Match {
+    if (typeof currentLocationPath === "undefined") {
       if (typeof window !== "undefined") {
         currentLocationPath = clean(window.location.href);
       } else {
         currentLocationPath = root;
       }
     }
+    for (let i = 0; i < routes.length; i++) {
+      const match: false | Match = matchRoute(currentLocationPath, routes[i]);
+      if (match) {
+        if (
+          current &&
+          current.route === routes[i] &&
+          current.url === match.url &&
+          current.queryString === match.queryString
+        ) {
+          return false;
+        }
+        current = match;
+        routes[i].handler(match);
+        return match;
+      }
+    }
+    return false;
   }
 
   this.routes = routes;

@@ -1,0 +1,20 @@
+body {
+  font-size: 20px;
+  background: black;
+  color: #999;
+  margin: 0;
+  padding: 2em;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+hr {
+  border-top: none;
+  border-bottom: dotted 1px #999;
+  margin: 1em 0;
+}
+a {
+  color: white;
+  text-decoration: underline;
+}
+a:hover {
+  color: #bada55;
+}
