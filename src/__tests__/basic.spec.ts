@@ -338,4 +338,11 @@ describe("Given the Navigo library", () => {
       querySelectorAll.mockRestore();
     });
   });
+  describe("when using the `link` method", () => {
+    it("should return the composed url", () => {
+      const r: Navigo = new Navigo("/my/root");
+
+      expect(r.link("something/else")).toEqual("/my/root/something/else");
+    });
+  });
 });

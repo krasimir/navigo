@@ -211,6 +211,9 @@ export default function Navigo(r?: string) {
     }
     return [];
   }
+  function link(path: string) {
+    return `/${root}/${clean(path)}`;
+  }
 
   this.destroyed = destroyed;
   this.routes = routes;
@@ -221,6 +224,7 @@ export default function Navigo(r?: string) {
   this.destroy = destroy;
   this.notFound = notFound;
   this.updatePageLinks = updatePageLinks;
+  this.link = link;
   this._matchRoute = matchRoute;
   this._clean = clean;
 

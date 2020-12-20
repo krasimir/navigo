@@ -1,3 +1,16 @@
+## 8.0.0
+
+This is a complete re-write of the router. I decided to be a bad guy and kill some features. This is in favor of having cleaner code and I hope more stable. The library was also doing bunch of assumptions for the root of your application which proved to be buggy and non-deterministic.
+
+* Changed APIs
+  * The constructor of the library now accepts only one argument - `root`. It defaults to `/` if not provided.
+
+* Deprecations
+  * Hash-based support for older browsers
+  * Regular expressions as route paths
+  * No "Named routes". There is no `generate` function also.
+  * No pausing of the router.
+
 ## 7.1.2
 
 Open in new tab when Ctrl-key is pressed (#199)

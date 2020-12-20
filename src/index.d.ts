@@ -28,6 +28,7 @@ interface Navigo {
   destroy(): void;
   notFound(handler: Function): Navigo;
   updatePageLinks(): Navigo;
+  link(path: string): string;
   _matchRoute(currentPath: string, route: Route): false | Match;
   _clean(path: string): string;
 }
