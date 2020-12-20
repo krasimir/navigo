@@ -31,6 +31,13 @@ describe("Given the Navigo library", () => {
       router.on("foo", () => {}).on("bar", () => {});
       expect(router.routes).toHaveLength(2);
     });
+    it("should start listening to the popstate event", () => {
+      const add = jest.spyOn(window, "addEventListener");
+      const r: Navigo = new Navigo("/");
+
+      expect(add).toBeCalledWith("popstate", expect.any(Function));
+      add.mockRestore();
+    });
   });
   describe("when using the clean helper function", () => {
     it("should remove the slashes from the beginning and end of the string", () => {
@@ -47,6 +54,7 @@ describe("Given the Navigo library", () => {
         ["/foo/", "foo"],
         ["/foo//", "foo"],
         ["/foo/bar/", "foo/bar"],
+        ["/", ""],
       ].forEach(([i, out]) => {
         expect(clean(i)).toEqual(out);
       });
@@ -169,6 +177,20 @@ describe("Given the Navigo library", () => {
       });
     });
   });
+  describe("when we have a no matching route", () => {
+    it("should log a warning and return false", () => {
+      const warn = jest.spyOn(console, "warn");
+      warn.mockImplementationOnce(() => {});
+      const r: Navigo = new Navigo("/");
+      const res = r.resolve();
+
+      expect(res).toEqual(false);
+      expect(warn).toBeCalledWith(
+        `Navigo: "/" didn't match any of the registered routes.`
+      );
+      warn.mockRestore();
+    });
+  });
   describe("when resolving a route", () => {
     it("should call our handler", () => {
       const r: Navigo = new Navigo("/");
@@ -221,6 +243,62 @@ describe("Given the Navigo library", () => {
       expect(handler.mock.calls[2][0]).toMatchObject({
         data: { id: "moo" },
         params: { a: "10" },
+      });
+    });
+  });
+  describe("when using the `off` method", () => {
+    it("should remove the handler from the routes", () => {
+      const r: Navigo = new Navigo("/");
+      const h = () => {};
+      r.on("/foo", () => {}).on("/bar", h);
+      expect(r.routes).toHaveLength(2);
+      r.off("foo").off(h);
+      expect(r.routes).toHaveLength(0);
+    });
+  });
+  describe("when navigating to a route", () => {
+    it("should push a new entry via the history api and resolve the route", () => {
+      const pushState = jest.spyOn(window.history, "pushState");
+      const r: Navigo = new Navigo("/");
+      const handler = jest.fn();
+
+      r.on("/foo/bar", handler).on("/about", handler).on("*", handler);
+
+      r.navigate("about");
+
+      expect(handler).toBeCalledTimes(1);
+      expect(handler.mock.calls[0][0]).toMatchObject({
+        route: expect.objectContaining({ path: "about" }),
+      });
+      expect(pushState).toBeCalledWith({}, "", "/about");
+      pushState.mockRestore();
+    });
+  });
+  describe("when destroying the router", () => {
+    it("should empty the routes array and remove the listener to popstate", () => {
+      const remove = jest.spyOn(window, "removeEventListener");
+      const r: Navigo = new Navigo("/");
+      r.on("foo", () => {});
+
+      r.destroy();
+
+      expect(r.routes).toHaveLength(0);
+      expect(remove).toBeCalledWith("popstate", expect.any(Function));
+    });
+  });
+  describe("when setting a not found handler", () => {
+    it("should fallback to that route if no handler is found", () => {
+      history.pushState({}, "", "/foo/bar?a=b");
+      const r: Navigo = new Navigo("/");
+      const notFound = jest.fn();
+      r.notFound(notFound).resolve();
+
+      expect(notFound).toBeCalledWith({
+        data: null,
+        route: null,
+        url: "/foo/bar",
+        queryString: "a=b",
+        params: { a: "b" },
       });
     });
   });

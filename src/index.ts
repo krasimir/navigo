@@ -62,18 +62,35 @@ function matchRoute(currentPath: string, route: Route): false | Match {
   }
   return false;
 }
+function pushStateAvailable(): boolean {
+  return !!(
+    typeof window !== "undefined" &&
+    window.history &&
+    window.history.pushState
+  );
+}
 
 export default function Navigo(r?: string) {
   let root: string = "/";
   let current: Match = null;
-  const routes: Route[] = [];
+  let routes: Route[] = [];
+  let notFoundHandler: Function;
+  const isPushStateAvailable = pushStateAvailable();
+  const isWindowAvailable = typeof window !== "undefined";
 
   if (!r) {
     console.warn(
       'Navigo requires a root path in its constructor. If not provided will use "/" as default.'
     );
   } else {
-    root = r;
+    root = clean(r);
+  }
+
+  function getCurrentEnvURL(): string {
+    if (isWindowAvailable) {
+      return location.pathname + location.search + location.hash;
+    }
+    return root;
   }
   function on(path: string | Function | Object, handler?: Function) {
     if (typeof path === "object") {
@@ -88,11 +105,7 @@ export default function Navigo(r?: string) {
   }
   function resolve(currentLocationPath?: string): boolean | Match {
     if (typeof currentLocationPath === "undefined") {
-      if (typeof window !== "undefined") {
-        currentLocationPath = clean(window.location.href);
-      } else {
-        currentLocationPath = root;
-      }
+      currentLocationPath = getCurrentEnvURL();
     }
     for (let i = 0; i < routes.length; i++) {
       const match: false | Match = matchRoute(currentLocationPath, routes[i]);
@@ -110,12 +123,71 @@ export default function Navigo(r?: string) {
         return match;
       }
     }
+    if (notFoundHandler) {
+      const [url, queryString] = extractGETParameters(currentLocationPath);
+      notFoundHandler({
+        url,
+        queryString,
+        data: null,
+        route: null,
+        params: parseQuery(queryString),
+      });
+      return true;
+    }
+    console.warn(
+      `Navigo: "${currentLocationPath}" didn't match any of the registered routes.`
+    );
     return false;
+  }
+  function off(what: string | Function) {
+    if (typeof what === "string") {
+      this.routes = routes = routes.filter((r) => r.path !== what);
+    } else {
+      this.routes = routes = routes.filter((r) => r.handler !== what);
+    }
+    return this;
+  }
+  function navigate(to: string, options: NavigateTo = {}): void {
+    to = `${clean(root)}/${clean(to)}`;
+    if (isPushStateAvailable) {
+      history[options.historyAPIMethod || "pushState"](
+        options.stateObj || {},
+        options.title || "",
+        to
+      );
+    } else if (isWindowAvailable) {
+      window.location.href = to;
+    }
+    resolve();
+  }
+  function listen() {
+    if (isPushStateAvailable) {
+      this.__popstateListener = () => {
+        resolve();
+      };
+      window.addEventListener("popstate", this.__popstateListener);
+    }
+  }
+  function destroy() {
+    this.routes = routes = [];
+    if (isPushStateAvailable) {
+      window.removeEventListener("popstate", this.__popstateListener);
+    }
+  }
+  function notFound(handler) {
+    notFoundHandler = handler;
+    return this;
   }
 
   this.routes = routes;
   this.on = on;
+  this.off = off;
   this.resolve = resolve;
+  this.navigate = navigate;
+  this.destroy = destroy;
+  this.notFound = notFound;
   this._matchRoute = matchRoute;
   this._clean = clean;
+
+  listen.call(this);
 }
