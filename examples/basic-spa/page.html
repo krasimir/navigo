@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Navigo</title>
+    <link href="styles.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="content"></div>
+    <script src="navigo.js"></script>
+    <script>
+      const nav = `
+        <ul>
+          <li><a href="/" data-navigo>Home</a></li>
+          <li><a href="/about" data-navigo>About navigo</a></li>
+          <li><a href="/links" data-navigo>Links</a></li>
+        </ul>
+      `;
+      function renderHomePage() {
+        document.querySelector("#content").innerHTML = `
+          <h1>Navigo basic example</h1>
+          <hr />
+          ${nav}
+        `;
+      }
+      function renderAboutPage() {
+        document.querySelector("#content").innerHTML = `
+          <h1>Navigo basic example | About</h1>
+          <hr />
+          ${nav}
+          <hr />
+          <p>Navigo is vanilla JavaScript router. It has no dependencies.</p>
+        `;
+      }
+      function renderLinksPage() {
+        document.querySelector("#content").innerHTML = `
+          <h1>Navigo basic example | Other links</h1>
+          <hr />
+          ${nav}
+          <hr />
+          <p>
+            <a href="https://github.com/krasimir/navigo" target="_blank">Documentation</a><br />
+            <a href="https://www.npmjs.com/package/navigo" target="_blank">NPM package</a>
+          </p>
+        `;
+      }
+      window.addEventListener("load", () => {
+        const router = new Navigo("/");
+
+        router
+          .on("/about", renderAboutPage)
+          .on("/links", renderLinksPage)
+          .on("*", renderHomePage)
+          .resolve();
+      });
+    </script>
+  </body>
+</html>

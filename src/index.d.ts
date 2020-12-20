@@ -15,6 +15,7 @@ type NavigateTo = {
   stateObj?: Object;
 };
 interface Navigo {
+  destroyed: boolean;
   current: Match;
   routes: Route[];
   on(f: Function): Navigo;
@@ -26,6 +27,7 @@ interface Navigo {
   resolve(path?: string): false | Match;
   destroy(): void;
   notFound(handler: Function): Navigo;
+  updatePageLinks(): Navigo;
   _matchRoute(currentPath: string, route: Route): false | Match;
   _clean(path: string): string;
 }

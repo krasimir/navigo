@@ -284,6 +284,7 @@ describe("Given the Navigo library", () => {
 
       expect(r.routes).toHaveLength(0);
       expect(remove).toBeCalledWith("popstate", expect.any(Function));
+      expect(r.destroyed).toEqual(true);
     });
   });
   describe("when setting a not found handler", () => {
@@ -300,6 +301,41 @@ describe("Given the Navigo library", () => {
         queryString: "a=b",
         params: { a: "b" },
       });
+    });
+  });
+  describe("when we have data-navigo links on the page", () => {
+    it("should attach a click handler and call the navigate in case of we click on them", () => {
+      const querySelectorAll = jest.spyOn(document, "querySelectorAll");
+      const preventDefault = jest.fn();
+      const routeHandler = jest.fn();
+      let handler;
+
+      // @ts-ignore
+      querySelectorAll.mockImplementationOnce(() => {
+        return [
+          {
+            addEventListener(eventType, h) {
+              handler = h;
+            },
+            getAttribute() {
+              return "/foo/bar";
+            },
+          },
+        ];
+      });
+
+      const r: Navigo = new Navigo("/");
+      r.on("/foo/bar", routeHandler);
+
+      handler({
+        ctrlKey: false,
+        preventDefault,
+      });
+
+      expect(preventDefault).toBeCalledTimes(1);
+      expect(routeHandler).toBeCalledTimes(1);
+
+      querySelectorAll.mockRestore();
     });
   });
 });

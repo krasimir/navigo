@@ -75,6 +75,7 @@ export default function Navigo(r?: string) {
   let current: Match = null;
   let routes: Route[] = [];
   let notFoundHandler: Function;
+  let destroyed = false;
   const isPushStateAvailable = pushStateAvailable();
   const isWindowAvailable = typeof window !== "undefined";
 
@@ -120,6 +121,7 @@ export default function Navigo(r?: string) {
         }
         current = match;
         routes[i].handler(match);
+        updatePageLinks();
         return match;
       }
     }
@@ -132,6 +134,7 @@ export default function Navigo(r?: string) {
         route: null,
         params: parseQuery(queryString),
       });
+      updatePageLinks();
       return true;
     }
     console.warn(
@@ -173,12 +176,43 @@ export default function Navigo(r?: string) {
     if (isPushStateAvailable) {
       window.removeEventListener("popstate", this.__popstateListener);
     }
+    this.destroyed = destroyed = true;
   }
   function notFound(handler) {
     notFoundHandler = handler;
     return this;
   }
+  function updatePageLinks() {
+    if (!isWindowAvailable) return;
+    findLinks().forEach((link) => {
+      if (!link.hasListenerAttached) {
+        link.addEventListener("click", function (e) {
+          if (
+            (e.ctrlKey || e.metaKey) &&
+            e.target.tagName.toLowerCase() === "a"
+          ) {
+            return false;
+          }
+          const location = link.getAttribute("href");
 
+          if (!destroyed) {
+            e.preventDefault();
+            navigate(clean(location));
+          }
+        });
+        link.hasListenerAttached = true;
+      }
+    });
+    return this;
+  }
+  function findLinks() {
+    if (isWindowAvailable) {
+      return [].slice.call(document.querySelectorAll("[data-navigo]"));
+    }
+    return [];
+  }
+
+  this.destroyed = destroyed;
   this.routes = routes;
   this.on = on;
   this.off = off;
@@ -186,8 +220,10 @@ export default function Navigo(r?: string) {
   this.navigate = navigate;
   this.destroy = destroy;
   this.notFound = notFound;
+  this.updatePageLinks = updatePageLinks;
   this._matchRoute = matchRoute;
   this._clean = clean;
 
   listen.call(this);
+  updatePageLinks.call(this);
 }
