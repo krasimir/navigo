@@ -14,12 +14,16 @@ This is a complete re-write of the router. I decided to be a bad guy and kill so
       params: Object | null; // data coming in the query string
     };
     ```
+  * The History API method name amendment now happens in the second argument of the `navigate` method. No `historyAPIUpdateMethod` method is available any more.
+  * There is no `helpers` anymore. `getOnlyURL` is replaced by `extractGETParameters` and lives on the router instance.
 
 * Deprecations
   * Hash-based support for older browsers
   * Regular expressions as route paths
   * No "Named routes". There is no `generate` function also.
   * No pausing of the router.
+  * `historyAPIUpdateMethod` is deprecated.
+  * `helpers` is deprecated.
 
 ## 7.1.2
 

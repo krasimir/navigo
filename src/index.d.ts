@@ -30,12 +30,13 @@ interface Navigo {
   on(path: string, f: Function, hooks?: RouteHooks): Navigo;
   off(path: string): Navigo;
   off(handler: Function): Navigo;
-  navigate(to: string): void;
+  navigate(to: string, options?: NavigateTo): void;
   resolve(path?: string): false | Match;
   destroy(): void;
   notFound(handler: Function, hooks?: RouteHooks): Navigo;
   updatePageLinks(): Navigo;
   link(path: string): string;
+  hooks(hooks: RouteHooks): Navigo;
   _matchRoute(currentPath: string, route: Route): false | Match;
   _clean(path: string): string;
 }

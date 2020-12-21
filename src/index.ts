@@ -2,11 +2,11 @@ const PARAMETER_REGEXP = /([:*])(\w+)/g;
 const WILDCARD_REGEXP = /\*/g;
 const REPLACE_VARIABLE_REGEXP = "([^/]+)";
 const REPLACE_WILDCARD = "(?:.*)";
-const FOLLOWED_BY_SLASH_REGEXP = "(?:/$|$)";
+const START_BY_SLASH_REGEXP = "(?:/^|^)";
 const MATCH_REGEXP_FLAGS = "";
 
 function clean(s: string) {
-  return s.replace(/\/+$/, "").replace(/^\/+/, "");
+  return s.split("#")[0].replace(/\/+$/, "").replace(/^\/+/, "");
 }
 function regExpResultToParams(match, names: string[]) {
   if (names.length === 0) return null;
@@ -18,7 +18,7 @@ function regExpResultToParams(match, names: string[]) {
   }, null);
 }
 function extractGETParameters(url: string) {
-  const tmp = url.split(/\?(.*)?$/);
+  const tmp = clean(url).split(/\?(.*)?$/);
   return [tmp[0], tmp.slice(1).join("")];
 }
 function parseQuery(queryString: string): Object {
@@ -40,24 +40,39 @@ function parseQuery(queryString: string): Object {
 }
 function matchRoute(currentPath: string, route: Route): false | Match {
   const [current, GETParams] = extractGETParameters(clean(currentPath));
+  const params = GETParams === "" ? null : parseQuery(GETParams);
   const paramNames = [];
-  const regexp = new RegExp(
+  const pattern =
+    START_BY_SLASH_REGEXP +
     clean(route.path)
       .replace(PARAMETER_REGEXP, function (full, dots, name) {
         paramNames.push(name);
         return REPLACE_VARIABLE_REGEXP;
       })
-      .replace(WILDCARD_REGEXP, REPLACE_WILDCARD) + FOLLOWED_BY_SLASH_REGEXP,
-    MATCH_REGEXP_FLAGS
-  );
+      .replace(WILDCARD_REGEXP, REPLACE_WILDCARD) +
+    "$";
+  const regexp = new RegExp(pattern, MATCH_REGEXP_FLAGS);
   const match = current.match(regexp);
-  if (match) {
+  // console.log(current);
+  // console.log(regexp);
+  // console.log("result", match);
+  if (clean(route.path) === "") {
+    if (clean(current) === "") {
+      return {
+        url: current,
+        queryString: GETParams,
+        route: route,
+        data: null,
+        params,
+      };
+    }
+  } else if (match) {
     return {
       url: current,
       queryString: GETParams,
       route: route,
       data: regExpResultToParams(match, paramNames),
-      params: GETParams === "" ? null : parseQuery(GETParams),
+      params,
     };
   }
   return false;
@@ -71,11 +86,12 @@ function pushStateAvailable(): boolean {
 }
 
 export default function Navigo(r?: string) {
-  let root: string = "/";
+  let root = "/";
   let current: Match = null;
   let routes: Route[] = [];
   let notFoundRoute: Route;
   let destroyed = false;
+  let genericHooks: RouteHooks;
   const isPushStateAvailable = pushStateAvailable();
   const isWindowAvailable = typeof window !== "undefined";
 
@@ -106,7 +122,11 @@ export default function Navigo(r?: string) {
       handler = path as Function;
       path = root;
     }
-    routes.push({ path: clean(path as string), handler, hooks });
+    routes.push({
+      path: clean(path as string),
+      handler,
+      hooks: hooks || genericHooks,
+    });
     return this;
   }
   function hooksAndCallHandler(route: Route, match: Match) {
@@ -208,7 +228,7 @@ export default function Navigo(r?: string) {
     this.destroyed = destroyed = true;
   }
   function notFound(handler, hooks?: RouteHooks) {
-    notFoundRoute = { path: "/", handler, hooks };
+    notFoundRoute = { path: "/", handler, hooks: hooks || genericHooks };
     return this;
   }
   function updatePageLinks() {
@@ -243,6 +263,10 @@ export default function Navigo(r?: string) {
   function link(path: string) {
     return `/${root}/${clean(path)}`;
   }
+  function setGenericHooks(hooks: RouteHooks) {
+    genericHooks = hooks;
+    return this;
+  }
 
   this.destroyed = destroyed;
   this.routes = routes;
@@ -254,6 +278,8 @@ export default function Navigo(r?: string) {
   this.notFound = notFound;
   this.updatePageLinks = updatePageLinks;
   this.link = link;
+  this.hooks = setGenericHooks;
+  this.extractGETParameters = extractGETParameters;
   this._matchRoute = matchRoute;
   this._clean = clean;
 

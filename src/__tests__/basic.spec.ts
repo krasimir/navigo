@@ -167,21 +167,29 @@ describe("Given the Navigo library", () => {
       ],
       ["/foo/user/action/save", "/foo/user", false],
       ["/foo/user", "/foo/user/action/save", false],
-    ].forEach(([location, path, expectedResult]) => {
-      it(`should ${
-        expectedResult ? "match" : "not match"
-      } when we have "${location}" as location and "${path}" as route path`, () => {
-        const router: Navigo = new Navigo("/");
-        // @ts-ignore
-        expect(
-          router._matchRoute(location as string, {
-            path: path as string,
-            handler: () => {},
-          })
-        )[typeof expectedResult === "boolean" ? "toEqual" : "toMatchObject"](
-          expectedResult
-        );
-      });
+      ["/noo", "/", false],
+      ["/", "/", { data: null, params: null, url: "" }],
+      ["/rock/paper/scissors/", "/:moduleName", false],
+    ].forEach(([location, path, expectedResult, only]) => {
+      const f = only ? fit : it;
+      f(
+        `should ${
+          expectedResult ? "match" : "not match"
+        } when we have "${location}" as location and "${path}" as route path`,
+        () => {
+          const router: Navigo = new Navigo("/");
+          // @ts-ignore
+          expect(
+            router._matchRoute(location as string, {
+              path: path as string,
+              handler: () => {},
+              hooks: undefined,
+            })
+          )[typeof expectedResult === "boolean" ? "toEqual" : "toMatchObject"](
+            expectedResult
+          );
+        }
+      );
     });
   });
   describe("when we have a no matching route", () => {
@@ -551,6 +559,36 @@ describe("Given the Navigo library", () => {
       expect(h2).toBeCalledWith(expectedMatch);
       expect(h3).toBeCalledWith(expectedMatch);
       expect(order).toStrictEqual([2, 1, 3]);
+    });
+  });
+  describe("when using generic hooks", () => {
+    it("should set the generic hooks to every registered route", () => {
+      const r: Navigo = new Navigo("/");
+      const hooks = {
+        before: jest.fn().mockImplementation((done) => {
+          done();
+        }),
+        after: jest.fn(),
+      };
+      const h1 = jest.fn();
+      const h2 = jest.fn();
+      const h3 = jest.fn();
+
+      r.hooks(hooks);
+
+      r.notFound(h3);
+      r.on("/foo/bar", h1);
+      r.on("/", h2);
+
+      r.resolve("/foo/bar");
+      r.resolve("/");
+      r.resolve("/noo");
+
+      expect(hooks.before).toBeCalledTimes(3);
+      expect(hooks.after).toBeCalledTimes(3);
+      expect(h1).toBeCalledTimes(1);
+      expect(h2).toBeCalledTimes(1);
+      expect(h3).toBeCalledTimes(1);
     });
   });
 });
