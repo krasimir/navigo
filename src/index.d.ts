@@ -1,6 +1,13 @@
 type Route = {
   path: string;
   handler: Function;
+  hooks: RouteHooks;
+};
+type RouteHooks = {
+  before?: (done: Function, match: Match) => void;
+  after?: (match: Match) => void;
+  leave?: (match: Match) => void;
+  already?: (match: Match) => void;
 };
 type Match = {
   url: string;
@@ -18,9 +25,9 @@ interface Navigo {
   destroyed: boolean;
   current: Match;
   routes: Route[];
-  on(f: Function): Navigo;
-  on(map: Object): Navigo;
-  on(path: string, f: Function): Navigo;
+  on(f: Function, hooks?: RouteHooks): Navigo;
+  on(map: Object, hooks?: RouteHooks): Navigo;
+  on(path: string, f: Function, hooks?: RouteHooks): Navigo;
   off(path: string): Navigo;
   off(handler: Function): Navigo;
   navigate(to: string): void;

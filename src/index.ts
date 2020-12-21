@@ -93,7 +93,11 @@ export default function Navigo(r?: string) {
     }
     return root;
   }
-  function on(path: string | Function | Object, handler?: Function) {
+  function on(
+    path: string | Function | Object,
+    handler?: Function,
+    hooks?: RouteHooks
+  ) {
     if (typeof path === "object") {
       Object.keys(path).forEach((p) => this.on(p, path[p]));
       return this;
@@ -101,27 +105,51 @@ export default function Navigo(r?: string) {
       handler = path as Function;
       path = root;
     }
-    routes.push({ path: clean(path as string), handler });
+    routes.push({ path: clean(path as string), handler, hooks });
     return this;
+  }
+  function hooksAndCallHandler(route: Route, match: Match) {
+    const callHandler = () => {
+      if (current && current.route.hooks && current.route.hooks.leave) {
+        current.route.hooks.leave(match);
+      }
+      current = match;
+      route.handler(match);
+      updatePageLinks();
+      if (route.hooks && route.hooks.after) {
+        route.hooks.after(match);
+      }
+    };
+    if (route.hooks && route.hooks.before) {
+      route.hooks.before((shouldResolve: boolean) => {
+        if (typeof shouldResolve === "undefined" || shouldResolve === true) {
+          callHandler();
+        }
+      }, match);
+    } else {
+      callHandler();
+    }
   }
   function resolve(currentLocationPath?: string): boolean | Match {
     if (typeof currentLocationPath === "undefined") {
       currentLocationPath = getCurrentEnvURL();
     }
     for (let i = 0; i < routes.length; i++) {
-      const match: false | Match = matchRoute(currentLocationPath, routes[i]);
+      const route = routes[i];
+      const match: false | Match = matchRoute(currentLocationPath, route);
       if (match) {
         if (
           current &&
-          current.route === routes[i] &&
+          current.route === route &&
           current.url === match.url &&
           current.queryString === match.queryString
         ) {
+          if (current.route.hooks && current.route.hooks.already) {
+            current.route.hooks.already(match);
+          }
           return false;
         }
-        current = match;
-        routes[i].handler(match);
-        updatePageLinks();
+        hooksAndCallHandler(route, match);
         return match;
       }
     }

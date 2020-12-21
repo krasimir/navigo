@@ -1,18 +1,25 @@
 import Navigo from "../index";
 
 describe("Given the Navigo library", () => {
+  beforeEach(() => {
+    history.pushState({}, "", "/");
+  });
   describe("when creating a router", () => {
     it("should accept just a function to the `on` method", () => {
       const handler = jest.fn();
       const router: Navigo = new Navigo("/foo");
       router.on(handler);
-      expect(router.routes).toStrictEqual([{ path: "foo", handler }]);
+      expect(router.routes).toStrictEqual([
+        { path: "foo", handler, hooks: undefined },
+      ]);
     });
     it("should accept path and a function", () => {
       const handler = jest.fn();
       const router: Navigo = new Navigo("/foo");
       router.on("/bar", handler);
-      expect(router.routes).toStrictEqual([{ path: "bar", handler }]);
+      expect(router.routes).toStrictEqual([
+        { path: "bar", handler, hooks: undefined },
+      ]);
     });
     it("should accept object with paths and handlers", () => {
       const handler = jest.fn();
@@ -22,8 +29,8 @@ describe("Given the Navigo library", () => {
         b: handler,
       });
       expect(router.routes).toStrictEqual([
-        { path: "a", handler },
-        { path: "b", handler },
+        { path: "a", handler, hooks: undefined },
+        { path: "b", handler, hooks: undefined },
       ]);
     });
     it("should allow chaining of the `on` method", () => {
@@ -343,6 +350,137 @@ describe("Given the Navigo library", () => {
       const r: Navigo = new Navigo("/my/root");
 
       expect(r.link("something/else")).toEqual("/my/root/something/else");
+    });
+  });
+  describe("when using the `before` hook", () => {
+    it("should call the hook before resolving a handler", () => {
+      const r: Navigo = new Navigo("/");
+      const order = [];
+      const h1 = jest.fn().mockImplementation(() => order.push(1));
+      const h2 = jest.fn().mockImplementation(() => order.push(2));
+      const expectedMatch = {
+        data: { id: "100" },
+        params: { a: "b" },
+        queryString: "a=b",
+        route: expect.any(Object),
+        url: "foo/100",
+      };
+
+      r.on("/foo/:id", h1, {
+        before(done, match) {
+          h2(match);
+          done();
+        },
+      });
+
+      r.resolve("/foo/100?a=b");
+
+      expect(h2).toBeCalledWith(expectedMatch);
+      expect(h1).toBeCalledWith(expectedMatch);
+      expect(order).toStrictEqual([2, 1]);
+    });
+    it("should allow us to block the handler", () => {
+      const r: Navigo = new Navigo("/");
+      const h1 = jest.fn();
+      const h2 = jest.fn();
+
+      r.on("/foo", h1, {
+        before(done) {
+          h2();
+          done(false);
+        },
+      });
+
+      r.resolve("/foo");
+
+      expect(h2).toBeCalledTimes(1);
+      expect(h1).not.toBeCalled();
+    });
+  });
+  describe("when using the `after` hook", () => {
+    it("should fire the hook when the handler is resolved", () => {
+      const r: Navigo = new Navigo("/");
+      const order = [];
+      const h1 = jest.fn().mockImplementation(() => order.push(1));
+      const h2 = jest.fn().mockImplementation(() => order.push(2));
+      const expectedMatch = {
+        data: { id: "100" },
+        params: { a: "b" },
+        queryString: "a=b",
+        route: expect.any(Object),
+        url: "foo/100",
+      };
+
+      r.on("/foo/:id", h1, {
+        after(match) {
+          h2(match);
+        },
+      });
+
+      r.resolve("/foo/100?a=b");
+
+      expect(h2).toBeCalledWith(expectedMatch);
+      expect(h1).toBeCalledWith(expectedMatch);
+      expect(order).toStrictEqual([1, 2]);
+    });
+  });
+  describe("when using the `leave` hook", () => {
+    it("should fire the hook when we leave out of a route", () => {
+      const r: Navigo = new Navigo("/");
+      const order = [];
+      const h1 = jest.fn().mockImplementation(() => order.push(1));
+      const h2 = jest.fn().mockImplementation(() => order.push(2));
+      const h3 = jest.fn().mockImplementation(() => order.push(3));
+      const expectedMatch = {
+        data: { id: "100" },
+        params: { a: "b" },
+        queryString: "a=b",
+        route: expect.any(Object),
+        url: "foo/100",
+      };
+
+      r.on("/foo/:id", h2)
+        .on("/", h1, {
+          leave(match) {
+            h3(match);
+          },
+        })
+        .resolve();
+
+      r.resolve("/foo/100?a=b");
+
+      expect(h1).toBeCalledWith(expect.objectContaining({ url: "" }));
+      expect(h2).toBeCalledWith(expectedMatch);
+      expect(h3).toBeCalledWith(expectedMatch);
+      expect(order).toStrictEqual([1, 3, 2]);
+    });
+  });
+  describe("when using the `already` hook", () => {
+    it("should fire the hook when we are matching the same handler", () => {
+      const r: Navigo = new Navigo("/");
+      const order = [];
+      const h1 = jest.fn().mockImplementation(() => order.push(1));
+      const h2 = jest.fn().mockImplementation(() => order.push(2));
+      const expectedMatch = {
+        data: { id: "100" },
+        params: { a: "b" },
+        queryString: "a=b",
+        route: expect.any(Object),
+        url: "foo/100",
+      };
+
+      r.on("/foo/:id", h1, {
+        already(match) {
+          h2(match);
+        },
+      });
+
+      r.resolve("/foo/100?a=b");
+      r.resolve("/foo/100?a=b");
+
+      expect(h2).toBeCalledWith(expectedMatch);
+      expect(h1).toBeCalledWith(expectedMatch);
+      expect(order).toStrictEqual([1, 2]);
     });
   });
 });

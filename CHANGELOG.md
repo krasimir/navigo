@@ -4,6 +4,16 @@ This is a complete re-write of the router. I decided to be a bad guy and kill so
 
 * Changed APIs
   * The constructor of the library now accepts only one argument - `root`. It defaults to `/` if not provided.
+  * The handlers and hook functions accept now an object of type Match which has the following fields:
+    ```js
+    type Match = {
+      url: string;
+      queryString: string;
+      route: Route;
+      data: Object | null; // data coming in the URL
+      params: Object | null; // data coming in the query string
+    };
+    ```
 
 * Deprecations
   * Hash-based support for older browsers
