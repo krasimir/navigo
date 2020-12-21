@@ -74,7 +74,7 @@ export default function Navigo(r?: string) {
   let root: string = "/";
   let current: Match = null;
   let routes: Route[] = [];
-  let notFoundHandler: Function;
+  let notFoundRoute: Route;
   let destroyed = false;
   const isPushStateAvailable = pushStateAvailable();
   const isWindowAvailable = typeof window !== "undefined";
@@ -101,7 +101,8 @@ export default function Navigo(r?: string) {
     if (typeof path === "object") {
       Object.keys(path).forEach((p) => this.on(p, path[p]));
       return this;
-    } else if (typeof handler === "undefined") {
+    } else if (typeof path === "function") {
+      hooks = handler as RouteHooks;
       handler = path as Function;
       path = root;
     }
@@ -153,16 +154,16 @@ export default function Navigo(r?: string) {
         return match;
       }
     }
-    if (notFoundHandler) {
+    if (notFoundRoute) {
       const [url, queryString] = extractGETParameters(currentLocationPath);
-      notFoundHandler({
-        url,
+      notFoundRoute.path = clean(url);
+      hooksAndCallHandler(notFoundRoute, {
+        url: notFoundRoute.path,
         queryString,
         data: null,
-        route: null,
-        params: parseQuery(queryString),
+        route: notFoundRoute,
+        params: queryString !== "" ? parseQuery(queryString) : null,
       });
-      updatePageLinks();
       return true;
     }
     console.warn(
@@ -206,8 +207,8 @@ export default function Navigo(r?: string) {
     }
     this.destroyed = destroyed = true;
   }
-  function notFound(handler) {
-    notFoundHandler = handler;
+  function notFound(handler, hooks?: RouteHooks) {
+    notFoundRoute = { path: "/", handler, hooks };
     return this;
   }
   function updatePageLinks() {

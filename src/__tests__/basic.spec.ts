@@ -303,8 +303,12 @@ describe("Given the Navigo library", () => {
 
       expect(notFound).toBeCalledWith({
         data: null,
-        route: null,
-        url: "/foo/bar",
+        route: {
+          handler: expect.any(Function),
+          hooks: undefined,
+          path: "foo/bar",
+        },
+        url: "foo/bar",
         queryString: "a=b",
         params: { a: "b" },
       });
@@ -481,6 +485,72 @@ describe("Given the Navigo library", () => {
       expect(h2).toBeCalledWith(expectedMatch);
       expect(h1).toBeCalledWith(expectedMatch);
       expect(order).toStrictEqual([1, 2]);
+    });
+  });
+  describe("when passing hooks to the default handler", () => {
+    it("should use the hooks", () => {
+      const r: Navigo = new Navigo("/");
+      const order = [];
+      const h1 = jest.fn().mockImplementation(() => order.push(1));
+      const h2 = jest.fn().mockImplementation(() => order.push(2));
+      const h3 = jest.fn().mockImplementation(() => order.push(3));
+      const expectedMatch = {
+        data: null,
+        params: null,
+        queryString: "",
+        route: expect.any(Object),
+        url: "",
+      };
+
+      r.on(h1, {
+        before(done, match) {
+          h2(match);
+          done();
+        },
+        after(match) {
+          h3(match);
+        },
+      });
+
+      r.resolve("/");
+
+      expect(h1).toBeCalledWith(expectedMatch);
+      expect(h2).toBeCalledWith(expectedMatch);
+      expect(h3).toBeCalledWith(expectedMatch);
+      expect(order).toStrictEqual([2, 1, 3]);
+    });
+  });
+  describe("when passing hooks to the not found handler", () => {
+    it("should use the hooks", () => {
+      const r: Navigo = new Navigo("/");
+      const order = [];
+      const h1 = jest.fn().mockImplementation(() => order.push(1));
+      const h2 = jest.fn().mockImplementation(() => order.push(2));
+      const h3 = jest.fn().mockImplementation(() => order.push(3));
+      const expectedMatch = {
+        data: null,
+        params: null,
+        queryString: "",
+        route: expect.any(Object),
+        url: "wat",
+      };
+
+      r.notFound(h1, {
+        before(done, match) {
+          h2(match);
+          done();
+        },
+        after(match) {
+          h3(match);
+        },
+      });
+
+      r.resolve("/wat");
+
+      expect(h1).toBeCalledWith(expectedMatch);
+      expect(h2).toBeCalledWith(expectedMatch);
+      expect(h3).toBeCalledWith(expectedMatch);
+      expect(order).toStrictEqual([2, 1, 3]);
     });
   });
 });

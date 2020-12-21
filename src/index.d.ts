@@ -33,7 +33,7 @@ interface Navigo {
   navigate(to: string): void;
   resolve(path?: string): false | Match;
   destroy(): void;
-  notFound(handler: Function): Navigo;
+  notFound(handler: Function, hooks?: RouteHooks): Navigo;
   updatePageLinks(): Navigo;
   link(path: string): string;
   _matchRoute(currentPath: string, route: Route): false | Match;
