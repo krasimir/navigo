@@ -18,8 +18,9 @@ type Match = {
 };
 type NavigateTo = {
   title?: string;
-  historyAPIMethod?: string;
   stateObj?: Object;
+  historyAPIMethod?: string;
+  shouldResolve?: boolean;
 };
 interface Navigo {
   destroyed: boolean;

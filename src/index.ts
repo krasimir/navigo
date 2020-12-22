@@ -210,7 +210,12 @@ export default function Navigo(r?: string) {
     } else if (isWindowAvailable) {
       window.location.href = to;
     }
-    resolve();
+    if (
+      typeof options.shouldResolve === "undefined" ||
+      options.shouldResolve === true
+    ) {
+      resolve();
+    }
   }
   function listen() {
     if (isPushStateAvailable) {

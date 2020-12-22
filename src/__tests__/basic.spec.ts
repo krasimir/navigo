@@ -288,6 +288,27 @@ describe("Given the Navigo library", () => {
       expect(pushState).toBeCalledWith({}, "", "/about");
       pushState.mockRestore();
     });
+    it("should NOT resolve any routes if `shouldResolve` is set to `false`", () => {
+      const pushState = jest.spyOn(window.history, "pushState");
+      const r: Navigo = new Navigo("/");
+      const handler = jest.fn();
+
+      r.on("/foo", handler).on("/about", handler).on("*", handler);
+
+      r.navigate("about");
+      r.navigate("foo", { shouldResolve: false });
+      r.navigate("blah", { shouldResolve: false });
+
+      expect(handler).toBeCalledTimes(1);
+      expect(handler.mock.calls[0][0]).toMatchObject({
+        route: expect.objectContaining({ path: "about" }),
+      });
+      expect(pushState).toBeCalledTimes(3);
+      expect(pushState).toBeCalledWith({}, "", "/about");
+      expect(pushState).toBeCalledWith({}, "", "/foo");
+      expect(pushState).toBeCalledWith({}, "", "/blah");
+      pushState.mockRestore();
+    });
   });
   describe("when destroying the router", () => {
     it("should empty the routes array and remove the listener to popstate", () => {
@@ -589,11 +610,6 @@ describe("Given the Navigo library", () => {
       expect(h1).toBeCalledTimes(1);
       expect(h2).toBeCalledTimes(1);
       expect(h3).toBeCalledTimes(1);
-    });
-  });
-  describe("when pausing the router", () => {
-    it("should", () => {
-      //
     });
   });
 });

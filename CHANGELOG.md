@@ -30,7 +30,7 @@ This is a complete re-write of the router. I decided to be a bad guy and kill so
   * Hash-based support for older browsers
   * Regular expressions as route paths
   * No "Named routes". There is no `generate` function also.
-  * No pausing of the router.
+  * No pausing of the router. There is `shouldResolve` in the `navigate` method instead.
   * `historyAPIUpdateMethod` is deprecated.
   * `helpers` is deprecated.
 
@@ -48,6 +48,10 @@ This is a complete re-write of the router. I decided to be a bad guy and kill so
   router.root -> router.root
   router.clean -> router._clean
   router.getOnlyURL -> router.extractGETParameters
+  ```
+* If you used the `pause` and `resume` methods you have to migrate your app to use `shouldResolve` param of the `navigate` method. Or in other words when navigating to define whether you want to have route handling or not. Example:
+  ```js
+  router.navigate('/foo/bar', { shouldResolve: false });
   ```
 
 ## 7.1.2
