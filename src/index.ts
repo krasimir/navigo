@@ -311,6 +311,9 @@ export default function Navigo(r?: string) {
     }, "");
     return !result.match(/^\//) ? `/${result}` : result;
   }
+  function getLinkPath(link) {
+    return link.getAttribute("href");
+  }
 
   this.root = root;
   this.destroyed = destroyed;
@@ -327,6 +330,7 @@ export default function Navigo(r?: string) {
   this.extractGETParameters = extractGETParameters;
   this.lastResolved = lastResolved;
   this.generate = generate;
+  this.getLinkPath = getLinkPath;
   this._matchRoute = matchRoute;
   this._clean = clean;
 

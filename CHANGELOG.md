@@ -7,8 +7,9 @@ This is a complete re-write of the router. I decided to be a bad guy and kill/ch
 * Hash-based support for older browsers
 * Regular expressions as route paths
 * `pause` and `resume`. There is `shouldResolve` in the `navigate` method instead.
-* `historyAPIUpdateMethod`.
-* `helpers`.
+* `historyAPIUpdateMethod` method
+* `helpers` method
+* `disableIfAPINotAvailable` method
 
 ### Migration guide
 

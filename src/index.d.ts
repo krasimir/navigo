@@ -41,6 +41,7 @@ interface Navigo {
   lastResolved(): null | Match;
   generate(name: string, data?: Object): string;
   hooks(hooks: RouteHooks): Navigo;
+  getLinkPath(link: Object): string;
   _matchRoute(currentPath: string, route: Route): false | Match;
   _clean(path: string): string;
 }
