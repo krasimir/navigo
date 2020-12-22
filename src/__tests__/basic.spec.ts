@@ -591,4 +591,9 @@ describe("Given the Navigo library", () => {
       expect(h3).toBeCalledTimes(1);
     });
   });
+  describe("when pausing the router", () => {
+    it("should", () => {
+      //
+    });
+  });
 });

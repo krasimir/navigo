@@ -2,28 +2,53 @@
 
 This is a complete re-write of the router. I decided to be a bad guy and kill some features. This is in favor of having cleaner code and I hope more stable. The library was also doing bunch of assumptions for the root of your application which proved to be buggy and non-deterministic.
 
-* Changed APIs
-  * The constructor of the library now accepts only one argument - `root`. It defaults to `/` if not provided.
-  * The handlers and hook functions accept now an object of type Match which has the following fields:
-    ```js
-    type Match = {
-      url: string;
-      queryString: string;
-      route: Route;
-      data: Object | null; // data coming in the URL
-      params: Object | null; // data coming in the query string
-    };
-    ```
-  * The History API method name amendment now happens in the second argument of the `navigate` method. No `historyAPIUpdateMethod` method is available any more.
-  * There is no `helpers` anymore. `getOnlyURL` is replaced by `extractGETParameters` and lives on the router instance.
+### Changed APIs
 
-* Deprecations
+* The constructor of the library now accepts only one argument - `root`. It defaults to `/` if not provided.
+* The handlers and hook functions accept now an object of type `Match` which has the following fields:
+  ```js
+  type Match = {
+    url: string;
+    queryString: string;
+    route: Route;
+    data: Object | null; // data coming in the URL
+    params: Object | null; // data coming in the query string
+  };
+  ```
+  where `Route` is
+  ```js
+  type Route = {
+    path: string;
+    handler: Function;
+    hooks: RouteHooks;
+  };
+  ```
+* The History API method name amendment now happens in the second argument of the `navigate` method. No `historyAPIUpdateMethod` method is available any more.
+* There is no `helpers` anymore. `getOnlyURL` is replaced by `extractGETParameters` and lives on the router instance.
+
+### Deprecations
   * Hash-based support for older browsers
   * Regular expressions as route paths
   * No "Named routes". There is no `generate` function also.
   * No pausing of the router.
   * `historyAPIUpdateMethod` is deprecated.
   * `helpers` is deprecated.
+
+### Migration guide
+
+* Change the initialization of the router to accept a single argument - the root of your application.
+* Checkout your handlers if they read data from a parameterized URL or a GET param. If so make sure that they get the data from the single object passed to the function (an object of type `Match`)
+* If you are using `historyAPIUpdateMethod` you'll need to pass a `historyAPIMethod` field to the options of navigate. For example:
+  ```js
+  router.navigate('/foo/bar', { historyAPIMethod: 'replaceState' })
+  ```
+* I hope you didn't use `router.helpers` but if you do explore the alternatives:
+  ```js
+  router.match -> router._matchRoute
+  router.root -> router.root
+  router.clean -> router._clean
+  router.getOnlyURL -> router.extractGETParameters
+  ```
 
 ## 7.1.2
 

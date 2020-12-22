@@ -169,11 +169,14 @@ describe("Given the Navigo library", () => {
       expect(handler).toBeCalledWith(
         expect.objectContaining({ data: { id: "421" } })
       );
-      expect(alreadyHandler).to.be.calledOnce.and.to.be.calledWith({
-        id: "421",
-      });
-      expect(leaveHandler).to.be.calledOnce;
-      expect(aboutHandler).to.be.calledOnce;
+      expect(alreadyHandler).toBeCalledTimes(1);
+      expect(alreadyHandler).toBeCalledWith(
+        expect.objectContaining({
+          data: { id: "421" },
+        })
+      );
+      expect(leaveHandler).toBeCalledTimes(1);
+      expect(aboutHandler).toBeCalledTimes(1);
     });
   });
 });
