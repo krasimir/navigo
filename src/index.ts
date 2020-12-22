@@ -5,6 +5,20 @@ const REPLACE_WILDCARD = "(?:.*)";
 const START_BY_SLASH_REGEXP = "(?:/^|^)";
 const MATCH_REGEXP_FLAGS = "";
 
+function createRoute(
+  path: string,
+  handler: Function,
+  hooks: RouteHooks,
+  name?: string
+): Route {
+  path = clean(path);
+  return {
+    name: name || path,
+    path,
+    handler,
+    hooks,
+  };
+}
 function clean(s: string) {
   return s.split("#")[0].replace(/\/+$/, "").replace(/^\/+/, "");
 }
@@ -115,18 +129,21 @@ export default function Navigo(r?: string) {
     hooks?: RouteHooks
   ) {
     if (typeof path === "object") {
-      Object.keys(path).forEach((p) => this.on(p, path[p]));
+      Object.keys(path).forEach((p) => {
+        if (typeof path[p] === "function") {
+          this.on(p, path[p]);
+        } else {
+          const { uses: handler, as: name, hooks } = path[p];
+          routes.push(createRoute(p, handler, hooks || genericHooks, name));
+        }
+      });
       return this;
     } else if (typeof path === "function") {
       hooks = handler as RouteHooks;
       handler = path as Function;
       path = root;
     }
-    routes.push({
-      path: clean(path as string),
-      handler,
-      hooks: hooks || genericHooks,
-    });
+    routes.push(createRoute(path as string, handler, hooks || genericHooks));
     return this;
   }
   function hooksAndCallHandler(route: Route, match: Match) {
@@ -233,7 +250,12 @@ export default function Navigo(r?: string) {
     this.destroyed = destroyed = true;
   }
   function notFound(handler, hooks?: RouteHooks) {
-    notFoundRoute = { path: "/", handler, hooks: hooks || genericHooks };
+    notFoundRoute = createRoute(
+      "/",
+      handler,
+      hooks || genericHooks,
+      "__NOT_FOUND__"
+    );
     return this;
   }
   function updatePageLinks() {
@@ -272,6 +294,23 @@ export default function Navigo(r?: string) {
     genericHooks = hooks;
     return this;
   }
+  function lastResolved(): Match | null {
+    return current;
+  }
+  function generate(name: string, data?: Object): string {
+    const result = routes.reduce((result, route) => {
+      let key;
+
+      if (route.name === name) {
+        result = route.path;
+        for (key in data) {
+          result = result.replace(":" + key, data[key]);
+        }
+      }
+      return result;
+    }, "");
+    return !result.match(/^\//) ? `/${result}` : result;
+  }
 
   this.root = root;
   this.destroyed = destroyed;
@@ -286,6 +325,8 @@ export default function Navigo(r?: string) {
   this.link = link;
   this.hooks = setGenericHooks;
   this.extractGETParameters = extractGETParameters;
+  this.lastResolved = lastResolved;
+  this.generate = generate;
   this._matchRoute = matchRoute;
   this._clean = clean;
 

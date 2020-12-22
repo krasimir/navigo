@@ -10,7 +10,7 @@ describe("Given the Navigo library", () => {
       const router: Navigo = new Navigo("/foo");
       router.on(handler);
       expect(router.routes).toStrictEqual([
-        { path: "foo", handler, hooks: undefined },
+        { path: "foo", handler, hooks: undefined, name: "foo" },
       ]);
     });
     it("should accept path and a function", () => {
@@ -18,7 +18,7 @@ describe("Given the Navigo library", () => {
       const router: Navigo = new Navigo("/foo");
       router.on("/bar", handler);
       expect(router.routes).toStrictEqual([
-        { path: "bar", handler, hooks: undefined },
+        { path: "bar", handler, hooks: undefined, name: "bar" },
       ]);
     });
     it("should accept object with paths and handlers", () => {
@@ -29,8 +29,8 @@ describe("Given the Navigo library", () => {
         b: handler,
       });
       expect(router.routes).toStrictEqual([
-        { path: "a", handler, hooks: undefined },
-        { path: "b", handler, hooks: undefined },
+        { path: "a", handler, hooks: undefined, name: "a" },
+        { path: "b", handler, hooks: undefined, name: "b" },
       ]);
     });
     it("should allow chaining of the `on` method", () => {
@@ -44,6 +44,60 @@ describe("Given the Navigo library", () => {
 
       expect(add).toBeCalledWith("popstate", expect.any(Function));
       add.mockRestore();
+    });
+    describe('and when using "named routes"', () => {
+      it("should allow us to define routes", () => {
+        const r: Navigo = new Navigo("/");
+        const handler = jest.fn();
+        const hook = jest.fn().mockImplementation((done) => {
+          done();
+        });
+
+        r.on({
+          "/foo": { as: "my foo", uses: handler, hooks: { before: hook } },
+          "/bar": { as: "my bar", uses: handler },
+        });
+
+        r.resolve("foo");
+        r.resolve("bar");
+
+        expect(handler).toBeCalledTimes(2);
+        expect(handler).toBeCalledWith(
+          expect.objectContaining({
+            route: expect.objectContaining({ name: "my foo" }),
+          })
+        );
+        expect(handler).toBeCalledWith(
+          expect.objectContaining({
+            route: expect.objectContaining({ name: "my bar" }),
+          })
+        );
+        expect(r.lastResolved()).toStrictEqual({
+          data: null,
+          params: null,
+          queryString: "",
+          route: {
+            handler: expect.any(Function),
+            hooks: undefined,
+            name: "my bar",
+            path: "bar",
+          },
+          url: "bar",
+        });
+        expect(hook).toBeCalledTimes(1);
+      });
+      it("should allow us to generate a URL out of the named route", () => {
+        const r: Navigo = new Navigo("/");
+        const handler = jest.fn();
+
+        r.on({
+          "/foo/:id/:action": { as: "my foo", uses: handler },
+        });
+
+        expect(r.generate("my foo", { id: "xxx", action: "save" })).toEqual(
+          "/foo/xxx/save"
+        );
+      });
     });
   });
   describe("when using the clean helper function", () => {
@@ -181,6 +235,7 @@ describe("Given the Navigo library", () => {
           // @ts-ignore
           expect(
             router._matchRoute(location as string, {
+              name: path as string,
               path: path as string,
               handler: () => {},
               hooks: undefined,
@@ -336,6 +391,7 @@ describe("Given the Navigo library", () => {
           handler: expect.any(Function),
           hooks: undefined,
           path: "foo/bar",
+          name: "__NOT_FOUND__",
         },
         url: "foo/bar",
         queryString: "a=b",

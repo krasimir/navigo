@@ -1,11 +1,19 @@
 ## 8.0.0
 
-This is a complete re-write of the router. I decided to be a bad guy and kill some features. This is in favor of having cleaner code and I hope more stable. The library was also doing bunch of assumptions for the root of your application which proved to be buggy and non-deterministic.
+This is a complete re-write of the router. I decided to be a bad guy and kill/change some features. This is in favor of having cleaner code and I hope more stable implementation. The library was also doing bunch of assumptions for the root of your application which proved to be buggy and non-deterministic. So I'm removing this logic and asking you to set the root of your application.
 
-### Changed APIs
+### Deprecations
 
-* The constructor of the library now accepts only one argument - `root`. It defaults to `/` if not provided.
-* The handlers and hook functions accept now an object of type `Match` which has the following fields:
+* Hash-based support for older browsers
+* Regular expressions as route paths
+* `pause` and `resume`. There is `shouldResolve` in the `navigate` method instead.
+* `historyAPIUpdateMethod`.
+* `helpers`.
+
+### Migration guide
+
+* Change the initialization of the router to accept a single argument - the root of your application.
+* Checkout your handlers if they read data from a parameterized URL or a GET param. If so make sure that they get the data from the single object passed to the function (an object of type `Match`)
   ```js
   type Match = {
     url: string;
@@ -23,21 +31,6 @@ This is a complete re-write of the router. I decided to be a bad guy and kill so
     hooks: RouteHooks;
   };
   ```
-* The History API method name amendment now happens in the second argument of the `navigate` method. No `historyAPIUpdateMethod` method is available any more.
-* There is no `helpers` anymore. `getOnlyURL` is replaced by `extractGETParameters` and lives on the router instance.
-
-### Deprecations
-  * Hash-based support for older browsers
-  * Regular expressions as route paths
-  * No "Named routes". There is no `generate` function also.
-  * No pausing of the router. There is `shouldResolve` in the `navigate` method instead.
-  * `historyAPIUpdateMethod` is deprecated.
-  * `helpers` is deprecated.
-
-### Migration guide
-
-* Change the initialization of the router to accept a single argument - the root of your application.
-* Checkout your handlers if they read data from a parameterized URL or a GET param. If so make sure that they get the data from the single object passed to the function (an object of type `Match`)
 * If you are using `historyAPIUpdateMethod` you'll need to pass a `historyAPIMethod` field to the options of navigate. For example:
   ```js
   router.navigate('/foo/bar', { historyAPIMethod: 'replaceState' })
@@ -53,6 +46,7 @@ This is a complete re-write of the router. I decided to be a bad guy and kill so
   ```js
   router.navigate('/foo/bar', { shouldResolve: false });
   ```
+* `lastRouteResolved` becomes `lastResolved` and it returns an object of type `Match`. Checkout above. (or `null` if there is no resolved URL so far)
 
 ## 7.1.2
 
