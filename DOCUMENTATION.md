@@ -1,6 +1,7 @@
 # Navigo
 
 - [Navigo](#navigo)
+  - [Initializing](#initializing)
   - [Adding a route](#adding-a-route)
     - [Parameterized routes](#parameterized-routes)
     - [Reading GET params](#reading-get-params)
@@ -14,6 +15,33 @@
     - [Defining hooks for all the routes](#defining-hooks-for-all-the-routes)
   - [Destroying the router](#destroying-the-router)
   - [Generating paths](#generating-paths)
+  - [Handling a not-found page](#handling-a-not-found-page)
+
+---
+
+API
+
+| Method                                        |
+| ----------------------------------------------|
+| [`on`](#adding-a-route)                       |
+| [`off`](#removing-a-route)                    |
+| [`navigate`](#navigating-between-routes)      |
+| [`resolve`](#resolving-routes)                |
+| [`destroy`](#destroying-the-router)           |
+| [`notFound`](#handling-a-not-found-page)      |
+| [`updatePageLinks`](#augment-your-a-tags)     |
+| [`link`](#generating-paths)                   |
+| [`generate`](#generating-paths)               |
+| [`lastResolved`](#resolving-routes)           |
+| [`hooks`](#defining-hooks-for-all-the-routes) |
+
+## Initializing
+
+Navigo constructor gets a single argument. The root path of your application. For example, let's say that you are hosing your project at `https://site.com/my/project`:
+
+```js
+const router = new Navigo('/my/project');
+```
 
 ## Adding a route
 
@@ -308,3 +336,21 @@ r.generate("RouteNameHere", { id: "xxx", action: "save" }); // "/my/app/user/xxx
 ```
 
 Notice that the produced strings start always with the root that you passed to the Navigo's constructor.
+
+## Handling a not-found page
+
+```typescript
+interface Navigo {
+  notFound(handler: Function, hooks?: RouteHooks): Navigo;
+}
+```
+
+Navigo offers a special handler for the cases where a no match is found.
+
+```js
+const router = new Navigo('/');
+
+router.notFound(() => {
+  // this runs if there is no match found
+});
+```
