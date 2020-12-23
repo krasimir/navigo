@@ -67,7 +67,36 @@ Notice the typing of the `on` method in the beginning of this section and you'll
 
 ### Parameterized routes
 
+The parameterized routes have paths that contain dynamic parts. For example:
+
+```js
+const router = new Navigo('/');
+
+router.on('/user/:id/:action', ({ data }) => {
+  console.log(data); // { id: 'xxx', action: 'save' }
+});
+
+router.resolve('/user/xxx/save');
+```
+
+`"/user/xxx/save"` matches the defined route. `"xxx"` maps to `id` and `"save"` to `action`. The data from the URL comes into the `data` field of the `Match` object passed to your handler.
+
+
 ### Reading GET params
+
+Navigo captures the GET params of the matched routes. For example:
+
+```js
+const router = new Navigo('/');
+
+router.on('/user/:id/:action', ({ data, params, queryString }) => {
+  console.log(data); // { id: 'xxx', action: 'save' }
+  console.log(params); // { m: "n", k: "z" }
+  console.log(queryString); // "m=n&k=z"
+});
+
+router.resolve('/user/xxx/save?m=n&k=z');
+```
 
 ## Removing a route
 
