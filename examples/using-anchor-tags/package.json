@@ -1,0 +1,7 @@
+{
+  "name": "navigo-example-basic",
+  "private": true,
+  "scripts": {
+    "start": "node ./server.js"
+  }
+}
