@@ -565,13 +565,6 @@ describe("Given the Navigo library", () => {
       const h1 = jest.fn().mockImplementation(() => order.push(1));
       const h2 = jest.fn().mockImplementation(() => order.push(2));
       const h3 = jest.fn().mockImplementation(() => order.push(3));
-      const expectedMatch = {
-        data: { id: "100" },
-        params: { a: "b" },
-        queryString: "a=b",
-        route: expect.any(Object),
-        url: "foo/100",
-      };
 
       r.on("/foo/:id", h2)
         .on("/", h1, {
@@ -584,8 +577,20 @@ describe("Given the Navigo library", () => {
       r.resolve("/foo/100?a=b");
 
       expect(h1).toBeCalledWith(expect.objectContaining({ url: "" }));
-      expect(h2).toBeCalledWith(expectedMatch);
-      expect(h3).toBeCalledWith(expectedMatch);
+      expect(h2).toBeCalledWith({
+        data: { id: "100" },
+        params: { a: "b" },
+        queryString: "a=b",
+        route: expect.any(Object),
+        url: "foo/100",
+      });
+      expect(h3).toBeCalledWith({
+        data: null,
+        params: null,
+        queryString: "",
+        route: expect.any(Object),
+        url: "",
+      });
       expect(order).toStrictEqual([1, 3, 2]);
     });
   });

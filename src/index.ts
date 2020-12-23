@@ -164,7 +164,7 @@ export default function Navigo(r?: string) {
   function hooksAndCallHandler(route: Route, match: Match) {
     const callHandler = () => {
       if (current && current.route.hooks && current.route.hooks.leave) {
-        current.route.hooks.leave(match);
+        current.route.hooks.leave(current);
       }
       current = match;
       route.handler(match);

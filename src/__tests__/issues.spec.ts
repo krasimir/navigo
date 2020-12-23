@@ -179,4 +179,34 @@ describe("Given the Navigo library", () => {
       expect(aboutHandler).toBeCalledTimes(1);
     });
   });
+  describe("when we have a `leave` hook into the generic hooks", () => {
+    it("it should call the hook every time when we leave a route", () => {
+      const r: Navigo = new Navigo("/");
+      const hooks = {
+        leave: jest.fn(),
+      };
+      const h1 = jest.fn();
+      const h2 = jest.fn();
+
+      r.hooks(hooks);
+
+      r.on("/foo/bar", h1);
+      r.on("/x/y", h2);
+      r.notFound(() => {});
+
+      r.navigate("/foo/bar");
+      r.navigate("/x/y");
+      r.navigate("/");
+
+      expect(h1).toBeCalledTimes(1);
+      expect(h2).toBeCalledTimes(1);
+      expect(hooks.leave).toBeCalledTimes(2);
+      expect(hooks.leave.mock.calls[0][0]).toMatchObject({
+        url: "foo/bar",
+      });
+      expect(hooks.leave.mock.calls[1][0]).toMatchObject({
+        url: "x/y",
+      });
+    });
+  });
 });
