@@ -10,7 +10,7 @@ describe("Given the Navigo library", () => {
       const router: Navigo = new Navigo("/foo");
       router.on(handler);
       expect(router.routes).toStrictEqual([
-        { path: "foo", handler, hooks: undefined, name: "foo" },
+        { path: "foo/foo", handler, hooks: undefined, name: "foo/foo" },
       ]);
     });
     it("should accept path and a function", () => {
@@ -18,7 +18,7 @@ describe("Given the Navigo library", () => {
       const router: Navigo = new Navigo("/foo");
       router.on("/bar", handler);
       expect(router.routes).toStrictEqual([
-        { path: "bar", handler, hooks: undefined, name: "bar" },
+        { path: "foo/bar", handler, hooks: undefined, name: "foo/bar" },
       ]);
     });
     it("should accept object with paths and handlers", () => {
@@ -29,8 +29,8 @@ describe("Given the Navigo library", () => {
         b: handler,
       });
       expect(router.routes).toStrictEqual([
-        { path: "a", handler, hooks: undefined, name: "a" },
-        { path: "b", handler, hooks: undefined, name: "b" },
+        { path: "foo/a", handler, hooks: undefined, name: "foo/a" },
+        { path: "foo/b", handler, hooks: undefined, name: "foo/b" },
       ]);
     });
     it("should allow chaining of the `on` method", () => {

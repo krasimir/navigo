@@ -5,20 +5,6 @@ const REPLACE_WILDCARD = "(?:.*)";
 const START_BY_SLASH_REGEXP = "(?:/^|^)";
 const MATCH_REGEXP_FLAGS = "";
 
-function createRoute(
-  path: string,
-  handler: Function,
-  hooks: RouteHooks,
-  name?: string
-): Route {
-  path = clean(path);
-  return {
-    name: name || path,
-    path,
-    handler,
-    hooks,
-  };
-}
 function clean(s: string) {
   return s.split("#")[0].replace(/\/+$/, "").replace(/^\/+/, "");
 }
@@ -117,6 +103,20 @@ export default function Navigo(r?: string) {
     root = clean(r);
   }
 
+  function createRoute(
+    path: string,
+    handler: Function,
+    hooks: RouteHooks,
+    name?: string
+  ): Route {
+    path = clean(`${root}/${clean(path)}`);
+    return {
+      name: name || path,
+      path,
+      handler,
+      hooks,
+    };
+  }
   function getCurrentEnvURL(): string {
     if (isWindowAvailable) {
       return location.pathname + location.search + location.hash;
@@ -210,7 +210,9 @@ export default function Navigo(r?: string) {
   }
   function off(what: string | Function) {
     if (typeof what === "string") {
-      this.routes = routes = routes.filter((r) => r.path !== what);
+      this.routes = routes = routes.filter(
+        (r) => clean(r.path) !== clean(what)
+      );
     } else {
       this.routes = routes = routes.filter((r) => r.handler !== what);
     }
