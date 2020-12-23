@@ -11,11 +11,12 @@ A simple dependency-free minimalistic JavaScript router
 
 ## Features
 
-* Mapping route -> function call
+* Uses the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) so it does update the URL of the page
+* Mapping of route to a function call
 * Parameterized routes
 * Navigating between routes
 * Hooks (_before_, _after_, _leave_, _already_)
-* Not-found and default handlers
+* Not-found and default handler
 * Trigger Navigo routes with just `data-navigo` HTML attribute
 
 ---

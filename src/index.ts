@@ -316,8 +316,9 @@ export default function Navigo(r?: string) {
   }
 
   this.root = root;
-  this.destroyed = destroyed;
   this.routes = routes;
+  this.destroyed = destroyed;
+
   this.on = on;
   this.off = off;
   this.resolve = resolve;
