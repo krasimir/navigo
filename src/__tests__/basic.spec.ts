@@ -441,6 +441,28 @@ describe("Given the Navigo library", () => {
       expect(r.link("something/else")).toEqual("/my/root/something/else");
     });
   });
+  describe("when we set hooks as part of the route map", () => {
+    it("should keep the hooks working", () => {
+      const r: Navigo = new Navigo("/");
+      const handler = jest.fn();
+      const beforeHook = jest.fn().mockImplementation((done) => done());
+
+      r.on({
+        "/foo/:id": {
+          as: "some.name",
+          uses: handler,
+          hooks: {
+            before: beforeHook,
+          },
+        },
+      });
+
+      r.resolve("/foo/100");
+
+      expect(handler).toBeCalledTimes(1);
+      expect(beforeHook).toBeCalledTimes(1);
+    });
+  });
   describe("when using the `before` hook", () => {
     it("should call the hook before resolving a handler", () => {
       const r: Navigo = new Navigo("/");

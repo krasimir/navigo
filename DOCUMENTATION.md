@@ -1,5 +1,20 @@
 # Navigo
 
+- [Navigo](#navigo)
+  - [Adding a route](#adding-a-route)
+    - [Parameterized routes](#parameterized-routes)
+    - [Reading GET params](#reading-get-params)
+  - [Removing a route](#removing-a-route)
+  - [Navigating between routes](#navigating-between-routes)
+  - [Augment your `<a>` tags](#augment-your-a-tags)
+  - [Resolving routes](#resolving-routes)
+  - [Hooks](#hooks)
+    - [Type of hooks](#type-of-hooks)
+    - [Defining hooks for specific route](#defining-hooks-for-specific-route)
+    - [Defining hooks for all the routes](#defining-hooks-for-all-the-routes)
+  - [Destroying the router](#destroying-the-router)
+  - [Generating paths](#generating-paths)
+
 ## Adding a route
 
 ```typescript
@@ -143,6 +158,18 @@ After the last line the browser will have in its address bar `/about` as a path 
 
 If you don't want to have a new entry in the history you should pass `{ historyAPIMethod: 'replaceState' }`. By default is `pushState`. The `shouldResolve` is a boolean flag that tells Navigo whether you want to handle the new route. By default is set to `true`.
 
+## Augment your `<a>` tags
+
+Let's say that we have a page with links (`<a>` tags). The links have `href` attributes pointing to locations inside your app. By default Navigo doesn't know about those links and if you click them you'll probably get a full page load. To augment those links and integrate them with Navigo just add `data-navigo` attribute. For example:
+
+```html
+<a href="/company/about" data-navigo>About</a>
+```
+
+When Navigo is initialized checks the page for such tags and attaches `click` handler which fires the router's `navigate` method.
+
+Navigo has a method called `updatePageLinks` which you have to call every time when you change the DOM and you expect to see new links on the page. Because Navigo is not wired to a rendering engine doesn't really know about the DOM manipulations. It does though makes an assumption - after each of your route handlers there is a `updatePageLinks` call. The router expects that after the successful route resolving the DOM is updated and calls that function again. Feel free to fire `updatePageLinks` multiple times on the same DOM tree. There will be just one `click` handler attached to your links.
+
 ## Resolving routes
 
 ```typescript
@@ -175,3 +202,109 @@ If there is a matching route you'll get an object of type `Match`. If not `resol
 If you need to see the latest match you can access it via the `lastResolved()` method.
 
 ## Hooks
+
+The _hooks_ are functions that are fired as part of the resolving process. Think about them as lifecycle methods.
+
+### Type of hooks
+
+The hooks object has the following signature:
+
+```typescript
+type RouteHooks = {
+  before?: (done: Function, match: Match) => void;
+  after?: (match: Match) => void;
+  leave?: (match: Match) => void;
+  already?: (match: Match) => void;
+};
+```
+
+* The `before` hook receives two arguments. The first one is a function that needs to be called with either no arguments or `false`. The no-argument version means "move forward". `false` stops the resolving and your handler will not be called.
+* `after` is called after your handler
+* `leave` is called when you are about to leave out of the route
+* `already` is called when this is the current route and it matches again
+
+### Defining hooks for specific route
+
+The `on` method accepts a hooks object as a last argument. For example:
+
+```js
+// for specific path
+router.on('/foo/bar/', () => {...}, {
+  before(done, match) {
+    // do something
+    done();
+  }
+});
+
+// for the root
+router.on(() => {...}, {
+  before(done, match) {
+    // do something
+    done();
+  }
+});
+
+// when using a route map
+r.on({
+  "/foo/:id": {
+    as: "some.name",
+    uses: handler,
+    hooks: {
+      before: (done) => {
+        // do something
+        done();
+      },
+    },
+  },
+});
+
+// with the notFound method
+router.notFound(() => {...}, {
+  before(done, match) {
+    // do something
+    done();
+  }
+});
+```
+
+### Defining hooks for all the routes
+
+You can define hooks that will be used for all the registered routes. It is important to set the hooks before the route definition.
+
+```js
+const router = new Navigo("/");
+router.hooks({
+  before(done, match) {
+    // do something
+    done();
+  }
+});
+router.on("/foo/bar", () => {});
+router.on("/", () => {});
+```
+
+## Destroying the router
+
+```typescript
+destroy(): void;
+```
+
+If you no longer need Navigo working just call `router.destroy()`. This will flush all the registered routes so nothing will match.
+
+## Generating paths
+
+There are two methods `link` and `generate` that you can use to create string paths. For example:
+
+```js
+const router = new Navigo('/my/app');
+
+router.link('blah'); // "/my/app/blah
+
+router.on({
+  "/user/:id/:action": { as: "RouteNameHere", uses: () => {} },
+});
+
+r.generate("RouteNameHere", { id: "xxx", action: "save" }); // "/my/app/user/xxx/save"
+```
+
+Notice that the produced strings start always with the root that you passed to the Navigo's constructor.
