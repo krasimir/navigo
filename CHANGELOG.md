@@ -5,9 +5,8 @@ This is a complete re-write of the router. I decided to be a bad guy and kill/ch
 ### Deprecations
 
 * Hash-based support for older browsers
-* Regular expressions as route paths
 * `pause` and `resume`. There is `shouldResolve` in the `navigate` method instead.
-* `historyAPIUpdateMethod` method
+* `historyAPIUpdateMethod` method. It's now an option of the `navigate` method.
 * `helpers` method
 * `disableIfAPINotAvailable` method
 

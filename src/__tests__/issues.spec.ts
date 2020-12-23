@@ -11,7 +11,7 @@ describe("Given the Navigo library", () => {
       router.on("/test", handler);
       router.notFound(notFoundHandler);
 
-      router.resolve("/test#someanchor");
+      router.resolve("/test#some_anchor");
 
       expect(handler).toBeCalledTimes(1);
       expect(notFoundHandler).not.toBeCalled();
@@ -77,12 +77,12 @@ describe("Given the Navigo library", () => {
         "demo/:name": handler2,
       });
 
-      router.navigate("/demo/myrestaurant");
+      router.navigate("/demo/my_restaurant");
 
       expect(handler1).not.toBeCalledTimes(1);
       expect(handler2).toBeCalledTimes(1);
       expect(handler2).toBeCalledWith(
-        expect.objectContaining({ data: { name: "myrestaurant" } })
+        expect.objectContaining({ data: { name: "my_restaurant" } })
       );
     });
   });
@@ -107,7 +107,7 @@ describe("Given the Navigo library", () => {
   describe("when we use a hash based URL", function () {
     it("should successfully extract only the URL", function () {
       const { extractGETParameters } = new Navigo("/");
-      const url = "/employee?spm=abc#/employee/iparents";
+      const url = "/employee?spm=abc#/employee/iParents";
 
       expect(extractGETParameters(url)).toStrictEqual(["employee", "spm=abc"]);
     });
@@ -115,7 +115,7 @@ describe("Given the Navigo library", () => {
   describe("when we use a non-hash based routing but we have a hash", function () {
     it("should successfully extract only the URL", function () {
       const { extractGETParameters } = new Navigo("/");
-      const url = "/employee?spm=abc#/employee/iparents";
+      const url = "/employee?spm=abc#/employee/iParents";
 
       expect(extractGETParameters(url)).toStrictEqual(["employee", "spm=abc"]);
     });

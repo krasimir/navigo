@@ -8,6 +8,12 @@ const MATCH_REGEXP_FLAGS = "";
 function clean(s: string) {
   return s.split("#")[0].replace(/\/+$/, "").replace(/^\/+/, "");
 }
+function isString(s: any): boolean {
+  return typeof s === "string";
+}
+function isFunction(s: any): boolean {
+  return typeof s === "function";
+}
 function regExpResultToParams(match, names: string[]) {
   if (names.length === 0) return null;
   if (!match) return null;
@@ -42,36 +48,43 @@ function matchRoute(currentPath: string, route: Route): false | Match {
   const [current, GETParams] = extractGETParameters(clean(currentPath));
   const params = GETParams === "" ? null : parseQuery(GETParams);
   const paramNames = [];
-  const pattern =
-    START_BY_SLASH_REGEXP +
-    clean(route.path)
-      .replace(PARAMETER_REGEXP, function (full, dots, name) {
-        paramNames.push(name);
-        return REPLACE_VARIABLE_REGEXP;
-      })
-      .replace(WILDCARD_REGEXP, REPLACE_WILDCARD) +
-    "$";
+  let pattern;
+  if (isString(route.path)) {
+    pattern =
+      START_BY_SLASH_REGEXP +
+      clean(route.path as string)
+        .replace(PARAMETER_REGEXP, function (full, dots, name) {
+          paramNames.push(name);
+          return REPLACE_VARIABLE_REGEXP;
+        })
+        .replace(WILDCARD_REGEXP, REPLACE_WILDCARD) +
+      "$";
+    if (clean(route.path as string) === "") {
+      if (clean(current) === "") {
+        return {
+          url: current,
+          queryString: GETParams,
+          route: route,
+          data: null,
+          params,
+        };
+      }
+    }
+  } else {
+    pattern = route.path;
+  }
   const regexp = new RegExp(pattern, MATCH_REGEXP_FLAGS);
   const match = current.match(regexp);
-  // console.log(current);
-  // console.log(regexp);
-  // console.log("result", match);
-  if (clean(route.path) === "") {
-    if (clean(current) === "") {
-      return {
-        url: current,
-        queryString: GETParams,
-        route: route,
-        data: null,
-        params,
-      };
-    }
-  } else if (match) {
+
+  if (match) {
+    const data = isString(route.path)
+      ? regExpResultToParams(match, paramNames)
+      : match.slice(1);
     return {
       url: current,
       queryString: GETParams,
       route: route,
-      data: regExpResultToParams(match, paramNames),
+      data,
       params,
     };
   }
@@ -104,14 +117,14 @@ export default function Navigo(r?: string) {
   }
 
   function createRoute(
-    path: string,
+    path: string | RegExp,
     handler: Function,
     hooks: RouteHooks,
     name?: string
   ): Route {
-    path = clean(`${root}/${clean(path)}`);
+    path = isString(path) ? clean(`${root}/${clean(path as string)}`) : path;
     return {
-      name: name || path,
+      name: name || String(path),
       path,
       handler,
       hooks,
@@ -124,11 +137,11 @@ export default function Navigo(r?: string) {
     return root;
   }
   function on(
-    path: string | Function | Object,
+    path: string | Function | Object | RegExp,
     handler?: Function,
     hooks?: RouteHooks
   ) {
-    if (typeof path === "object") {
+    if (typeof path === "object" && !(path instanceof RegExp)) {
       Object.keys(path).forEach((p) => {
         if (typeof path[p] === "function") {
           this.on(p, path[p]);
@@ -143,7 +156,9 @@ export default function Navigo(r?: string) {
       handler = path as Function;
       path = root;
     }
-    routes.push(createRoute(path as string, handler, hooks || genericHooks));
+    routes.push(
+      createRoute(path as string | RegExp, handler, hooks || genericHooks)
+    );
     return this;
   }
   function hooksAndCallHandler(route: Route, match: Match) {
@@ -208,14 +223,15 @@ export default function Navigo(r?: string) {
     );
     return false;
   }
-  function off(what: string | Function) {
-    if (typeof what === "string") {
-      this.routes = routes = routes.filter(
-        (r) => clean(r.path) !== clean(what)
-      );
-    } else {
-      this.routes = routes = routes.filter((r) => r.handler !== what);
-    }
+  function off(what: string | RegExp | Function) {
+    this.routes = routes = routes.filter((r) => {
+      if (isString(what)) {
+        return clean(r.path as string) !== clean(what as string);
+      } else if (isFunction(what)) {
+        return what !== r.handler;
+      }
+      return String(r.path) !== String(what);
+    });
     return this;
   }
   function navigate(to: string, options: NavigateTo = {}): void {
@@ -224,7 +240,7 @@ export default function Navigo(r?: string) {
       history[options.historyAPIMethod || "pushState"](
         options.stateObj || {},
         options.title || "",
-        to
+        `/${to}`.replace(/\/\//g, "/") // making sure that we don't have two slashes
       );
     } else if (isWindowAvailable) {
       window.location.href = to;
@@ -304,7 +320,7 @@ export default function Navigo(r?: string) {
       let key;
 
       if (route.name === name) {
-        result = route.path;
+        result = route.path as string;
         for (key in data) {
           result = result.replace(":" + key, data[key]);
         }

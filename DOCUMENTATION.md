@@ -60,6 +60,15 @@ router.on('/foo/bar', () => {
 });
 ```
 
+The path in this case could be also a regular expression. For example:
+
+```js
+const router = new Navigo('/');
+router.on(/foo\/(.*)/, () => {
+  // Fired if the page URL matches '/foo/bar'.
+});
+```
+
 If you skip the path you are basically defining a handler for your root.
 
 ```js
@@ -121,6 +130,16 @@ router.resolve('/user/xxx/save');
 ```
 
 `"/user/xxx/save"` matches the defined route. `"xxx"` maps to `id` and `"save"` to `action`. The data from the URL comes into the `data` field of the `Match` object passed to your handler.
+
+Parameterized routes happen also when we use a regular expression as a path. It's just our `data` property comes as an array containing the matched groups.
+
+```js
+const router = new Navigo('/');
+router.on(/rock\/(.*)\/(.*)/, ({ data }) => {
+  console.log(data); // ["paper", "scissors"]
+});
+router.resolve("/rock/paper/scissors");
+```
 
 
 ### Reading GET params

@@ -21,6 +21,14 @@ describe("Given the Navigo library", () => {
         { path: "foo/bar", handler, hooks: undefined, name: "foo/bar" },
       ]);
     });
+    it("should accept path as RegExp and a function", () => {
+      const handler = jest.fn();
+      const router: Navigo = new Navigo("/foo");
+      router.on(/^b/, handler);
+      expect(router.routes).toStrictEqual([
+        { path: /^b/, handler, hooks: undefined, name: "/^b/" },
+      ]);
+    });
     it("should accept object with paths and handlers", () => {
       const handler = jest.fn();
       const router: Navigo = new Navigo("/foo");
@@ -224,6 +232,11 @@ describe("Given the Navigo library", () => {
       ["/noo", "/", false],
       ["/", "/", { data: null, params: null, url: "" }],
       ["/rock/paper/scissors/", "/:moduleName", false],
+      [
+        "/rock/paper/scissors",
+        /rock\/(.*)\/(.*)/,
+        { data: ["paper", "scissors"] },
+      ],
     ].forEach(([location, path, expectedResult, only]) => {
       const f = only ? fit : it;
       f(
@@ -324,6 +337,16 @@ describe("Given the Navigo library", () => {
       expect(r.routes).toHaveLength(2);
       r.off("foo").off(h);
       expect(r.routes).toHaveLength(0);
+    });
+    describe("and when the path is a RegExp", () => {
+      it("should still work", () => {
+        const r: Navigo = new Navigo("/");
+        const h = () => {};
+        r.on(/foo/, () => {}).on(/bar/, h);
+        expect(r.routes).toHaveLength(2);
+        r.off(/foo/).off(h);
+        expect(r.routes).toHaveLength(0);
+      });
     });
   });
   describe("when navigating to a route", () => {

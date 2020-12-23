@@ -1,6 +1,6 @@
 type Route = {
   name: string;
-  path: string;
+  path: string | RegExp;
   handler: Function;
   hooks: RouteHooks;
 };
@@ -29,8 +29,8 @@ interface Navigo {
   routes: Route[];
   on(f: Function, hooks?: RouteHooks): Navigo;
   on(map: Object, hooks?: RouteHooks): Navigo;
-  on(path: string, f: Function, hooks?: RouteHooks): Navigo;
-  off(path: string): Navigo;
+  on(path: string | RegExp, f: Function, hooks?: RouteHooks): Navigo;
+  off(path: string | RegExp): Navigo;
   off(handler: Function): Navigo;
   navigate(to: string, options?: NavigateTo): void;
   resolve(path?: string): false | Match;

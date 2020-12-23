@@ -4,6 +4,7 @@ To try the examples run `yarn install` into the `examples` directory. Then go in
 
 * Basic routing (with full page reload) - [source](./basic)
 * Basic routing (SPA experience) - [source](./basic-spa)
+* Using regular expressions - [source](./regexp)
 
 Examples done to investigate issues:
 
