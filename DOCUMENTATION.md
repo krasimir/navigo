@@ -1,21 +1,18 @@
-# Navigo
-
-- [Navigo](#navigo)
-  - [Initializing](#initializing)
-  - [Adding a route](#adding-a-route)
-    - [Parameterized routes](#parameterized-routes)
-    - [Reading GET params](#reading-get-params)
-  - [Removing a route](#removing-a-route)
-  - [Navigating between routes](#navigating-between-routes)
-  - [Augment your `<a>` tags](#augment-your-a-tags)
-  - [Resolving routes](#resolving-routes)
-  - [Hooks](#hooks)
-    - [Type of hooks](#type-of-hooks)
-    - [Defining hooks for specific route](#defining-hooks-for-specific-route)
-    - [Defining hooks for all the routes](#defining-hooks-for-all-the-routes)
-  - [Destroying the router](#destroying-the-router)
-  - [Generating paths](#generating-paths)
-  - [Handling a not-found page](#handling-a-not-found-page)
+- [Initializing](#initializing)
+- [Adding a route](#adding-a-route)
+  - [Parameterized routes](#parameterized-routes)
+  - [Reading GET params](#reading-get-params)
+- [Removing a route](#removing-a-route)
+- [Navigating between routes](#navigating-between-routes)
+- [Augment your `<a>` tags](#augment-your-a-tags)
+- [Resolving routes](#resolving-routes)
+- [Hooks](#hooks)
+  - [Type of hooks](#type-of-hooks)
+  - [Defining hooks for specific route](#defining-hooks-for-specific-route)
+  - [Defining hooks for all the routes](#defining-hooks-for-all-the-routes)
+- [Destroying the router](#destroying-the-router)
+- [Generating paths](#generating-paths)
+- [Handling a not-found page](#handling-a-not-found-page)
 
 ---
 
@@ -23,6 +20,7 @@ API
 
 | Method                                        |
 | ----------------------------------------------|
+| [constructor](#initializing)                  |
 | [`on`](#adding-a-route)                       |
 | [`off`](#removing-a-route)                    |
 | [`navigate`](#navigating-between-routes)      |
