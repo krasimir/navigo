@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Navigo</title>
+    <link href="styles.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="content"></div>
+    <script src="navigo.js"></script>
+    <script>
+      window.addEventListener("load", () => {
+        const router = new Navigo("/schedule");
+        const render = (content) =>
+          (document.querySelector("#content").innerHTML = content);
+
+        router
+          .on("/:id", (match) => {
+            render("The id is " + match.data.id);
+          })
+          .resolve();
+      });
+    </script>
+    <div id="content"></div>
+  </body>
+</html>

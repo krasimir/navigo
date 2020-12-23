@@ -5,6 +5,7 @@ To try the examples run `yarn install` into the `examples` directory. Then go in
 * Basic routing (with full page reload) - [source](./basic)
 * Basic routing (SPA experience) - [source](./basic-spa)
 
-Examples that I did to investigate published issues 
+Examples done to investigate issues:
 
-* Using anchors tags with [#111](https://github.com/krasimir/navigo/issues/111) - [source](./using-anchor-tags)
+* Incorrect root detection [#138](https://github.com/krasimir/navigo/issues/138) - [source](./138)
+* Using anchors tags with [#111](https://github.com/krasimir/navigo/issues/111) - [source](./111)
