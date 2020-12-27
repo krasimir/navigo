@@ -8,9 +8,9 @@ import {
   clean,
 } from "./utils";
 
-export default function Navigo(r?: string) {
+export default function Navigo(r?: string, c?: Match) {
   let root = "/";
-  let current: Match = null;
+  let current: Match = c ? c : null;
   let routes: Route[] = [];
   let notFoundRoute: Route;
   let destroyed = false;
