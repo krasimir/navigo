@@ -8,9 +8,8 @@
   </head>
   <body>
     <div>
-      <a href="/about" data-navigo>About</a>
-      <a href="/products" data-navigo>Products</a>
-      <a href="/login" data-navigo>Login</a>
+      <a href="/search/locations/d" data-navigo>one</a>
+      <a href="/search/notlocations/d" data-navigo>two</a>
     </div>
     <hr />
     <div id="content"></div>
@@ -21,24 +20,20 @@
         const render = (content) =>
           (document.querySelector("#content").innerHTML = content);
 
-        router
-          .on("/about", (match) => {
-            console.log(match);
-            render("About");
-          })
-          .on("/products", (match) => {
-            console.log(match);
-            render("Products");
-          })
-          .on("/login", (match) => {
-            console.log(match);
-            render("Login");
-          })
-          .on((match) => {
-            console.log(match);
-            render("home");
-          })
-          .resolve();
+        router.on({
+          "/search/:v/:q": {
+            as: "search",
+            uses: function (match) {
+              render("Search " + JSON.stringify(match.data));
+            },
+          },
+          "/locations": {
+            as: "home",
+            uses: function () {
+              render("Home");
+            },
+          },
+        });
       });
     </script>
     <div id="content"></div>
