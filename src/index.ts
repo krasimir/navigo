@@ -1,102 +1,12 @@
-const PARAMETER_REGEXP = /([:*])(\w+)/g;
-const WILDCARD_REGEXP = /\*/g;
-const REPLACE_VARIABLE_REGEXP = "([^/]+)";
-const REPLACE_WILDCARD = "(?:.*)";
-const START_BY_SLASH_REGEXP = "(?:/^|^)";
-const MATCH_REGEXP_FLAGS = "";
-
-function clean(s: string) {
-  return s.split("#")[0].replace(/\/+$/, "").replace(/^\/+/, "");
-}
-function isString(s: any): boolean {
-  return typeof s === "string";
-}
-function isFunction(s: any): boolean {
-  return typeof s === "function";
-}
-function regExpResultToParams(match, names: string[]) {
-  if (names.length === 0) return null;
-  if (!match) return null;
-  return match.slice(1, match.length).reduce((params, value, index) => {
-    if (params === null) params = {};
-    params[names[index]] = decodeURIComponent(value);
-    return params;
-  }, null);
-}
-function extractGETParameters(url: string) {
-  const tmp = clean(url).split(/\?(.*)?$/);
-  return [tmp[0], tmp.slice(1).join("")];
-}
-function parseQuery(queryString: string): Object {
-  var query = {};
-  var pairs = queryString.split("&");
-  for (var i = 0; i < pairs.length; i++) {
-    var pair = pairs[i].split("=");
-    if (pair[0] !== "") {
-      let key = decodeURIComponent(pair[0]);
-      if (!query[key]) {
-        query[key] = decodeURIComponent(pair[1] || "");
-      } else {
-        if (!Array.isArray(query[key])) query[key] = [query[key]];
-        query[key].push(decodeURIComponent(pair[1] || ""));
-      }
-    }
-  }
-  return query;
-}
-function matchRoute(currentPath: string, route: Route): false | Match {
-  const [current, GETParams] = extractGETParameters(clean(currentPath));
-  const params = GETParams === "" ? null : parseQuery(GETParams);
-  const paramNames = [];
-  let pattern;
-  if (isString(route.path)) {
-    pattern =
-      START_BY_SLASH_REGEXP +
-      clean(route.path as string)
-        .replace(PARAMETER_REGEXP, function (full, dots, name) {
-          paramNames.push(name);
-          return REPLACE_VARIABLE_REGEXP;
-        })
-        .replace(WILDCARD_REGEXP, REPLACE_WILDCARD) +
-      "$";
-    if (clean(route.path as string) === "") {
-      if (clean(current) === "") {
-        return {
-          url: current,
-          queryString: GETParams,
-          route: route,
-          data: null,
-          params,
-        };
-      }
-    }
-  } else {
-    pattern = route.path;
-  }
-  const regexp = new RegExp(pattern, MATCH_REGEXP_FLAGS);
-  const match = current.match(regexp);
-
-  if (match) {
-    const data = isString(route.path)
-      ? regExpResultToParams(match, paramNames)
-      : match.slice(1);
-    return {
-      url: current,
-      queryString: GETParams,
-      route: route,
-      data,
-      params,
-    };
-  }
-  return false;
-}
-function pushStateAvailable(): boolean {
-  return !!(
-    typeof window !== "undefined" &&
-    window.history &&
-    window.history.pushState
-  );
-}
+import {
+  pushStateAvailable,
+  matchRoute,
+  parseQuery,
+  extractGETParameters,
+  isFunction,
+  isString,
+  clean,
+} from "./utils";
 
 export default function Navigo(r?: string) {
   let root = "/";

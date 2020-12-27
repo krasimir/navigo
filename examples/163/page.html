@@ -21,6 +21,19 @@
         const render = (content) =>
           (document.querySelector("#content").innerHTML = content);
 
+        window.sessionId = -1;
+
+        router.hooks({
+          before: function (done, match) {
+            if (window.sessionId === -1 && match.url !== "login") {
+              console.log("redirect to login");
+              router.navigate("/login");
+              return;
+            }
+            done();
+          },
+        });
+
         router
           .on("/about", (match) => {
             render("About");
