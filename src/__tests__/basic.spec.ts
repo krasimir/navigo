@@ -625,8 +625,9 @@ describe("Given the Navigo library", () => {
 
       r.on("/foo/:id", h2)
         .on("/", h1, {
-          leave(match) {
+          leave(done, match) {
             h3(match);
+            done();
           },
         })
         .resolve();
@@ -649,6 +650,34 @@ describe("Given the Navigo library", () => {
         url: "",
       });
       expect(order).toStrictEqual([1, 3, 2]);
+    });
+    it("should allow us to block the leaving", () => {
+      const r: Navigo = new Navigo("/");
+      const spy1 = jest.fn();
+      const spy2 = jest.fn();
+
+      r.on("/nope", spy1, { leave: (done) => done(false) });
+      r.on("/foo", spy2);
+      r.on("/bar", spy2);
+      r.on(spy2);
+      r.navigate("/foo");
+      r.navigate("/nope");
+      r.navigate("/bar");
+      r.navigate("/foo");
+      r.navigate("/");
+
+      expect(spy1).toBeCalledTimes(1);
+      expect(spy1).toBeCalledWith(
+        expect.objectContaining({
+          url: "nope",
+        })
+      );
+      expect(spy2).toBeCalledTimes(1);
+      expect(spy2).toBeCalledWith(
+        expect.objectContaining({
+          url: "foo",
+        })
+      );
     });
   });
   describe("when using the `already` hook", () => {

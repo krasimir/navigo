@@ -145,7 +145,7 @@ router.on('/user/:id/:action', ({ data }) => {
 router.resolve('/user/xxx/save');
 ```
 
-`"/user/xxx/save"` matches the defined route. `"xxx"` maps to `id` and `"save"` to `action`. The data from the URL comes into the `data` field of the `Match` object passed to your handler.
+`"/user/xxx/save"` matches the defined route. `"xxx"` maps to `id` and `"save"` to `action`. The data from the URL comes into the `data` field of the [Match](#match) object passed to your handler.
 
 Parameterized routes happen also when we use a regular expression as a path. It's just our `data` property comes as an array containing the matched groups.
 
@@ -271,7 +271,7 @@ By default Navigo is not resolving your routes. You have to at least once call `
 * If there is a `popstate` event dispatched (this happens when the user manually changes the browser location by hitting for example the back button)
 * If the `navigate` method is called and `shouldResolve` is not set to `false`
 
-If there is a matching route you'll get an object of type `Match`. If not `resolve` returns `false`. When your route gets resolved its handler is called. It receives the the same `Match` object. From that object you can pull the data passed through the URL (if you used a parameterized path) or the GET params set in the URL.
+If there is a matching route you'll get an object of type [Match](#match). If not `resolve` returns `false`. When your route gets resolved its handler is called. It receives the the same [Match](#match) object. From that object you can pull the data passed through the URL (if you used a parameterized path) or the GET params set in the URL.
 
 If you need to see the latest match you can access it via the `lastResolved()` method.
 
@@ -294,7 +294,7 @@ type RouteHooks = {
 
 * The `before` hook receives two arguments. The first one is a function that needs to be called with either no arguments or `false`. The no-argument version means "move forward". `false` stops the resolving and your handler will not be called.
 * `after` is called after your handler
-* `leave` is called when you are about to leave out of the route
+* `leave` is called when you are about to leave out of the route. Similarly to the `before` hook accepts a function as first argument and a [Match](#match) object as second. If the function is called with `false` Navigo will stop resolving the route.
 * `already` is called when this is the current route and it matches again
 
 ### Defining hooks for specific route

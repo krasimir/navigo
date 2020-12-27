@@ -152,7 +152,7 @@ describe("Given the Navigo library", () => {
       const handler = jest.fn();
       const router: Navigo = new Navigo("/");
       const alreadyHandler = jest.fn();
-      const leaveHandler = jest.fn();
+      const leaveHandler = jest.fn().mockImplementation((done) => done());
       const aboutHandler = jest.fn();
 
       router.on("/products/:id", handler, {
@@ -183,7 +183,7 @@ describe("Given the Navigo library", () => {
     it("it should call the hook every time when we leave a route", () => {
       const r: Navigo = new Navigo("/");
       const hooks = {
-        leave: jest.fn(),
+        leave: jest.fn().mockImplementation((done) => done()),
       };
       const h1 = jest.fn();
       const h2 = jest.fn();
@@ -201,10 +201,10 @@ describe("Given the Navigo library", () => {
       expect(h1).toBeCalledTimes(1);
       expect(h2).toBeCalledTimes(1);
       expect(hooks.leave).toBeCalledTimes(2);
-      expect(hooks.leave.mock.calls[0][0]).toMatchObject({
+      expect(hooks.leave.mock.calls[0][1]).toMatchObject({
         url: "foo/bar",
       });
-      expect(hooks.leave.mock.calls[1][0]).toMatchObject({
+      expect(hooks.leave.mock.calls[1][1]).toMatchObject({
         url: "x/y",
       });
     });

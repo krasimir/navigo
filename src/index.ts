@@ -72,10 +72,18 @@ export default function Navigo(r?: string) {
     return this;
   }
   function hooksAndCallHandler(route: Route, match: Match) {
-    const callHandler = () => {
+    const leaveHook = (done) => {
       if (current && current.route.hooks && current.route.hooks.leave) {
-        current.route.hooks.leave(current);
+        current.route.hooks.leave((moveForward: boolean) => {
+          if (typeof moveForward === "undefined" || moveForward === true) {
+            done();
+          }
+        }, current);
+        return;
       }
+      done();
+    };
+    const callHandler = () => {
       current = match;
       route.handler(match);
       updatePageLinks();
@@ -84,13 +92,13 @@ export default function Navigo(r?: string) {
       }
     };
     if (route.hooks && route.hooks.before) {
-      route.hooks.before((shouldResolve: boolean) => {
-        if (typeof shouldResolve === "undefined" || shouldResolve === true) {
-          callHandler();
+      route.hooks.before((moveForward: boolean) => {
+        if (typeof moveForward === "undefined" || moveForward === true) {
+          leaveHook(callHandler);
         }
       }, match);
     } else {
-      callHandler();
+      leaveHook(callHandler);
     }
   }
   function resolve(currentLocationPath?: string): boolean | Match {
