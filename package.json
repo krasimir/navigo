@@ -6,6 +6,7 @@
   "browser": "lib/navigo.min.js",
   "module": "lib/navigo.js",
   "jsnext:main": "lib/navigo.js",
+  "types": "./index.d.ts",
   "author": {
     "name": "Krasimir Tsonev",
     "email": "me@krasimir.dev",

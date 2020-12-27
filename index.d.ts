@@ -24,7 +24,8 @@ type NavigateTo = {
   shouldResolve?: boolean;
   silent?: boolean;
 };
-interface Navigo {
+declare class Navigo {
+  constructor(root: string);
   destroyed: boolean;
   current: Match;
   routes: Route[];
