@@ -27,7 +27,7 @@ export function regExpResultToParams(match, names: string[]) {
 }
 export function extractGETParameters(url: string) {
   const tmp = clean(url).split(/\?(.*)?$/);
-  return [tmp[0], tmp.slice(1).join("")];
+  return [clean(tmp[0]), tmp.slice(1).join("")];
 }
 export function parseQuery(queryString: string): Object {
   var query = {};

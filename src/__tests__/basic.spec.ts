@@ -237,6 +237,7 @@ describe("Given the Navigo library", () => {
         /rock\/(.*)\/(.*)/,
         { data: ["paper", "scissors"] },
       ],
+      ["/rock/?a=b&c=d", "/rock", { data: null, params: { a: "b", c: "d" } }],
     ].forEach(([location, path, expectedResult, only]) => {
       const f = only ? fit : it;
       f(

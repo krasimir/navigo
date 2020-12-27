@@ -23,12 +23,15 @@
 
         router
           .on("/about", (match) => {
+            console.log(match);
             render("About");
           })
           .on("/products", (match) => {
+            console.log(match);
             render("Products");
           })
           .on("/login", (match) => {
+            console.log(match);
             render("Login");
           })
           .resolve();

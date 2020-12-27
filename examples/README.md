@@ -8,5 +8,6 @@ To try the examples run `yarn install` into the `examples` directory. Then go in
 
 Examples done to investigate issues:
 
+* Global before hook except for 1 page [#163](https://github.com/krasimir/navigo/issues/163) - [source](./163)
 * Incorrect root detection [#138](https://github.com/krasimir/navigo/issues/138) - [source](./138)
 * Using anchors tags with [#111](https://github.com/krasimir/navigo/issues/111) - [source](./111)
