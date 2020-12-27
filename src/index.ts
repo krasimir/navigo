@@ -8,9 +8,9 @@ import {
   clean,
 } from "./utils";
 
-export default function Navigo(r?: string, c?: Match) {
+export default function Navigo(r?: string) {
   let root = "/";
-  let current: Match = c ? c : null;
+  let current: Match = null;
   let routes: Route[] = [];
   let notFoundRoute: Route;
   let destroyed = false;
@@ -145,6 +145,10 @@ export default function Navigo(r?: string, c?: Match) {
     return this;
   }
   function navigate(to: string, options: NavigateTo = {}): void {
+    if (options.silent === true) {
+      this.current = current = pathToMatchObject(to);
+      return;
+    }
     to = `${clean(root)}/${clean(to)}`;
     if (isPushStateAvailable) {
       history[options.historyAPIMethod || "pushState"](
@@ -242,6 +246,18 @@ export default function Navigo(r?: string, c?: Match) {
   function getLinkPath(link) {
     return link.getAttribute("href");
   }
+  function pathToMatchObject(path: string): Match {
+    const [url, queryString] = extractGETParameters(clean(path));
+    const params = queryString === "" ? null : parseQuery(queryString);
+    const route = createRoute(url, () => {}, genericHooks, url);
+    return {
+      url,
+      queryString,
+      route,
+      data: null,
+      params: params,
+    };
+  }
 
   this.root = root;
   this.routes = routes;
@@ -260,6 +276,7 @@ export default function Navigo(r?: string, c?: Match) {
   this.lastResolved = lastResolved;
   this.generate = generate;
   this.getLinkPath = getLinkPath;
+  this._pathToMatchObject = pathToMatchObject;
   this._matchRoute = matchRoute;
   this._clean = clean;
 

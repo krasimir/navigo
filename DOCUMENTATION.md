@@ -26,7 +26,7 @@ API
 
 | Method                                        |
 | ----------------------------------------------|
-| [constructor](#initializing)                  |
+| [`constructor`](#initializing)                  |
 | [`on`](#adding-a-route)                       |
 | [`off`](#removing-a-route)                    |
 | [`navigate`](#navigating-between-routes)      |
@@ -196,10 +196,17 @@ type NavigateTo = {
   stateObj?: Object;
   historyAPIMethod?: string;
   shouldResolve?: boolean;
+  silent?: boolean;
 };
 ```
 
-The `navigate` method does two things. Changes the page URL (via the History APi of the browser) and triggers the resolving logic of the router. Consider the following example:
+The `navigate` method does three things:
+
+* Changes the page URL (via the History API of the browser).
+* Calls the route handler.
+* Updates the internal last resolved route property.
+
+Consider the following example:
 
 ```js
 const router = new Navigo("/");
@@ -215,9 +222,15 @@ router
 router.navigate("about");
 ```
 
-After the last line the browser will have in its address bar `/about` as a path and the in the console we'll see `"This is About page"`.
+After the last line the browser will have in its address bar `/about` as a path and in the console we'll see `"This is About page"`. `router.lastResolved()` and `router.current` will point to an object of type [Match](#match).
 
-If you don't want to have a new entry in the history you should pass `{ historyAPIMethod: 'replaceState' }`. By default is `pushState`. The `shouldResolve` is a boolean flag that tells Navigo whether you want to handle the new route. By default is set to `true`.
+As you can see above `navigate` accepts a few options:
+
+* `title` is a string that gets passed to `pushState` (or `replaceState`).
+* `stateObj` is a state object that gets passed to `pushState` (or `replaceState`).
+* If you don't want to have a new entry in the history you should pass `{ historyAPIMethod: 'replaceState' }`. By default is `pushState`.
+* The `shouldResolve` is a boolean flag that tells Navigo whether you want to handle the new route. By default is set to `true`. If you pass `false` Navigo will update the URL of the browser but will NOT fire your handler and will NOT update its internal state.
+* If `silent` is equal to `true` the router will NOT update the browser URL, will NOT resolve the route but WILL update its internal state.
 
 ## Augment your `<a>` tags
 
@@ -412,6 +425,7 @@ interface Navigo {
   generate(name: string, data?: Object): string;
   hooks(hooks: RouteHooks): Navigo;
   getLinkPath(link: Object): string;
+  _pathToMatchObject(path: string): Match;
   _matchRoute(currentPath: string, route: Route): false | Match;
   _clean(path: string): string;
 }
@@ -459,5 +473,6 @@ type NavigateTo = {
   stateObj?: Object;
   historyAPIMethod?: string;
   shouldResolve?: boolean;
+  silent?: boolean;
 };
 ```

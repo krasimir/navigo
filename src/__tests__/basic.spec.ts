@@ -107,6 +107,39 @@ describe("Given the Navigo library", () => {
         );
       });
     });
+    it("should create an instance of Route for each route and Match+Route if there is matching paths", () => {
+      const r: Navigo = new Navigo("/");
+      r.on("/about/", () => {})
+        .on(() => {})
+        .resolve("/about?a=b");
+
+      expect(r.routes).toStrictEqual([
+        {
+          name: "about",
+          path: "about",
+          hooks: undefined,
+          handler: expect.any(Function),
+        },
+        {
+          name: "",
+          path: "",
+          hooks: undefined,
+          handler: expect.any(Function),
+        },
+      ]);
+      expect(r.lastResolved()).toStrictEqual({
+        data: null,
+        params: { a: "b" },
+        queryString: "a=b",
+        route: {
+          name: "about",
+          path: "about",
+          hooks: undefined,
+          handler: expect.any(Function),
+        },
+        url: "about",
+      });
+    });
   });
   describe("when using the clean helper function", () => {
     it("should remove the slashes from the beginning and end of the string", () => {
@@ -387,6 +420,29 @@ describe("Given the Navigo library", () => {
       expect(pushState).toBeCalledWith({}, "", "/foo");
       expect(pushState).toBeCalledWith({}, "", "/blah");
       pushState.mockRestore();
+    });
+    describe("and when we use silent=true", () => {
+      it("should only update the `current` (last resolved)", () => {
+        const r: Navigo = new Navigo("/");
+        r.on("about", () => {}).on("products", () => {});
+        r.navigate("login?a=b", { silent: true });
+
+        const expected = {
+          url: "login",
+          data: null,
+          queryString: "a=b",
+          params: { a: "b" },
+          route: {
+            handler: expect.any(Function),
+            hooks: undefined,
+            name: "login",
+            path: "login",
+          },
+        };
+
+        expect(r.lastResolved()).toStrictEqual(expected);
+        expect(r.current).toStrictEqual(expected);
+      });
     });
   });
   describe("when destroying the router", () => {
@@ -717,6 +773,28 @@ describe("Given the Navigo library", () => {
       expect(h1).toBeCalledTimes(1);
       expect(h2).toBeCalledTimes(1);
       expect(h3).toBeCalledTimes(1);
+    });
+  });
+  describe("when using `pathToMatchObject` method", () => {
+    it("should convert a path to a Match object", () => {
+      const r: Navigo = new Navigo("/");
+      r.hooks({
+        leave: () => {},
+      });
+      expect(r._pathToMatchObject("/foo/bar?a=b")).toStrictEqual({
+        data: null,
+        params: { a: "b" },
+        queryString: "a=b",
+        route: {
+          handler: expect.any(Function),
+          hooks: {
+            leave: expect.any(Function),
+          },
+          name: "foo/bar",
+          path: "foo/bar",
+        },
+        url: "foo/bar",
+      });
     });
   });
 });

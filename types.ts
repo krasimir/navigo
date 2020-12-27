@@ -22,6 +22,7 @@ type NavigateTo = {
   stateObj?: Object;
   historyAPIMethod?: string;
   shouldResolve?: boolean;
+  silent?: boolean;
 };
 interface Navigo {
   destroyed: boolean;
@@ -42,6 +43,7 @@ interface Navigo {
   generate(name: string, data?: Object): string;
   hooks(hooks: RouteHooks): Navigo;
   getLinkPath(link: Object): string;
+  _pathToMatchObject(path: string): Match;
   _matchRoute(currentPath: string, route: Route): false | Match;
   _clean(path: string): string;
 }
