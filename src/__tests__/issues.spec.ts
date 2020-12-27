@@ -34,7 +34,8 @@ describe("Given the Navigo library", () => {
     });
   });
   describe("and the problem described in #128", function () {
-    it("should resolve the route", function () {
+    it("should not resolve the route", function () {
+      const mock = jest.spyOn(console, "warn").mockImplementation(() => {});
       var handler = jest.fn();
 
       let router: Navigo = new Navigo("/");
@@ -44,6 +45,7 @@ describe("Given the Navigo library", () => {
       router.resolve("/rock/paper/scissors/");
 
       expect(handler).not.toBeCalled();
+      mock.mockRestore();
     });
   });
   describe("and the feature described in #136", function () {

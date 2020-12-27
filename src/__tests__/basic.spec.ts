@@ -1,4 +1,5 @@
 import Navigo from "../index";
+import Q from "../Q";
 
 describe("Given the Navigo library", () => {
   beforeEach(() => {
@@ -679,6 +680,30 @@ describe("Given the Navigo library", () => {
         })
       );
     });
+    it("should not call pushState (or replaceState) if the leaving is blocked", () => {
+      const pushState = jest.spyOn(window.history, "pushState");
+      const r: Navigo = new Navigo("/");
+      const spy = jest.fn();
+
+      r.on("/nope", spy, { leave: (done) => done(false) });
+      r.on("/foo", spy);
+      r.on("/bar", spy);
+      r.on(spy);
+      r.navigate("/nope");
+      r.navigate("/bar");
+      r.navigate("/foo");
+      r.navigate("/");
+
+      expect(spy).toBeCalledTimes(1);
+      expect(spy).toBeCalledWith(
+        expect.objectContaining({
+          url: "nope",
+        })
+      );
+      expect(pushState).toBeCalledTimes(1);
+      expect(pushState).toBeCalledWith({}, "", "/nope");
+      pushState.mockRestore();
+    });
   });
   describe("when using the `already` hook", () => {
     it("should fire the hook when we are matching the same handler", () => {
@@ -824,6 +849,95 @@ describe("Given the Navigo library", () => {
         },
         url: "foo/bar",
       });
+    });
+  });
+  describe("when using the `Q`", () => {
+    it("should allow us to add functions and run them one after each other sharing the same context", () => {
+      const context = { data: [] };
+      Q(
+        [
+          (context, done) => {
+            context.data.push("a");
+            done();
+          },
+          (context, done) => {
+            context.data.push("b");
+            done();
+          },
+          (context, done) => {
+            context.data.push("c");
+            done();
+          },
+        ],
+        context
+      );
+      expect(context.data).toStrictEqual(["a", "b", "c"]);
+    });
+    it("should allow us to block the Q", () => {
+      const context = { data: [] };
+      Q(
+        [
+          (context, done) => {
+            context.data.push("a");
+            done();
+          },
+          (context, done) => {
+            context.data.push("b");
+            done(false);
+          },
+          (context, done) => {
+            context.data.push("c");
+            done();
+          },
+        ],
+        context
+      );
+      expect(context.data).toStrictEqual(["a", "b"]);
+    });
+    it("should allow us to conditionally control the content of the Q", () => {
+      const context = { data: [], flag: true };
+      Q(
+        [
+          (context, done) => {
+            context.data.push("a");
+            done();
+          },
+          (context, done) => {
+            context.data.push("b");
+            context.flag = false;
+            done();
+          },
+          [
+            (context) => context.flag,
+            [
+              (context, done) => {
+                context.data.push("c");
+                done();
+              },
+              (context, done) => {
+                context.data.push("d");
+                done();
+              },
+            ],
+            [
+              (context, done) => {
+                context.data.push("e");
+                done();
+              },
+              (context, done) => {
+                context.data.push("f");
+                done();
+              },
+            ],
+          ],
+          (context, done) => {
+            context.data.push("z");
+            done();
+          },
+        ],
+        context
+      );
+      expect(context.data).toStrictEqual(["a", "b", "e", "f", "z"]);
     });
   });
 });

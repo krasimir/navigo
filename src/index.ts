@@ -7,6 +7,7 @@ import {
   isString,
   clean,
 } from "./utils";
+import Q from "./Q";
 
 export default function Navigo(r?: string) {
   let root = "/";
@@ -15,6 +16,7 @@ export default function Navigo(r?: string) {
   let notFoundRoute: Route;
   let destroyed = false;
   let genericHooks: RouteHooks;
+  let self = this;
   const isPushStateAvailable = pushStateAvailable();
   const isWindowAvailable = typeof window !== "undefined";
 
@@ -26,6 +28,141 @@ export default function Navigo(r?: string) {
     root = clean(r);
   }
 
+  // functions that are part of Q (queue) processing
+  function _required(obj: Object, fields: string[]) {
+    for (let i = 0; i < fields.length; i++) {
+      if (typeof obj[fields[i]] === "undefined") {
+        throw new Error(
+          `Navigo internal error. Required field "${fields[i]}" is missing in a queue context.`
+        );
+      }
+    }
+  }
+  function _checkForLeaveHook(context, done) {
+    if (current && current.route.hooks && current.route.hooks.leave) {
+      current.route.hooks.leave((moveForward: boolean) => {
+        if (typeof moveForward === "undefined" || moveForward === true) {
+          done();
+        }
+      }, current);
+      return;
+    }
+    done();
+  }
+  function _checkForBeforeHook(context, done) {
+    _required(context, ["route", "match"]);
+    if (context.route.hooks && context.route.hooks.before) {
+      context.route.hooks.before((moveForward: boolean) => {
+        if (typeof moveForward === "undefined" || moveForward === true) {
+          done();
+        }
+      }, context.match);
+    } else {
+      done();
+    }
+  }
+  function _callHandler(context, done) {
+    _required(context, ["route", "match"]);
+    current = context.match;
+    context.route.handler(current);
+    updatePageLinks();
+    done();
+  }
+  function _checkForAfterHook(context, done) {
+    _required(context, ["route", "match"]);
+    if (context.route.hooks && context.route.hooks.after) {
+      context.route.hooks.after(context.match);
+    }
+    done();
+  }
+  function _checkForAlreadyHook(context, done) {
+    _required(context, ["route", "match"]);
+    if (
+      current &&
+      current.route === context.route &&
+      current.url === context.match.url &&
+      current.queryString === context.match.queryString
+    ) {
+      if (current.route.hooks && current.route.hooks.already) {
+        current.route.hooks.already(context.match);
+      }
+      done(false);
+      return;
+    }
+    done();
+  }
+  function _checkForNotFoundHandler(context, done) {
+    _required(context, ["currentLocationPath"]);
+    if (notFoundRoute) {
+      context.notFoundHandled = true;
+      const [url, queryString] = extractGETParameters(
+        context.currentLocationPath
+      );
+      notFoundRoute.path = clean(url);
+      hooksAndCallHandler(notFoundRoute, {
+        url: notFoundRoute.path,
+        queryString,
+        data: null,
+        route: notFoundRoute,
+        params: queryString !== "" ? parseQuery(queryString) : null,
+      });
+    }
+    done();
+  }
+  function _errorOut(context, done) {
+    _required(context, ["currentLocationPath"]);
+    console.warn(
+      `Navigo: "${context.currentLocationPath}" didn't match any of the registered routes.`
+    );
+    done(false);
+  }
+  function _setLocationPath(context, done) {
+    if (typeof context.currentLocationPath === "undefined") {
+      context.currentLocationPath = getCurrentEnvURL();
+    }
+    done();
+  }
+  function _findAMatch(context, done) {
+    _required(context, ["currentLocationPath"]);
+    for (let i = 0; i < routes.length; i++) {
+      const route = routes[i];
+      const match: false | Match = matchRoute(
+        context.currentLocationPath,
+        route
+      );
+      if (match) {
+        context.match = match;
+        context.route = route;
+        done();
+        return;
+      }
+    }
+    done();
+  }
+  function _checkForSilentMode(context, done) {
+    if (context.options.silent === true) {
+      self.current = current = pathToMatchObject(context.to);
+      done(false);
+      return;
+    }
+    done();
+  }
+  function _updateBrowserURL(context, done) {
+    _required(context, ["to", "options"]);
+    context.to = `${clean(root)}/${clean(context.to)}`;
+    if (isPushStateAvailable) {
+      history[context.options.historyAPIMethod || "pushState"](
+        context.options.stateObj || {},
+        context.options.title || "",
+        `/${context.to}`.replace(/\/\//g, "/") // making sure that we don't have two slashes
+      );
+    } else if (isWindowAvailable) {
+      window.location.href = context.to;
+    }
+    done();
+  }
+
+  // public APIs
   function createRoute(
     path: string | RegExp,
     handler: Function,
@@ -102,44 +239,69 @@ export default function Navigo(r?: string) {
     }
   }
   function resolve(currentLocationPath?: string): boolean | Match {
-    if (typeof currentLocationPath === "undefined") {
-      currentLocationPath = getCurrentEnvURL();
-    }
-    for (let i = 0; i < routes.length; i++) {
-      const route = routes[i];
-      const match: false | Match = matchRoute(currentLocationPath, route);
-      if (match) {
-        if (
-          current &&
-          current.route === route &&
-          current.url === match.url &&
-          current.queryString === match.queryString
-        ) {
-          if (current.route.hooks && current.route.hooks.already) {
-            current.route.hooks.already(match);
-          }
-          return false;
-        }
-        hooksAndCallHandler(route, match);
-        return match;
-      }
-    }
-    if (notFoundRoute) {
-      const [url, queryString] = extractGETParameters(currentLocationPath);
-      notFoundRoute.path = clean(url);
-      hooksAndCallHandler(notFoundRoute, {
-        url: notFoundRoute.path,
-        queryString,
-        data: null,
-        route: notFoundRoute,
-        params: queryString !== "" ? parseQuery(queryString) : null,
-      });
-      return true;
-    }
-    console.warn(
-      `Navigo: "${currentLocationPath}" didn't match any of the registered routes.`
+    const context: { match?: Match; currentLocationPath?: string } = {
+      currentLocationPath,
+    };
+    Q(
+      [
+        _setLocationPath,
+        _findAMatch,
+        [
+          (context) => context.match,
+          [
+            _checkForAlreadyHook,
+            _checkForLeaveHook,
+            _checkForBeforeHook,
+            _callHandler,
+            _checkForAfterHook,
+          ],
+          [
+            _checkForNotFoundHandler,
+            [(context) => context.notFoundHandled, [], [_errorOut]],
+          ],
+        ],
+      ],
+      context
     );
-    return false;
+
+    return context.match ? context.match : false;
+  }
+  function navigate(to: string, options: NavigateTo = {}): void {
+    const context = { to, options, currentLocationPath: to };
+    Q(
+      [
+        _checkForSilentMode,
+        [
+          (context) =>
+            typeof context.options.shouldResolve === "undefined" ||
+            context.options.shouldResolve === true,
+          [
+            _findAMatch,
+            [
+              (context) => context.match,
+              [
+                _checkForLeaveHook,
+                _checkForBeforeHook,
+                _checkForAlreadyHook,
+                _updateBrowserURL,
+                _callHandler,
+                _checkForAfterHook,
+              ],
+              [
+                _checkForNotFoundHandler,
+                [
+                  (context) => context.notFoundHandled,
+                  [_updateBrowserURL],
+                  [_errorOut],
+                ],
+              ],
+            ],
+          ],
+          [_updateBrowserURL],
+        ],
+      ],
+      context
+    );
   }
   function off(what: string | RegExp | Function) {
     this.routes = routes = routes.filter((r) => {
@@ -151,28 +313,6 @@ export default function Navigo(r?: string) {
       return String(r.path) !== String(what);
     });
     return this;
-  }
-  function navigate(to: string, options: NavigateTo = {}): void {
-    if (options.silent === true) {
-      this.current = current = pathToMatchObject(to);
-      return;
-    }
-    to = `${clean(root)}/${clean(to)}`;
-    if (isPushStateAvailable) {
-      history[options.historyAPIMethod || "pushState"](
-        options.stateObj || {},
-        options.title || "",
-        `/${to}`.replace(/\/\//g, "/") // making sure that we don't have two slashes
-      );
-    } else if (isWindowAvailable) {
-      window.location.href = to;
-    }
-    if (
-      typeof options.shouldResolve === "undefined" ||
-      options.shouldResolve === true
-    ) {
-      resolve();
-    }
   }
   function listen() {
     if (isPushStateAvailable) {

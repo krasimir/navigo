@@ -23,10 +23,19 @@
           (document.querySelector("#content").innerHTML = content);
 
         router
-          .on("/about", (match) => {
-            console.log(match);
-            render("About");
-          })
+          .on(
+            "/about",
+            (match) => {
+              console.log(match);
+              render("About");
+            },
+            {
+              leave: (done, match) => {
+                console.log("---->", match);
+                setTimeout(() => done(), 5000);
+              },
+            }
+          )
           .on("/products", (match) => {
             console.log(match);
             render("Products");

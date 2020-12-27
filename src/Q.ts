@@ -1,0 +1,24 @@
+export default function Q(funcs: Array<Function | Array<any>>, c?: any) {
+  const context = c || {};
+  let idx = 0;
+
+  (function next() {
+    if (!funcs[idx]) return;
+    if (Array.isArray(funcs[idx])) {
+      funcs.splice(
+        idx,
+        1,
+        ...(funcs[idx][0](context) ? funcs[idx][1] : funcs[idx][2])
+      );
+      next();
+    } else {
+      // console.log(funcs[idx].name + " " + JSON.stringify(context));
+      (funcs[idx] as Function)(context, (moveForward) => {
+        if (typeof moveForward === "undefined" || moveForward === true) {
+          idx += 1;
+          next();
+        }
+      });
+    }
+  })();
+}
