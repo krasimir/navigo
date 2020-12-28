@@ -99,3 +99,6 @@ export function pushStateAvailable(): boolean {
     window.history.pushState
   );
 }
+export function undefinedOrTrue(obj, key: string): boolean {
+  return typeof obj[key] === "undefined" || obj[key] === true;
+}

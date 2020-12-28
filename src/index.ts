@@ -6,6 +6,7 @@ import {
   isFunction,
   isString,
   clean,
+  undefinedOrTrue,
 } from "./utils";
 import Q from "./Q";
 
@@ -77,9 +78,13 @@ export default function Navigo(r?: string) {
     }
   }
   function _callHandler(context: QContext, done) {
-    _required(context, ["route", "match"]);
-    current = context.match;
-    context.route.handler(current);
+    _required(context, ["route", "match", "options"]);
+    if (undefinedOrTrue(context.options, "updateState")) {
+      current = context.match;
+    }
+    if (undefinedOrTrue(context.options, "callHandler")) {
+      context.route.handler(current);
+    }
     updatePageLinks();
     done();
   }
@@ -155,8 +160,22 @@ export default function Navigo(r?: string) {
     }
     done();
   }
-  function _checkForSilentMode(context: QContext, done) {
-    if (context.options.silent === true) {
+  function _checkForDeprecationMethods(context: QContext, done) {
+    if (context.options) {
+      if (typeof context.options["shouldResolve"] !== "undefined") {
+        console.warn(
+          `"shouldResolve" is deprecated. Please check the documentation.`
+        );
+      }
+      if (typeof context.options["silent"] !== "undefined") {
+        console.warn(`"silent" is deprecated. Please check the documentation.`);
+      }
+    }
+    done();
+  }
+  function _checkForForceOp(context: QContext, done) {
+    _required(context, ["options"]);
+    if (context.options.force === true) {
       self.current = current = pathToMatchObject(context.to);
       done(false);
     } else {
@@ -166,14 +185,16 @@ export default function Navigo(r?: string) {
   function _updateBrowserURL(context: QContext, done) {
     _required(context, ["to", "options"]);
     context.to = `${clean(root)}/${clean(context.to)}`;
-    if (isPushStateAvailable) {
-      history[context.options.historyAPIMethod || "pushState"](
-        context.options.stateObj || {},
-        context.options.title || "",
-        `/${context.to}`.replace(/\/\//g, "/") // making sure that we don't have two slashes
-      );
-    } else if (isWindowAvailable) {
-      window.location.href = context.to;
+    if (undefinedOrTrue(context.options, "updateBrowserURL")) {
+      if (isPushStateAvailable) {
+        history[context.options.historyAPIMethod || "pushState"](
+          context.options.stateObj || {},
+          context.options.title || "",
+          `/${context.to}`.replace(/\/\//g, "/") // making sure that we don't have two slashes
+        );
+      } else if (isWindowAvailable) {
+        window.location.href = context.to;
+      }
     }
     done();
   }
@@ -227,16 +248,13 @@ export default function Navigo(r?: string) {
   function resolve(currentLocationPath?: string): boolean | Match {
     const context: QContext = {
       currentLocationPath,
+      options: {},
     };
     Q(
       [
         _setLocationPath,
         _findAMatch,
-        Q.if(
-          (context: QContext) => context.match,
-          lifecycle,
-          notFoundLifeCycle
-        ),
+        Q.if(({ match }: QContext) => match, lifecycle, notFoundLifeCycle),
       ],
       context
     );
@@ -247,17 +265,11 @@ export default function Navigo(r?: string) {
     const context: QContext = { to, options, currentLocationPath: to };
     Q(
       [
-        _checkForSilentMode,
-        Q.if(
-          ({ options: { shouldResolve } }: QContext) =>
-            typeof shouldResolve === "undefined" || shouldResolve === true,
-          [
-            _findAMatch,
-            Q.if(({ match }: QContext) => match, lifecycle, notFoundLifeCycle),
-            _updateBrowserURL,
-          ],
-          _updateBrowserURL
-        ),
+        _checkForDeprecationMethods,
+        _checkForForceOp,
+        _findAMatch,
+        Q.if(({ match }: QContext) => match, lifecycle, notFoundLifeCycle),
+        _updateBrowserURL,
       ],
       context
     );
@@ -369,6 +381,7 @@ export default function Navigo(r?: string) {
   this.root = root;
   this.routes = routes;
   this.destroyed = destroyed;
+  this.current = current;
 
   this.on = on;
   this.off = off;

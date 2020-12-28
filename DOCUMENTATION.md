@@ -195,16 +195,19 @@ type NavigateTo = {
   title?: string;
   stateObj?: Object;
   historyAPIMethod?: string;
-  shouldResolve?: boolean;
-  silent?: boolean;
+  updateBrowserURL?: boolean;
+  callHandler?: boolean;
+  updateState?: boolean;
+  force?: boolean;
 };
 ```
 
-The `navigate` method does three things:
+The `navigate` method by default:
 
-* Changes the page URL (via the History API of the browser).
-* Calls the route handler.
+* Checks if there is a match. And if the answer is "yes" then ...
+* It calls hooks (if any) and your route handler.
 * Updates the internal state of the router.
+* Updates the browser URL.
 
 Consider the following example:
 
@@ -229,15 +232,10 @@ After the last line the browser will have in its address bar `/about` as a path 
 * `title` is a string that gets passed to `pushState` (or `replaceState`).
 * `stateObj` is a state object that gets passed to `pushState` (or `replaceState`).
 * If you don't want to have a new entry in the history you should pass `{ historyAPIMethod: 'replaceState' }`. By default is `pushState`.
-* The `shouldResolve` is a boolean flag that instructs Navigo to call your handler or not. By default is set to `true`. If you pass `false` Navigo will update the URL of the browser but will NOT fire your handler and will NOT update its internal state.
-* If `silent` is equal to `true` the router will NOT update the browser URL, will NOT resolve the route but WILL update its internal state.
-
-| option                         | update browser URL | call your handler | update internal state |
-| ------------------------------ | ------------------ | ----------------- | --------------------- |
-| shouldResolve: true (default)  | yes                | yes               | yes                   |
-| shouldResolve: false           | yes                | no                | no                    |
-| silent: false (default)        | yes                | yes               | yes                   |
-| silent: true                   | no                 | no                | yes                   |
+* If `updateBrowserURL` is set to `false` the library will not use the history API at all. Meaning, the browser URL will not change.
+* If `callHandler` is set to `false` your route handler will not be fired.
+* If `updateState` is set to `false` the router will not update its internal state. This means that the `lastResolved()`/`current` route will not be updated.
+* If `force` is set to `true` the router will update its internal state only. This makes the router like it already resolved specific URL.
 
 ## Augment your `<a>` tags
 
@@ -278,9 +276,15 @@ By default Navigo is not resolving your routes. You have to at least once call `
 * If there is a `popstate` event dispatched (this happens when the user manually changes the browser location by hitting for example the back button)
 * If the `navigate` method is called and `shouldResolve` is not set to `false`
 
-If there is a matching route you'll get an object of type [Match](#match). If not `resolve` returns `false`. When your route gets resolved its handler is called. It receives the the same [Match](#match) object. From that object you can pull the data passed through the URL (if you used a parameterized path) or the GET params set in the URL.
+If there is a matching route you'll get an object of type [Match](#match). If not `resolve` returns `false`. When your route gets resolved its handler is called. It receives the same [Match](#match) object. From that object you can pull the data passed through the URL (if you used a parameterized path) or the GET params set in the URL.
 
 If you need to see the latest match you can access it via the `lastResolved()` method.
+
+`resolve` does the following:
+
+* Checks if there is a match. And if the answer is "yes" then ...
+* It calls hooks (if any) and your route handler.
+* Updates the internal state of the router.
 
 ## Hooks
 
@@ -479,7 +483,9 @@ type NavigateTo = {
   title?: string;
   stateObj?: Object;
   historyAPIMethod?: string;
-  shouldResolve?: boolean;
-  silent?: boolean;
+  updateBrowserURL?: boolean;
+  callHandler?: boolean;
+  updateState?: boolean;
+  force?: boolean;
 };
 ```

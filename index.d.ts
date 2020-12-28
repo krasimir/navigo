@@ -21,8 +21,10 @@ type NavigateTo = {
   title?: string;
   stateObj?: Object;
   historyAPIMethod?: string;
-  shouldResolve?: boolean;
-  silent?: boolean;
+  updateBrowserURL?: boolean;
+  callHandler?: boolean;
+  updateState?: boolean;
+  force?: boolean;
 };
 type QContext = {
   match?: Match;

@@ -384,68 +384,6 @@ describe("Given the Navigo library", () => {
       });
     });
   });
-  describe("when navigating to a route", () => {
-    it("should push a new entry via the history api and resolve the route", () => {
-      const pushState = jest.spyOn(window.history, "pushState");
-      const r: Navigo = new Navigo("/");
-      const handler = jest.fn();
-
-      r.on("/foo/bar", handler).on("/about", handler).on("*", handler);
-
-      r.navigate("about");
-
-      expect(handler).toBeCalledTimes(1);
-      expect(handler.mock.calls[0][0]).toMatchObject({
-        route: expect.objectContaining({ path: "about" }),
-      });
-      expect(pushState).toBeCalledWith({}, "", "/about");
-      pushState.mockRestore();
-    });
-    it("should NOT resolve any routes if `shouldResolve` is set to `false`", () => {
-      const pushState = jest.spyOn(window.history, "pushState");
-      const r: Navigo = new Navigo("/");
-      const handler = jest.fn();
-
-      r.on("/foo", handler).on("/about", handler).on("*", handler);
-
-      r.navigate("about");
-      r.navigate("foo", { shouldResolve: false });
-      r.navigate("blah", { shouldResolve: false });
-
-      expect(handler).toBeCalledTimes(1);
-      expect(handler.mock.calls[0][0]).toMatchObject({
-        route: expect.objectContaining({ path: "about" }),
-      });
-      expect(pushState).toBeCalledTimes(3);
-      expect(pushState).toBeCalledWith({}, "", "/about");
-      expect(pushState).toBeCalledWith({}, "", "/foo");
-      expect(pushState).toBeCalledWith({}, "", "/blah");
-      pushState.mockRestore();
-    });
-    describe("and when we use silent=true", () => {
-      it("should only update the `current` (last resolved)", () => {
-        const r: Navigo = new Navigo("/");
-        r.on("about", () => {}).on("products", () => {});
-        r.navigate("login?a=b", { silent: true });
-
-        const expected = {
-          url: "login",
-          data: null,
-          queryString: "a=b",
-          params: { a: "b" },
-          route: {
-            handler: expect.any(Function),
-            hooks: undefined,
-            name: "login",
-            path: "login",
-          },
-        };
-
-        expect(r.lastResolved()).toStrictEqual(expected);
-        expect(r.current).toStrictEqual(expected);
-      });
-    });
-  });
   describe("when destroying the router", () => {
     it("should empty the routes array and remove the listener to popstate", () => {
       const remove = jest.spyOn(window, "removeEventListener");
