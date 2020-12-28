@@ -10,6 +10,11 @@ This is a complete re-write of the router. I decided to be a bad guy and kill/ch
 * `helpers` method
 * `disableIfAPINotAvailable` method
 
+### New features
+
+* The `navigate` method now accepts options as a second argument which are there to cover more use cases.
+* There is `data-navigo-options` HTML attributes for your links so you can pass options to the `navigate` method.
+
 ### Migration guide
 
 * Change the initialization of the router to accept a single argument - the root of your application.

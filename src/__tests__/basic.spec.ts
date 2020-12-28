@@ -281,18 +281,35 @@ describe("Given the Navigo library", () => {
         () => {
           const router: Navigo = new Navigo("/");
           // @ts-ignore
-          expect(
-            router._matchRoute(location as string, {
-              name: path as string,
-              path: path as string,
-              handler: () => {},
-              hooks: undefined,
-            })
-          )[typeof expectedResult === "boolean" ? "toEqual" : "toMatchObject"](
-            expectedResult
-          );
+          router.on(path, () => {});
+          // @ts-ignore
+          expect(router.match(location as string))[
+            typeof expectedResult === "boolean" ? "toEqual" : "toMatchObject"
+          ](expectedResult);
         }
       );
+    });
+    it("should provide an API for direct matching of the routes", () => {
+      const r: Navigo = new Navigo("/");
+
+      r.on("/foo", () => {});
+      r.on("/user/:id", () => {});
+
+      expect(r.match("/nope")).toEqual(false);
+      expect(r.match("/user/xxx/?a=b")).toStrictEqual({
+        data: {
+          id: "xxx",
+        },
+        params: { a: "b" },
+        queryString: "a=b",
+        route: {
+          handler: expect.any(Function),
+          hooks: undefined,
+          name: "user/:id",
+          path: "user/:id",
+        },
+        url: "user/xxx",
+      });
     });
   });
   describe("when we have a no matching route", () => {

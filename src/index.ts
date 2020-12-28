@@ -381,6 +381,14 @@ export default function Navigo(r?: string) {
       params: params,
     };
   }
+  function directMatch(path: string): false | Match {
+    const context: QContext = {
+      currentLocationPath: path,
+      options: {},
+    };
+    Q([_findAMatch], context);
+    return context.match ? context.match : false;
+  }
 
   this.root = root;
   this.routes = routes;
@@ -400,8 +408,8 @@ export default function Navigo(r?: string) {
   this.lastResolved = lastResolved;
   this.generate = generate;
   this.getLinkPath = getLinkPath;
+  this.match = directMatch;
   this._pathToMatchObject = pathToMatchObject;
-  this._matchRoute = matchRoute;
   this._clean = clean;
 
   listen.call(this);

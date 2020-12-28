@@ -7,6 +7,7 @@
 - [Augment your `<a>` tags](#augment-your-a-tags)
   - [Passing options to the `navigate` method](#passing-options-to-the-navigate-method)
 - [Resolving routes](#resolving-routes)
+- [Direct matching of routes](#direct-matching-of-routes)
 - [Hooks](#hooks)
   - [Type of hooks](#type-of-hooks)
   - [Defining hooks for specific route](#defining-hooks-for-specific-route)
@@ -27,11 +28,12 @@ API
 
 | Method                                        |
 | ----------------------------------------------|
-| [`constructor`](#initializing)                  |
+| [`constructor`](#initializing)                |
 | [`on`](#adding-a-route)                       |
 | [`off`](#removing-a-route)                    |
 | [`navigate`](#navigating-between-routes)      |
 | [`resolve`](#resolving-routes)                |
+| [`match`](#rdirect-matching-of-routes)        |
 | [`destroy`](#destroying-the-router)           |
 | [`notFound`](#handling-a-not-found-page)      |
 | [`updatePageLinks`](#augment-your-a-tags)     |
@@ -255,7 +257,7 @@ Navigo has a method called `updatePageLinks` which you have to call every time w
 As we learned above, when a link with `data-navigo` attribute is clicked the `navigate` method of the router gets executed. That same method accepts options and if you want to pass some of them use the following syntax:
 
 ```html
-<a href="/foo/bar" data-navigo data-navigo-options="updateBrowserURL:false, callHandler: false, updateState: false, force: false, historyAPIMethod: replaceState"></a>
+<a href="/foo/bar" data-navigo data-navigo-options="updateBrowserURL:false, callHandler: false, updateState: false, force: false, historyAPIMethod: replaceState">my link</a>
 ```
 
 ## Resolving routes
@@ -294,6 +296,36 @@ If you need to see the latest match you can access it via the `lastResolved()` m
 * Checks if there is a match. And if the answer is "yes" then ...
 * It calls hooks (if any) and your route handler.
 * Updates the internal state of the router.
+
+## Direct matching of routes
+
+If you want to check if some path is matching any of the routes without triggering hooks, handlers or changing the browser URL you may use the `match` method. For example:
+
+```js
+const r: Navigo = new Navigo("/");
+
+r.on("/user/:id", () => {});
+
+console.log(r.match("/nope"));
+// result: false
+
+console.log(r.match("/user/xxx/?a=b"));
+// result:
+//   {
+//     data: {
+//       id: "xxx",
+//     },
+//     params: { a: "b" },
+//     queryString: "a=b",
+//     route: {
+//       handler: [Function],
+//       hooks: undefined,
+//       name: "user/:id",
+//       path: "user/:id",
+//     },
+//     url: "user/xxx",
+//   }
+```
 
 ## Hooks
 
@@ -445,8 +477,8 @@ interface Navigo {
   generate(name: string, data?: Object): string;
   hooks(hooks: RouteHooks): Navigo;
   getLinkPath(link: Object): string;
+  match(path: string): false | Match;
   _pathToMatchObject(path: string): Match;
-  _matchRoute(currentPath: string, route: Route): false | Match;
   _clean(path: string): string;
 }
 ```

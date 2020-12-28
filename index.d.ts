@@ -54,7 +54,7 @@ declare class Navigo {
   generate(name: string, data?: Object): string;
   hooks(hooks: RouteHooks): Navigo;
   getLinkPath(link: Object): string;
+  match(path: string): false | Match;
   _pathToMatchObject(path: string): Match;
-  _matchRoute(currentPath: string, route: Route): false | Match;
   _clean(path: string): string;
 }
