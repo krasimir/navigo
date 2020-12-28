@@ -211,4 +211,16 @@ describe("Given the Navigo library", () => {
       });
     });
   });
+  describe("and the request described in #208", function () {
+    it("should allow us to resolve a handler but don't update the browser URL", function () {
+      const push = jest.spyOn(history, "pushState");
+      const router: Navigo = new Navigo("/");
+      const handler = jest.fn();
+
+      router.on("/it-works", handler);
+      router.navigate("/it-works", {});
+
+      push.mockRestore();
+    });
+  });
 });

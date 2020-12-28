@@ -204,7 +204,7 @@ The `navigate` method does three things:
 
 * Changes the page URL (via the History API of the browser).
 * Calls the route handler.
-* Updates the internal last resolved route property.
+* Updates the internal state of the router.
 
 Consider the following example:
 
@@ -224,13 +224,20 @@ router.navigate("about");
 
 After the last line the browser will have in its address bar `/about` as a path and in the console we'll see `"This is About page"`. `router.lastResolved()` and `router.current` will point to an object of type [Match](#match).
 
-As you can see above `navigate` accepts a few options:
+`navigate` accepts a few options:
 
 * `title` is a string that gets passed to `pushState` (or `replaceState`).
 * `stateObj` is a state object that gets passed to `pushState` (or `replaceState`).
 * If you don't want to have a new entry in the history you should pass `{ historyAPIMethod: 'replaceState' }`. By default is `pushState`.
-* The `shouldResolve` is a boolean flag that tells Navigo whether you want to handle the new route. By default is set to `true`. If you pass `false` Navigo will update the URL of the browser but will NOT fire your handler and will NOT update its internal state.
+* The `shouldResolve` is a boolean flag that instructs Navigo to call your handler or not. By default is set to `true`. If you pass `false` Navigo will update the URL of the browser but will NOT fire your handler and will NOT update its internal state.
 * If `silent` is equal to `true` the router will NOT update the browser URL, will NOT resolve the route but WILL update its internal state.
+
+| option                         | update browser URL | call your handler | update internal state |
+| ------------------------------ | ------------------ | ----------------- | --------------------- |
+| shouldResolve: true (default)  | yes                | yes               | yes                   |
+| shouldResolve: false           | yes                | no                | no                    |
+| silent: false (default)        | yes                | yes               | yes                   |
+| silent: true                   | no                 | no                | yes                   |
 
 ## Augment your `<a>` tags
 

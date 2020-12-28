@@ -159,9 +159,9 @@ export default function Navigo(r?: string) {
     if (context.options.silent === true) {
       self.current = current = pathToMatchObject(context.to);
       done(false);
-      return;
+    } else {
+      done();
     }
-    done();
   }
   function _updateBrowserURL(context: QContext, done) {
     _required(context, ["to", "options"]);
