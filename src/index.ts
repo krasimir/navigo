@@ -322,6 +322,9 @@ export default function Navigo(r?: string) {
             return false;
           }
           const location = link.getAttribute("href");
+          if (typeof location === "undefined" || location === null) {
+            return false;
+          }
           const options = parseNavigateToOptions(
             link.getAttribute("data-navigo-options")
           );
@@ -386,7 +389,7 @@ export default function Navigo(r?: string) {
       currentLocationPath: path,
       options: {},
     };
-    Q([_findAMatch], context);
+    _findAMatch(context, () => {});
     return context.match ? context.match : false;
   }
 

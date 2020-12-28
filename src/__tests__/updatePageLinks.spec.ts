@@ -93,5 +93,32 @@ describe("Given the Navigo library", () => {
       });
       expect(parseNavigateToOptions()).toStrictEqual({});
     });
+    it("should not failed if the `data-navigo` is set to a non anchor tag", () => {
+      const querySelectorAll = jest.spyOn(document, "querySelectorAll");
+      let handler;
+
+      // @ts-ignore
+      querySelectorAll.mockImplementationOnce(() => {
+        return [
+          {
+            addEventListener(eventType, h) {
+              handler = h;
+            },
+            getAttribute() {
+              return null;
+            },
+          },
+        ];
+      });
+
+      const r: Navigo = new Navigo("/");
+      r.on("/foo/bar", () => {});
+
+      handler({
+        ctrlKey: false,
+        preventDefault: () => {},
+      });
+      querySelectorAll.mockRestore();
+    });
   });
 });
