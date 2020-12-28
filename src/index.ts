@@ -28,7 +28,11 @@ export default function Navigo(r?: string) {
   ];
   const notFoundLifeCycle = [
     _checkForNotFoundHandler,
-    [(context: QContext) => context.notFoundHandled, lifecycle, [_errorOut]],
+    Q.if(
+      ({ notFoundHandled }: QContext) => notFoundHandled,
+      lifecycle,
+      _errorOut
+    ),
   ];
 
   if (!r) {

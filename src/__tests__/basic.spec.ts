@@ -907,7 +907,7 @@ describe("Given the Navigo library", () => {
             context.flag = false;
             done();
           },
-          [
+          Q.if(
             (context) => context.flag,
             [
               (context, done) => {
@@ -928,8 +928,8 @@ describe("Given the Navigo library", () => {
                 context.data.push("f");
                 done();
               },
-            ],
-          ],
+            ]
+          ),
           (context, done) => {
             context.data.push("z");
             done();
