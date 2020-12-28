@@ -118,5 +118,28 @@ describe("Given the Navigo library", () => {
         push.mockRestore();
       });
     });
+    it("should be possible to call the handler only without updating the browser URL", () => {
+      const push = jest.spyOn(window.history, "pushState");
+      const r: Navigo = new Navigo("/");
+      const handler = jest.fn();
+      r.on("/login", handler);
+
+      r.navigate("login?a=b", {
+        updateBrowserURL: false,
+        updateState: false,
+      });
+
+      expect(r.lastResolved()).toEqual(null);
+      expect(r.current).toEqual(null);
+      expect(push).not.toBeCalled();
+      expect(handler).toBeCalledTimes(1);
+      expect(handler).toBeCalledWith(
+        expect.objectContaining({
+          params: { a: "b" },
+          url: "login",
+        })
+      );
+      push.mockRestore();
+    });
   });
 });

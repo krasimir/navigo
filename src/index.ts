@@ -7,6 +7,7 @@ import {
   isString,
   clean,
   undefinedOrTrue,
+  parseNavigateToOptions,
 } from "./utils";
 import Q from "./Q";
 
@@ -83,7 +84,7 @@ export default function Navigo(r?: string) {
       current = context.match;
     }
     if (undefinedOrTrue(context.options, "callHandler")) {
-      context.route.handler(current);
+      context.route.handler(context.match);
     }
     updatePageLinks();
     done();
@@ -321,10 +322,13 @@ export default function Navigo(r?: string) {
             return false;
           }
           const location = link.getAttribute("href");
+          const options = parseNavigateToOptions(
+            link.getAttribute("data-navigo-options")
+          );
 
           if (!destroyed) {
             e.preventDefault();
-            navigate(clean(location));
+            self.navigate(clean(location), options);
           }
         });
         link.hasListenerAttached = true;

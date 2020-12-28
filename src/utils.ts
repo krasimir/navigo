@@ -102,3 +102,25 @@ export function pushStateAvailable(): boolean {
 export function undefinedOrTrue(obj, key: string): boolean {
   return typeof obj[key] === "undefined" || obj[key] === true;
 }
+export function parseNavigateToOptions(source?: string): NavigateTo {
+  if (!source) return {};
+  const pairs = source.split(",");
+  const options: NavigateTo = {};
+
+  pairs.forEach((str) => {
+    const temp = str.split(":").map((v) => v.replace(/(^ +| +$)/g, ""));
+    switch (temp[0]) {
+      case "historyAPIMethod":
+        options.historyAPIMethod = temp[1];
+        break;
+      case "updateBrowserURL":
+      case "callHandler":
+      case "updateState":
+      case "force":
+        options[temp[0]] = temp[1] === "true";
+        break;
+    }
+  });
+
+  return options;
+}
