@@ -22,13 +22,10 @@
         const render = (content) =>
           (document.querySelector("#content").innerHTML = content);
 
-        function aboutHandler(match) {
-          console.log("About matched");
-          render("About");
-        }
         router
-          .on("/about", aboutHandler, {
-            already: aboutHandler,
+          .on("/about", (match) => {
+            console.log(match);
+            render("About");
           })
           .on("/products", (match) => {
             console.log(match);
