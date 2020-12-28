@@ -24,6 +24,14 @@ type NavigateTo = {
   shouldResolve?: boolean;
   silent?: boolean;
 };
+type QContext = {
+  match?: Match;
+  route?: Route;
+  currentLocationPath?: string;
+  to?: string;
+  options?: NavigateTo;
+  notFoundHandled?: boolean;
+};
 declare class Navigo {
   constructor(root: string);
   destroyed: boolean;

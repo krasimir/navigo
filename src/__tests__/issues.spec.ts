@@ -182,7 +182,7 @@ describe("Given the Navigo library", () => {
     });
   });
   describe("when we have a `leave` hook into the generic hooks", () => {
-    it("it should call the hook every time when we leave a route", () => {
+    it("should call the hook every time when we leave a route", () => {
       const r: Navigo = new Navigo("/");
       const hooks = {
         leave: jest.fn().mockImplementation((done) => done()),

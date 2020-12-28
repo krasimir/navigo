@@ -22,3 +22,9 @@ export default function Q(funcs: Array<Function | Array<any>>, c?: any) {
     }
   })();
 }
+
+Q.if = function (condition: Function, one, two) {
+  if (!Array.isArray(one)) one = [one];
+  if (!Array.isArray(two)) two = [two];
+  return [condition, one, two];
+};

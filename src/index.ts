@@ -19,6 +19,17 @@ export default function Navigo(r?: string) {
   let self = this;
   const isPushStateAvailable = pushStateAvailable();
   const isWindowAvailable = typeof window !== "undefined";
+  const lifecycle = [
+    _checkForAlreadyHook,
+    _checkForLeaveHook,
+    _checkForBeforeHook,
+    _callHandler,
+    _checkForAfterHook,
+  ];
+  const notFoundLifeCycle = [
+    _checkForNotFoundHandler,
+    [(context: QContext) => context.notFoundHandled, lifecycle, [_errorOut]],
+  ];
 
   if (!r) {
     console.warn(
@@ -38,7 +49,7 @@ export default function Navigo(r?: string) {
       }
     }
   }
-  function _checkForLeaveHook(context, done) {
+  function _checkForLeaveHook(context: QContext, done) {
     if (current && current.route.hooks && current.route.hooks.leave) {
       current.route.hooks.leave((moveForward: boolean) => {
         if (typeof moveForward === "undefined" || moveForward === true) {
@@ -49,7 +60,7 @@ export default function Navigo(r?: string) {
     }
     done();
   }
-  function _checkForBeforeHook(context, done) {
+  function _checkForBeforeHook(context: QContext, done) {
     _required(context, ["route", "match"]);
     if (context.route.hooks && context.route.hooks.before) {
       context.route.hooks.before((moveForward: boolean) => {
@@ -61,21 +72,21 @@ export default function Navigo(r?: string) {
       done();
     }
   }
-  function _callHandler(context, done) {
+  function _callHandler(context: QContext, done) {
     _required(context, ["route", "match"]);
     current = context.match;
     context.route.handler(current);
     updatePageLinks();
     done();
   }
-  function _checkForAfterHook(context, done) {
+  function _checkForAfterHook(context: QContext, done) {
     _required(context, ["route", "match"]);
     if (context.route.hooks && context.route.hooks.after) {
       context.route.hooks.after(context.match);
     }
     done();
   }
-  function _checkForAlreadyHook(context, done) {
+  function _checkForAlreadyHook(context: QContext, done) {
     _required(context, ["route", "match"]);
     if (
       current &&
@@ -91,7 +102,7 @@ export default function Navigo(r?: string) {
     }
     done();
   }
-  function _checkForNotFoundHandler(context, done) {
+  function _checkForNotFoundHandler(context: QContext, done) {
     _required(context, ["currentLocationPath"]);
     if (notFoundRoute) {
       context.notFoundHandled = true;
@@ -99,30 +110,31 @@ export default function Navigo(r?: string) {
         context.currentLocationPath
       );
       notFoundRoute.path = clean(url);
-      hooksAndCallHandler(notFoundRoute, {
+      context.match = {
         url: notFoundRoute.path,
         queryString,
         data: null,
         route: notFoundRoute,
         params: queryString !== "" ? parseQuery(queryString) : null,
-      });
+      };
+      context.route = notFoundRoute;
     }
     done();
   }
-  function _errorOut(context, done) {
+  function _errorOut(context: QContext, done) {
     _required(context, ["currentLocationPath"]);
     console.warn(
       `Navigo: "${context.currentLocationPath}" didn't match any of the registered routes.`
     );
     done(false);
   }
-  function _setLocationPath(context, done) {
+  function _setLocationPath(context: QContext, done) {
     if (typeof context.currentLocationPath === "undefined") {
       context.currentLocationPath = getCurrentEnvURL();
     }
     done();
   }
-  function _findAMatch(context, done) {
+  function _findAMatch(context: QContext, done) {
     _required(context, ["currentLocationPath"]);
     for (let i = 0; i < routes.length; i++) {
       const route = routes[i];
@@ -139,7 +151,7 @@ export default function Navigo(r?: string) {
     }
     done();
   }
-  function _checkForSilentMode(context, done) {
+  function _checkForSilentMode(context: QContext, done) {
     if (context.options.silent === true) {
       self.current = current = pathToMatchObject(context.to);
       done(false);
@@ -147,7 +159,7 @@ export default function Navigo(r?: string) {
     }
     done();
   }
-  function _updateBrowserURL(context, done) {
+  function _updateBrowserURL(context: QContext, done) {
     _required(context, ["to", "options"]);
     context.to = `${clean(root)}/${clean(context.to)}`;
     if (isPushStateAvailable) {
@@ -208,58 +220,19 @@ export default function Navigo(r?: string) {
     );
     return this;
   }
-  function hooksAndCallHandler(route: Route, match: Match) {
-    const leaveHook = (done) => {
-      if (current && current.route.hooks && current.route.hooks.leave) {
-        current.route.hooks.leave((moveForward: boolean) => {
-          if (typeof moveForward === "undefined" || moveForward === true) {
-            done();
-          }
-        }, current);
-        return;
-      }
-      done();
-    };
-    const callHandler = () => {
-      current = match;
-      route.handler(match);
-      updatePageLinks();
-      if (route.hooks && route.hooks.after) {
-        route.hooks.after(match);
-      }
-    };
-    if (route.hooks && route.hooks.before) {
-      route.hooks.before((moveForward: boolean) => {
-        if (typeof moveForward === "undefined" || moveForward === true) {
-          leaveHook(callHandler);
-        }
-      }, match);
-    } else {
-      leaveHook(callHandler);
-    }
-  }
   function resolve(currentLocationPath?: string): boolean | Match {
-    const context: { match?: Match; currentLocationPath?: string } = {
+    const context: QContext = {
       currentLocationPath,
     };
     Q(
       [
         _setLocationPath,
         _findAMatch,
-        [
-          (context) => context.match,
-          [
-            _checkForAlreadyHook,
-            _checkForLeaveHook,
-            _checkForBeforeHook,
-            _callHandler,
-            _checkForAfterHook,
-          ],
-          [
-            _checkForNotFoundHandler,
-            [(context) => context.notFoundHandled, [], [_errorOut]],
-          ],
-        ],
+        Q.if(
+          (context: QContext) => context.match,
+          lifecycle,
+          notFoundLifeCycle
+        ),
       ],
       context
     );
@@ -267,38 +240,20 @@ export default function Navigo(r?: string) {
     return context.match ? context.match : false;
   }
   function navigate(to: string, options: NavigateTo = {}): void {
-    const context = { to, options, currentLocationPath: to };
+    const context: QContext = { to, options, currentLocationPath: to };
     Q(
       [
         _checkForSilentMode,
-        [
-          (context) =>
-            typeof context.options.shouldResolve === "undefined" ||
-            context.options.shouldResolve === true,
+        Q.if(
+          ({ options: { shouldResolve } }: QContext) =>
+            typeof shouldResolve === "undefined" || shouldResolve === true,
           [
             _findAMatch,
-            [
-              (context) => context.match,
-              [
-                _checkForLeaveHook,
-                _checkForBeforeHook,
-                _checkForAlreadyHook,
-                _updateBrowserURL,
-                _callHandler,
-                _checkForAfterHook,
-              ],
-              [
-                _checkForNotFoundHandler,
-                [
-                  (context) => context.notFoundHandled,
-                  [_updateBrowserURL],
-                  [_errorOut],
-                ],
-              ],
-            ],
+            Q.if(({ match }: QContext) => match, lifecycle, notFoundLifeCycle),
+            _updateBrowserURL,
           ],
-          [_updateBrowserURL],
-        ],
+          _updateBrowserURL
+        ),
       ],
       context
     );
