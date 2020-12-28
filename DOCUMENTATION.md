@@ -287,7 +287,7 @@ The hooks object has the following signature:
 type RouteHooks = {
   before?: (done: Function, match: Match) => void;
   after?: (match: Match) => void;
-  leave?: (match: Match) => void;
+  leave?: (done: Function, match: Match) => void;
   already?: (match: Match) => void;
 };
 ```
@@ -460,7 +460,7 @@ type Route = {
 type RouteHooks = {
   before?: (done: Function, match: Match) => void;
   after?: (match: Match) => void;
-  leave?: (match: Match) => void;
+  leave?: (done: Function, match: Match) => void;
   already?: (match: Match) => void;
 };
 ```
