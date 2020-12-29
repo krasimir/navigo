@@ -326,6 +326,19 @@ describe("Given the Navigo library", () => {
       );
       warn.mockRestore();
     });
+    it("should still update the browser URL", () => {
+      const warn = jest.spyOn(console, "warn");
+      warn.mockImplementationOnce(() => {});
+      const push = jest.spyOn(history, "pushState");
+      const r: NavigoRouter = new Navigo("/");
+      r.navigate("/foo");
+
+      expect(push).toBeCalledTimes(1);
+      expect(push).toBeCalledWith({}, "", "/foo");
+
+      warn.mockRestore();
+      push.mockRestore();
+    });
   });
   describe("when resolving a route", () => {
     it("should call our handler", () => {

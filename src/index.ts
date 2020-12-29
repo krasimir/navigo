@@ -137,7 +137,7 @@ export default function Navigo(r?: string) {
     console.warn(
       `Navigo: "${context.currentLocationPath}" didn't match any of the registered routes.`
     );
-    done(false);
+    done();
   }
   function _setLocationPath(context: QContext, done) {
     if (typeof context.currentLocationPath === "undefined") {
