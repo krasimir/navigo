@@ -21,9 +21,18 @@ export function useRoute(path: string): [false | Match] {
   const [match, setMatch] = useState<false | Match>(false);
 
   useEffect(() => {
-    router.on(path, (match: Match) => {
-      setMatch(match);
-    });
+    router.on(
+      path,
+      (match: Match) => {
+        setMatch(match);
+      },
+      {
+        leave: done => {
+          setMatch(false);
+          done();
+        }
+      }
+    );
     return () => {
       router.off(path);
     };

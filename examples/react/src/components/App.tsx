@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Router } from "./navigo/NavigoReact";
 import Navigation from "./Navigation";
 import About from "./About";
+import Products from "./Products";
 
 type ContainerProps = {
   padding?: string | 0;
@@ -21,6 +22,7 @@ export default function App() {
       <Router />
       <Navigation />
       <About />
+      <Products />
     </Container>
   );
 }
