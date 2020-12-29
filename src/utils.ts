@@ -1,3 +1,5 @@
+import { Match, Route, NavigateTo } from "../index";
+
 import {
   PARAMETER_REGEXP,
   WILDCARD_REGEXP,

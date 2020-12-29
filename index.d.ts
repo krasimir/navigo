@@ -1,23 +1,23 @@
-type Route = {
+export type Route = {
   name: string;
   path: string | RegExp;
   handler: Function;
   hooks: RouteHooks;
 };
-type Match = {
+export type Match = {
   url: string;
   queryString: string;
   route: Route;
   data: Object | null;
   params: Object | null;
 };
-type RouteHooks = {
+export type RouteHooks = {
   before?: (done: Function, match: Match) => void;
   after?: (match: Match) => void;
   leave?: (done: Function, match: Match) => void;
   already?: (match: Match) => void;
 };
-type NavigateTo = {
+export type NavigateTo = {
   title?: string;
   stateObj?: Object;
   historyAPIMethod?: string;
@@ -26,7 +26,7 @@ type NavigateTo = {
   updateState?: boolean;
   force?: boolean;
 };
-type QContext = {
+export type QContext = {
   match?: Match;
   route?: Route;
   currentLocationPath?: string;
@@ -34,7 +34,7 @@ type QContext = {
   options?: NavigateTo;
   notFoundHandled?: boolean;
 };
-declare class Navigo {
+class Navigo {
   constructor(root: string);
   destroyed: boolean;
   current: Match;
@@ -58,3 +58,5 @@ declare class Navigo {
   _pathToMatchObject(path: string): Match;
   _clean(path: string): string;
 }
+
+export default Navigo;
