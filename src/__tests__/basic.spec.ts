@@ -1,3 +1,4 @@
+import NavigoRouter from "../../index";
 import Navigo from "../index";
 import Q from "../Q";
 
@@ -8,7 +9,7 @@ describe("Given the Navigo library", () => {
   describe("when creating a router", () => {
     it("should accept just a function to the `on` method", () => {
       const handler = jest.fn();
-      const router: Navigo = new Navigo("/foo");
+      const router: NavigoRouter = new Navigo("/foo");
       router.on(handler);
       expect(router.routes).toStrictEqual([
         { path: "foo/foo", handler, hooks: undefined, name: "foo/foo" },
@@ -16,7 +17,7 @@ describe("Given the Navigo library", () => {
     });
     it("should accept path and a function", () => {
       const handler = jest.fn();
-      const router: Navigo = new Navigo("/foo");
+      const router: NavigoRouter = new Navigo("/foo");
       router.on("/bar", handler);
       expect(router.routes).toStrictEqual([
         { path: "foo/bar", handler, hooks: undefined, name: "foo/bar" },
@@ -24,7 +25,7 @@ describe("Given the Navigo library", () => {
     });
     it("should accept path as RegExp and a function", () => {
       const handler = jest.fn();
-      const router: Navigo = new Navigo("/foo");
+      const router: NavigoRouter = new Navigo("/foo");
       router.on(/^b/, handler);
       expect(router.routes).toStrictEqual([
         { path: /^b/, handler, hooks: undefined, name: "/^b/" },
@@ -32,7 +33,7 @@ describe("Given the Navigo library", () => {
     });
     it("should accept object with paths and handlers", () => {
       const handler = jest.fn();
-      const router: Navigo = new Navigo("/foo");
+      const router: NavigoRouter = new Navigo("/foo");
       router.on({
         a: handler,
         b: handler,
@@ -43,20 +44,20 @@ describe("Given the Navigo library", () => {
       ]);
     });
     it("should allow chaining of the `on` method", () => {
-      const router: Navigo = new Navigo("/");
+      const router: NavigoRouter = new Navigo("/");
       router.on("foo", () => {}).on("bar", () => {});
       expect(router.routes).toHaveLength(2);
     });
     it("should start listening to the popstate event", () => {
       const add = jest.spyOn(window, "addEventListener");
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
 
       expect(add).toBeCalledWith("popstate", expect.any(Function));
       add.mockRestore();
     });
     describe('and when using "named routes"', () => {
       it("should allow us to define routes", () => {
-        const r: Navigo = new Navigo("/");
+        const r: NavigoRouter = new Navigo("/");
         const handler = jest.fn();
         const hook = jest.fn().mockImplementation((done) => {
           done();
@@ -96,7 +97,7 @@ describe("Given the Navigo library", () => {
         expect(hook).toBeCalledTimes(1);
       });
       it("should allow us to generate a URL out of the named route", () => {
-        const r: Navigo = new Navigo("/");
+        const r: NavigoRouter = new Navigo("/");
         const handler = jest.fn();
 
         r.on({
@@ -109,7 +110,7 @@ describe("Given the Navigo library", () => {
       });
     });
     it("should create an instance of Route for each route and Match+Route if there is matching paths", () => {
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       r.on("/about/", () => {})
         .on(() => {})
         .resolve("/about?a=b");
@@ -279,7 +280,7 @@ describe("Given the Navigo library", () => {
           expectedResult ? "match" : "not match"
         } when we have "${location}" as location and "${path}" as route path`,
         () => {
-          const router: Navigo = new Navigo("/");
+          const router: NavigoRouter = new Navigo("/");
           // @ts-ignore
           router.on(path, () => {});
           // @ts-ignore
@@ -290,7 +291,7 @@ describe("Given the Navigo library", () => {
       );
     });
     it("should provide an API for direct matching of the routes", () => {
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
 
       r.on("/foo", () => {});
       r.on("/user/:id", () => {});
@@ -316,7 +317,7 @@ describe("Given the Navigo library", () => {
     it("should log a warning and return false", () => {
       const warn = jest.spyOn(console, "warn");
       warn.mockImplementationOnce(() => {});
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       const res = r.resolve();
 
       expect(res).toEqual(false);
@@ -328,7 +329,7 @@ describe("Given the Navigo library", () => {
   });
   describe("when resolving a route", () => {
     it("should call our handler", () => {
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       const handler = jest.fn();
       r.on("foo/:id", handler);
       r.on("foo/xxx-yyy-zzz", handler);
@@ -344,7 +345,7 @@ describe("Given the Navigo library", () => {
       });
     });
     it("should take into account the order of the routes definition", () => {
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       const handlerA = jest.fn();
       const handlerB = jest.fn();
 
@@ -358,7 +359,7 @@ describe("Given the Navigo library", () => {
       expect(handlerB).toBeCalledTimes(1);
     });
     it("should call the handler once if the matched route is the same", () => {
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       const handler = jest.fn();
 
       r.on("foo/:id", handler);
@@ -383,7 +384,7 @@ describe("Given the Navigo library", () => {
   });
   describe("when using the `off` method", () => {
     it("should remove the handler from the routes", () => {
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       const h = () => {};
       r.on("/foo", () => {}).on("/bar", h);
       expect(r.routes).toHaveLength(2);
@@ -392,7 +393,7 @@ describe("Given the Navigo library", () => {
     });
     describe("and when the path is a RegExp", () => {
       it("should still work", () => {
-        const r: Navigo = new Navigo("/");
+        const r: NavigoRouter = new Navigo("/");
         const h = () => {};
         r.on(/foo/, () => {}).on(/bar/, h);
         expect(r.routes).toHaveLength(2);
@@ -404,7 +405,7 @@ describe("Given the Navigo library", () => {
   describe("when destroying the router", () => {
     it("should empty the routes array and remove the listener to popstate", () => {
       const remove = jest.spyOn(window, "removeEventListener");
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       r.on("foo", () => {});
 
       r.destroy();
@@ -417,7 +418,7 @@ describe("Given the Navigo library", () => {
   describe("when setting a not found handler", () => {
     it("should fallback to that route if no handler is found", () => {
       history.pushState({}, "", "/foo/bar?a=b");
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       const notFound = jest.fn();
       r.notFound(notFound).resolve();
 
@@ -437,14 +438,14 @@ describe("Given the Navigo library", () => {
   });
   describe("when using the `link` method", () => {
     it("should return the composed url", () => {
-      const r: Navigo = new Navigo("/my/root");
+      const r: NavigoRouter = new Navigo("/my/root");
 
       expect(r.link("something/else")).toEqual("/my/root/something/else");
     });
   });
   describe("when we set hooks as part of the route map", () => {
     it("should keep the hooks working", () => {
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       const handler = jest.fn();
       const beforeHook = jest.fn().mockImplementation((done) => done());
 
@@ -466,7 +467,7 @@ describe("Given the Navigo library", () => {
   });
   describe("when using the `before` hook", () => {
     it("should call the hook before resolving a handler", () => {
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       const order = [];
       const h1 = jest.fn().mockImplementation(() => order.push(1));
       const h2 = jest.fn().mockImplementation(() => order.push(2));
@@ -492,7 +493,7 @@ describe("Given the Navigo library", () => {
       expect(order).toStrictEqual([2, 1]);
     });
     it("should allow us to block the handler", () => {
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       const h1 = jest.fn();
       const h2 = jest.fn();
 
@@ -511,7 +512,7 @@ describe("Given the Navigo library", () => {
   });
   describe("when using the `after` hook", () => {
     it("should fire the hook when the handler is resolved", () => {
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       const order = [];
       const h1 = jest.fn().mockImplementation(() => order.push(1));
       const h2 = jest.fn().mockImplementation(() => order.push(2));
@@ -538,7 +539,7 @@ describe("Given the Navigo library", () => {
   });
   describe("when using the `leave` hook", () => {
     it("should fire the hook when we leave out of a route", () => {
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       const order = [];
       const h1 = jest.fn().mockImplementation(() => order.push(1));
       const h2 = jest.fn().mockImplementation(() => order.push(2));
@@ -573,7 +574,7 @@ describe("Given the Navigo library", () => {
       expect(order).toStrictEqual([1, 3, 2]);
     });
     it("should allow us to block the leaving", () => {
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       const spy1 = jest.fn();
       const spy2 = jest.fn();
 
@@ -602,7 +603,7 @@ describe("Given the Navigo library", () => {
     });
     it("should not call pushState (or replaceState) if the leaving is blocked", () => {
       const pushState = jest.spyOn(window.history, "pushState");
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       const spy = jest.fn();
 
       r.on("/nope", spy, { leave: (done) => done(false) });
@@ -627,7 +628,7 @@ describe("Given the Navigo library", () => {
   });
   describe("when using the `already` hook", () => {
     it("should fire the hook when we are matching the same handler", () => {
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       const order = [];
       const h1 = jest.fn().mockImplementation(() => order.push(1));
       const h2 = jest.fn().mockImplementation(() => order.push(2));
@@ -655,7 +656,7 @@ describe("Given the Navigo library", () => {
   });
   describe("when passing hooks to the default handler", () => {
     it("should use the hooks", () => {
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       const order = [];
       const h1 = jest.fn().mockImplementation(() => order.push(1));
       const h2 = jest.fn().mockImplementation(() => order.push(2));
@@ -688,7 +689,7 @@ describe("Given the Navigo library", () => {
   });
   describe("when passing hooks to the not found handler", () => {
     it("should use the hooks", () => {
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       const order = [];
       const h1 = jest.fn().mockImplementation(() => order.push(1));
       const h2 = jest.fn().mockImplementation(() => order.push(2));
@@ -721,7 +722,7 @@ describe("Given the Navigo library", () => {
   });
   describe("when using generic hooks", () => {
     it("should set the generic hooks to every registered route", () => {
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       const hooks = {
         before: jest.fn().mockImplementation((done) => {
           done();
@@ -751,7 +752,7 @@ describe("Given the Navigo library", () => {
   });
   describe("when using `pathToMatchObject` method", () => {
     it("should convert a path to a Match object", () => {
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       r.hooks({
         leave: () => {},
       });
