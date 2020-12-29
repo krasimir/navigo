@@ -31,11 +31,11 @@ export default function Navigo(r?: string) {
   ];
   const notFoundLifeCycle = [
     _checkForNotFoundHandler,
-    Q.if(
-      ({ notFoundHandled }: QContext) => notFoundHandled,
-      lifecycle,
-      _errorOut
-    ),
+    Q.if(({ notFoundHandled }: QContext) => notFoundHandled, lifecycle, [
+      _errorOut,
+      _checkForLeaveHook,
+    ]),
+    _flushCurrent,
   ];
 
   if (!r) {
@@ -82,7 +82,7 @@ export default function Navigo(r?: string) {
   function _callHandler(context: QContext, done) {
     _required(context, ["route", "match", "options"]);
     if (undefinedOrTrue(context.options, "updateState")) {
-      current = context.match;
+      current = self.current = context.match;
     }
     if (undefinedOrTrue(context.options, "callHandler")) {
       context.route.handler(context.match);
@@ -198,6 +198,10 @@ export default function Navigo(r?: string) {
         window.location.href = context.to;
       }
     }
+    done();
+  }
+  function _flushCurrent(context: QContext, done) {
+    current = self.current = null;
     done();
   }
 
