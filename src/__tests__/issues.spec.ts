@@ -244,4 +244,30 @@ describe("Given the Navigo library", () => {
       );
     });
   });
+  describe("and the problem described in #253", function () {
+    it("should properly extract the data from the url", function () {
+      const router: NavigoRouter = new Navigo("/");
+      const handler = jest.fn();
+      const before = jest.fn().mockImplementation((done) => done());
+      const after = jest.fn();
+      const expectedMatch = expect.objectContaining({
+        url: "user/42/save",
+        data: ["42", "save"],
+      });
+
+      router.on(/user\/(\d+)\/(\w+)\/?/, handler, {
+        before,
+        after,
+      });
+
+      router.navigate("/user/42/save");
+
+      expect(handler).toBeCalledTimes(1);
+      expect(handler).toBeCalledWith(expectedMatch);
+      expect(before).toBeCalledTimes(1);
+      expect(before).toBeCalledWith(expect.any(Function), expectedMatch);
+      expect(after).toBeCalledTimes(1);
+      expect(after).toBeCalledWith(expectedMatch);
+    });
+  });
 });
