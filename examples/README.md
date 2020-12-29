@@ -9,6 +9,7 @@ To try the examples run `yarn install` into the `examples` directory. Then go in
 
 Examples done to investigate issues:
 
+* How to add a confirm prompt before leave? [#250](https://github.com/krasimir/navigo/issues/250) - [source](./250)
 * notFound is not working on new page (refresh) [#229](https://github.com/krasimir/navigo/issues/229) - [source](./229)
 * Is it possible to replace/redirect a route request? [#228](https://github.com/krasimir/navigo/issues/228) - [source](./228)
 * Incorrect path detection [#191](https://github.com/krasimir/navigo/issues/191) - [source](./191)

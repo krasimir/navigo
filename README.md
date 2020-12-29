@@ -9,6 +9,15 @@ A simple dependency-free minimalistic JavaScript router
 * [Examples](./examples)
 * [Changelog](./CHANGELOG.md)
 
+- [Navigo](#navigo)
+  - [Features](#features)
+  - [Installation](#installation)
+  - [Quick start](#quick-start)
+  - [Development](#development)
+  - [Building](#building)
+  - [Tests](#tests)
+  - [MISC](#misc)
+
 ## Features
 
 * Uses the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) so it does update the URL of the page
