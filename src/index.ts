@@ -322,9 +322,14 @@ export default function Navigo(r?: string) {
           ) {
             return false;
           }
-          const location = link.getAttribute("href");
+          let location = link.getAttribute("href");
           if (typeof location === "undefined" || location === null) {
             return false;
+          }
+          // handling absolute paths
+          if (location.match(/^(http|https)/) && typeof URL !== "undefined") {
+            const u = new URL(location);
+            location = u.pathname + u.search;
           }
           const options = parseNavigateToOptions(
             link.getAttribute("data-navigo-options")

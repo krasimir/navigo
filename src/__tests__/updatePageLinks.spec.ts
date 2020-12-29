@@ -1,3 +1,4 @@
+import NavigoRouter from "../../index";
 import Navigo from "../index";
 import { parseNavigateToOptions } from "../utils";
 
@@ -23,7 +24,7 @@ describe("Given the Navigo library", () => {
         ];
       });
 
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       r.on("/foo/bar", routeHandler);
 
       handler({
@@ -59,7 +60,7 @@ describe("Given the Navigo library", () => {
         ];
       });
 
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       const navigate = jest.spyOn(r, "navigate");
       r.on("/foo/bar", () => {});
 
@@ -111,13 +112,60 @@ describe("Given the Navigo library", () => {
         ];
       });
 
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       r.on("/foo/bar", () => {});
 
       handler({
         ctrlKey: false,
         preventDefault: () => {},
       });
+      querySelectorAll.mockRestore();
+    });
+  });
+  describe("when we have an absolute path in the href attribute", () => {
+    it("should proper extract the path", () => {
+      const querySelectorAll = jest.spyOn(document, "querySelectorAll");
+      let handler;
+      let routeHandler = jest.fn();
+
+      // @ts-ignore
+      querySelectorAll.mockImplementationOnce(() => {
+        return [
+          {
+            addEventListener(eventType, h) {
+              handler = h;
+            },
+            getAttribute(attr) {
+              if (attr === "href") {
+                return "http://example.com/foo/bar?x=y";
+              }
+            },
+          },
+        ];
+      });
+
+      const r: NavigoRouter = new Navigo("/");
+      r.on("/foo/bar", routeHandler);
+
+      handler({
+        ctrlKey: false,
+        preventDefault: () => {},
+      });
+
+      expect(routeHandler).toBeCalledTimes(1);
+      expect(routeHandler).toBeCalledWith({
+        data: null,
+        params: { x: "y" },
+        queryString: "x=y",
+        route: {
+          handler: expect.any(Function),
+          hooks: undefined,
+          name: "foo/bar",
+          path: "foo/bar",
+        },
+        url: "foo/bar",
+      });
+
       querySelectorAll.mockRestore();
     });
   });
