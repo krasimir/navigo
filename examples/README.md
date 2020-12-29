@@ -9,6 +9,8 @@ To try the examples run `yarn install` into the `examples` directory. Then go in
 
 Examples done to investigate issues:
 
+* notFound is not working on new page (refresh) [#229](https://github.com/krasimir/navigo/issues/229) - [source](./229)
+* Is it possible to replace/redirect a route request? [#228](https://github.com/krasimir/navigo/issues/228) - [source](./228)
 * Incorrect path detection [#191](https://github.com/krasimir/navigo/issues/191) - [source](./191)
 * Hook not firing on first page unload [#179](https://github.com/krasimir/navigo/issues/179) - [source](./179)
 * Global before hook except for 1 page [#163](https://github.com/krasimir/navigo/issues/163) - [source](./163)
