@@ -1,3 +1,4 @@
+import NavigoRouter from "../../index";
 import Navigo from "../index";
 
 describe("Given the Navigo library", () => {
@@ -38,7 +39,7 @@ describe("Given the Navigo library", () => {
       const mock = jest.spyOn(console, "warn").mockImplementation(() => {});
       var handler = jest.fn();
 
-      let router: Navigo = new Navigo("/");
+      let router: NavigoRouter = new Navigo("/");
       router.on("/:moduleName", handler);
       router.notFound(() => {});
 
@@ -52,7 +53,7 @@ describe("Given the Navigo library", () => {
     it("should call the already hook", function () {
       const handler = jest.fn();
       const alreadyHandler = jest.fn();
-      const router: Navigo = new Navigo("/");
+      const router: NavigoRouter = new Navigo("/");
 
       router.on("/:moduleName", handler, {
         already: alreadyHandler,
@@ -72,7 +73,7 @@ describe("Given the Navigo library", () => {
       const handler1 = jest.fn();
       const handler2 = jest.fn();
 
-      let router: Navigo = new Navigo("/");
+      let router: NavigoRouter = new Navigo("/");
 
       router.on({
         restaurant: handler1,
@@ -92,7 +93,7 @@ describe("Given the Navigo library", () => {
     it("should provide an API for changing the history API method", function () {
       const push = jest.spyOn(history, "pushState");
       const replace = jest.spyOn(history, "replaceState");
-      const router: Navigo = new Navigo("/");
+      const router: NavigoRouter = new Navigo("/");
 
       router.notFound(() => {});
       router.navigate("/rock1");
@@ -125,7 +126,7 @@ describe("Given the Navigo library", () => {
   describe("and the bug described in #162", function () {
     it("should properly resolve the route handler even tho there is no dynamic param", function () {
       const spy = jest.fn();
-      const router: Navigo = new Navigo("/");
+      const router: NavigoRouter = new Navigo("/");
 
       router.on("/home", spy);
       router.resolve("/home?hey=bug");
@@ -138,7 +139,7 @@ describe("Given the Navigo library", () => {
   describe("and the issue #167", function () {
     it("should have parameterized routes that work", function () {
       const handler = jest.fn();
-      const router: Navigo = new Navigo("/");
+      const router: NavigoRouter = new Navigo("/");
 
       router.on("/products/:id", handler);
 
@@ -152,7 +153,7 @@ describe("Given the Navigo library", () => {
   describe("Given the issue #174", function () {
     it("should call the handler when we pass a hook object but no before and after", function () {
       const handler = jest.fn();
-      const router: Navigo = new Navigo("/");
+      const router: NavigoRouter = new Navigo("/");
       const alreadyHandler = jest.fn();
       const leaveHandler = jest.fn().mockImplementation((done) => done());
       const aboutHandler = jest.fn();
@@ -183,7 +184,7 @@ describe("Given the Navigo library", () => {
   });
   describe("when we have a `leave` hook into the generic hooks", () => {
     it("should call the hook every time when we leave a route", () => {
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       const hooks = {
         leave: jest.fn().mockImplementation((done) => done()),
       };
@@ -214,13 +215,33 @@ describe("Given the Navigo library", () => {
   describe("and the request described in #208", function () {
     it("should allow us to resolve a handler but don't update the browser URL", function () {
       const push = jest.spyOn(history, "pushState");
-      const router: Navigo = new Navigo("/");
+      const router: NavigoRouter = new Navigo("/");
       const handler = jest.fn();
 
       router.on("/it-works", handler);
       router.navigate("/it-works", {});
 
       push.mockRestore();
+    });
+  });
+  describe("and the request described in #245", function () {
+    it("should properly resolve the child path without the need of a parent path", function () {
+      const router: NavigoRouter = new Navigo("/");
+      const handler = jest.fn();
+
+      router
+        .on({
+          "email-verification/:emailVerificationCode": handler,
+        })
+        .resolve("/email-verification/x");
+
+      expect(handler).toBeCalledTimes(1);
+      expect(handler).toBeCalledWith(
+        expect.objectContaining({
+          url: "email-verification/x",
+          data: { emailVerificationCode: "x" },
+        })
+      );
     });
   });
 });
