@@ -328,8 +328,10 @@ export default function Navigo(r?: string) {
           }
           // handling absolute paths
           if (location.match(/^(http|https)/) && typeof URL !== "undefined") {
-            const u = new URL(location);
-            location = u.pathname + u.search;
+            try {
+              const u = new URL(location);
+              location = u.pathname + u.search;
+            } catch (err) {}
           }
           const options = parseNavigateToOptions(
             link.getAttribute("data-navigo-options")
