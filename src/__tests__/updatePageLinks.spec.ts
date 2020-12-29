@@ -123,7 +123,7 @@ describe("Given the Navigo library", () => {
     });
   });
   describe("when we have an absolute path in the href attribute", () => {
-    it("should proper extract the path", () => {
+    it("should properly extract the path", () => {
       const querySelectorAll = jest.spyOn(document, "querySelectorAll");
       let handler;
       let routeHandler = jest.fn();
