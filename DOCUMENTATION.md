@@ -33,7 +33,7 @@ API
 | [`off`](#removing-a-route)                    |
 | [`navigate`](#navigating-between-routes)      |
 | [`resolve`](#resolving-routes)                |
-| [`match`](#rdirect-matching-of-routes)        |
+| [`match`](#redirect-matching-of-routes)        |
 | [`destroy`](#destroying-the-router)           |
 | [`notFound`](#handling-a-not-found-page)      |
 | [`updatePageLinks`](#augment-your-a-tags)     |

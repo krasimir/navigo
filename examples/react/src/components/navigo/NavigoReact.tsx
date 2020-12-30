@@ -17,26 +17,28 @@ export function Router({ root }: RouterProps) {
   return null;
 }
 
-export function useRoute(path: string): [false | Match] {
+export function useRoute(path: string): [false | Match, Navigo] {
   const [match, setMatch] = useState<false | Match>(false);
 
   useEffect(() => {
-    router.on(
-      path,
-      (match: Match) => {
-        setMatch(match);
-      },
-      {
-        leave: done => {
-          setMatch(false);
-          done();
+    router
+      .on(
+        path,
+        (match: Match) => {
+          setMatch(match);
+        },
+        {
+          leave: done => {
+            setMatch(false);
+            done();
+          }
         }
-      }
-    );
+      )
+      .resolve();
     return () => {
       router.off(path);
     };
   }, []);
 
-  return [match];
+  return [match, router];
 }
