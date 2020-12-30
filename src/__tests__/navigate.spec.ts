@@ -1,10 +1,11 @@
+import NavigoRouter from "../../index";
 import Navigo from "../index";
 
 describe("Given the Navigo library", () => {
   describe("when navigating to a route", () => {
     it("should show a deprecation warnings for shouldResolve and silent", () => {
       const warn = jest.spyOn(console, "warn").mockImplementation(() => {});
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       r.notFound(() => {});
 
       // @ts-ignore
@@ -23,7 +24,7 @@ describe("Given the Navigo library", () => {
     });
     it("should push a new entry via the history api and resolve the route", () => {
       const pushState = jest.spyOn(window.history, "pushState");
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       const handler = jest.fn();
 
       r.on("/foo/bar", handler).on("/about", handler).on("*", handler);
@@ -39,7 +40,7 @@ describe("Given the Navigo library", () => {
     });
     it("should not update the browser URL if `updateBrowserURL` is set to `false`", () => {
       const push = jest.spyOn(window.history, "pushState");
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
 
       r.notFound(() => {});
       r.navigate("/foo", { updateBrowserURL: false });
@@ -48,7 +49,7 @@ describe("Given the Navigo library", () => {
       push.mockRestore();
     });
     it("should not call our handler if `callHandler` is set to `false`", () => {
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       const handler = jest.fn();
 
       r.on("/foo", handler);
@@ -57,7 +58,7 @@ describe("Given the Navigo library", () => {
       expect(handler).not.toBeCalled();
     });
     it("should not update the internal state if `updateState` is equal to false", () => {
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
 
       r.on("/foo", () => {});
       r.navigate("/foo", { updateState: false });
@@ -67,7 +68,7 @@ describe("Given the Navigo library", () => {
     });
     it("should NOT resolve any routes if `callHandler` is set to `false`", () => {
       const pushState = jest.spyOn(window.history, "pushState");
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       const handler = jest.fn();
 
       r.on("/foo", handler).on("/about", handler).on("*", handler);
@@ -89,7 +90,7 @@ describe("Given the Navigo library", () => {
     describe("and when we use force: true", () => {
       it("should only update the `current` (last resolved) and should not update the browser url and should not update the current state, neither call a handler", () => {
         const push = jest.spyOn(window.history, "pushState");
-        const r: Navigo = new Navigo("/");
+        const r: NavigoRouter = new Navigo("/");
         const handler = jest.fn();
         r.on("about", () => {})
           .on("products", () => {})
@@ -120,7 +121,7 @@ describe("Given the Navigo library", () => {
     });
     it("should be possible to call the handler only without updating the browser URL", () => {
       const push = jest.spyOn(window.history, "pushState");
-      const r: Navigo = new Navigo("/");
+      const r: NavigoRouter = new Navigo("/");
       const handler = jest.fn();
       r.on("/login", handler);
 
@@ -140,6 +141,16 @@ describe("Given the Navigo library", () => {
         })
       );
       push.mockRestore();
+    });
+    describe("and when we have a specified root", () => {
+      it("should properly set the `to` and `currentLocationPath` to contain the root path", () => {
+        const r: NavigoRouter = new Navigo("/app");
+        const handler = jest.fn();
+        r.on("/about", handler);
+        r.navigate("/about");
+
+        expect(handler).toBeCalledTimes(1);
+      });
     });
   });
 });

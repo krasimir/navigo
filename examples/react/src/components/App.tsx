@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import { Router } from "./navigo/NavigoReact";
+import { Base } from "./navigo/NavigoReact";
 import Navigation from "./Navigation";
 import About from "./About";
 import Products from "./Products";
@@ -19,7 +19,7 @@ export const Container = styled.div<ContainerProps>`
 export default function App() {
   return (
     <Container padding="1em">
-      <Router />
+      <Base root="/app" />
       <Navigation />
       <About />
       <Products />

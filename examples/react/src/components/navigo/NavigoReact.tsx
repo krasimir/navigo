@@ -3,25 +3,26 @@ import Navigo, { Match } from "navigo";
 
 let router: Navigo;
 
-type RouterProps = {
-  root?: string;
-};
+function getRouter(root?: string): Navigo {
+  if (router) {
+    return router;
+  }
+  return (router = new Navigo(root || "/"));
+}
 
-export function Router({ root }: RouterProps) {
-  useEffect(() => {
-    if (!router) {
-      router = new Navigo(root || "/");
-    }
-  }, []);
-
+export function Base({ root }: { root: string }) {
+  getRouter(root);
   return null;
 }
 
 export function useRoute(path: string): [false | Match, Navigo] {
-  const [match, setMatch] = useState<false | Match>(false);
+  const [match, setMatch] = useState<false | Match>(
+    getRouter().matchLocation(path)
+  );
 
   useEffect(() => {
-    router
+    getRouter()
+      .updatePageLinks()
       .on(
         path,
         (match: Match) => {
@@ -33,12 +34,11 @@ export function useRoute(path: string): [false | Match, Navigo] {
             done();
           }
         }
-      )
-      .resolve();
+      );
     return () => {
-      router.off(path);
+      getRouter().off(path);
     };
   }, []);
 
-  return [match, router];
+  return [match, getRouter()];
 }

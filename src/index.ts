@@ -186,7 +186,6 @@ export default function Navigo(r?: string) {
   }
   function _updateBrowserURL(context: QContext, done) {
     _required(context, ["to", "options"]);
-    context.to = `${clean(root)}/${clean(context.to)}`;
     if (undefinedOrTrue(context.options, "updateBrowserURL")) {
       if (isPushStateAvailable) {
         history[context.options.historyAPIMethod || "pushState"](
@@ -268,6 +267,7 @@ export default function Navigo(r?: string) {
     return context.match ? context.match : false;
   }
   function navigate(to: string, options: NavigateTo = {}): void {
+    to = `${clean(root)}/${clean(to)}`;
     const context: QContext = { to, options, currentLocationPath: to };
     Q(
       [
@@ -349,7 +349,7 @@ export default function Navigo(r?: string) {
         link.hasListenerAttached = true;
       }
     });
-    return this;
+    return self;
   }
   function findLinks() {
     if (isWindowAvailable) {
