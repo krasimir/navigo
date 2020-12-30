@@ -599,4 +599,25 @@ describe("Given the Navigo library", () => {
       expect(context.data).toStrictEqual(["a", "b", "e", "f", "z"]);
     });
   });
+  describe("when using the `matchLocation` method", () => {
+    it("should allow us to use only the matching logic of the router", () => {
+      const r: NavigoRouter = new Navigo("/");
+
+      expect(r.matchLocation("/foo/:id", "/foo/bar?a=b")).toStrictEqual({
+        data: {
+          id: "bar",
+        },
+        params: { a: "b" },
+        queryString: "a=b",
+        route: {
+          handler: expect.any(Function),
+          hooks: {},
+          name: "foo/:id",
+          path: "foo/:id",
+        },
+        url: "foo/bar",
+      });
+      expect(r.matchLocation("/nope", "/something-else")).toEqual(false);
+    });
+  });
 });

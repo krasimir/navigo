@@ -55,6 +55,7 @@ class Navigo {
   hooks(hooks: RouteHooks): Navigo;
   getLinkPath(link: Object): string;
   match(path: string): false | Match;
+  matchLocation(path: string, currentLocation?: string): false | Match;
   _pathToMatchObject(path: string): Match;
   _clean(path: string): string;
 }

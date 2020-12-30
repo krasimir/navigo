@@ -396,13 +396,25 @@ export default function Navigo(r?: string) {
       params: params,
     };
   }
-  function directMatch(path: string): false | Match {
+  function directMatchWithRegisteredRoutes(path: string): false | Match {
     const context: QContext = {
       currentLocationPath: path,
       options: {},
     };
     _findAMatch(context, () => {});
     return context.match ? context.match : false;
+  }
+  function directMatchWithLocation(
+    path: string,
+    currentLocation?: string
+  ): false | Match {
+    const context: QContext = { currentLocationPath: currentLocation };
+    _setLocationPath(context, () => {});
+    const match = matchRoute(
+      context.currentLocationPath,
+      createRoute(clean(path), () => {}, {})
+    );
+    return match ? match : false;
   }
 
   this.root = root;
@@ -423,7 +435,8 @@ export default function Navigo(r?: string) {
   this.lastResolved = lastResolved;
   this.generate = generate;
   this.getLinkPath = getLinkPath;
-  this.match = directMatch;
+  this.match = directMatchWithRegisteredRoutes;
+  this.matchLocation = directMatchWithLocation;
   this._pathToMatchObject = pathToMatchObject;
   this._clean = clean;
 

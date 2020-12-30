@@ -7,7 +7,8 @@
 - [Augment your `<a>` tags](#augment-your-a-tags)
   - [Passing options to the `navigate` method](#passing-options-to-the-navigate-method)
 - [Resolving routes](#resolving-routes)
-- [Direct matching of routes](#direct-matching-of-routes)
+- [Direct matching of registered routes](#direct-matching-of-registered-routes)
+- [Direct matching of paths](#direct-matching-of-paths)
 - [Hooks](#hooks)
   - [Type of hooks](#type-of-hooks)
   - [Defining hooks for specific route](#defining-hooks-for-specific-route)
@@ -26,21 +27,22 @@
 
 API
 
-| Method                                        |
-| ----------------------------------------------|
-| [`constructor`](#initializing)                |
-| [`on`](#adding-a-route)                       |
-| [`off`](#removing-a-route)                    |
-| [`navigate`](#navigating-between-routes)      |
-| [`resolve`](#resolving-routes)                |
-| [`match`](#direct-matching-of-routes)        |
-| [`destroy`](#destroying-the-router)           |
-| [`notFound`](#handling-a-not-found-page)      |
-| [`updatePageLinks`](#augment-your-a-tags)     |
-| [`link`](#generating-paths)                   |
-| [`generate`](#generating-paths)               |
-| [`lastResolved`](#resolving-routes)           |
-| [`hooks`](#defining-hooks-for-all-the-routes) |
+| Method                                           |
+| -------------------------------------------------|
+| [`constructor`](#initializing)                   |
+| [`on`](#adding-a-route)                          |
+| [`off`](#removing-a-route)                       |
+| [`navigate`](#navigating-between-routes)         |
+| [`resolve`](#resolving-routes)                   |
+| [`match`](#direct-matching-of-registered-routes) |
+| [`matchLocation`](#direct-matching-of-paths)     |
+| [`destroy`](#destroying-the-router)              |
+| [`notFound`](#handling-a-not-found-page)         |
+| [`updatePageLinks`](#augment-your-a-tags)        |
+| [`link`](#generating-paths)                      |
+| [`generate`](#generating-paths)                  |
+| [`lastResolved`](#resolving-routes)              |
+| [`hooks`](#defining-hooks-for-all-the-routes)    |
 
 Types
 
@@ -297,7 +299,7 @@ If you need to see the latest match you can access it via the `lastResolved()` m
 * It calls hooks (if any) and your route handler.
 * Updates the internal state of the router.
 
-## Direct matching of routes
+## Direct matching of registered routes
 
 If you want to check if some path is matching any of the routes without triggering hooks, handlers or changing the browser URL you may use the `match` method. For example:
 
@@ -326,6 +328,36 @@ console.log(r.match("/user/xxx/?a=b"));
 //     url: "user/xxx",
 //   }
 ```
+
+## Direct matching of paths
+
+There is a `matchLocation` method that offers the bare matching logic of the router. You pass a `path` and it checks if the string matches the current location. If you don't want to use the current location of the browser you may send a second argument which will replace it with whatever you send. For example:
+
+```js
+// let's say that the path of the browser is "/foo/bar?a=b"
+router.matchLocation('/foo/:id');
+/*
+{
+  data: {
+    id: "bar",
+  },
+  params: { a: "b" },
+  queryString: "a=b",
+  route: {
+    handler: expect.any(Function),
+    hooks: {},
+    name: "foo/:id",
+    path: "foo/:id",
+  },
+  url: "foo/bar",
+}
+*/
+
+// passing the current location manually
+r.matchLocation("/foo/:id", "/foo/bar?a=b");
+```
+
+The method returns false if there is no match.
 
 ## Hooks
 
@@ -478,6 +510,7 @@ interface Navigo {
   hooks(hooks: RouteHooks): Navigo;
   getLinkPath(link: Object): string;
   match(path: string): false | Match;
+  matchLocation(path: string, currentLocation?: string): false | Match;
   _pathToMatchObject(path: string): Match;
   _clean(path: string): string;
 }
