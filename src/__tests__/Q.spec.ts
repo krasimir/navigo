@@ -92,5 +92,38 @@ describe("Given the Navigo library", () => {
       );
       expect(context.data).toStrictEqual(["a", "b", "e", "f", "z"]);
     });
+    describe("and when we have other queues as items of the queue", () => {
+      it("should process them", () => {
+        const happen = [];
+        Q([
+          (context, done) => {
+            happen.push("0");
+            done();
+          },
+          Q.child([
+            (context, done) => {
+              happen.push("a");
+              done();
+            },
+            (context, done) => {
+              happen.push("b");
+              done();
+            },
+          ]),
+          Q.child([
+            (context, done) => {
+              happen.push("c");
+              done();
+            },
+          ]),
+          (context, done) => {
+            happen.push("d");
+            done();
+          },
+        ]);
+
+        expect(happen).toStrictEqual(["0", "a", "b", "c", "d"]);
+      });
+    });
   });
 });

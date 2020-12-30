@@ -14,7 +14,7 @@ import Q from "./Q";
 
 export default function Navigo(r?: string) {
   let root = "/";
-  let current: Match = null;
+  let current: Match[] = null;
   let routes: Route[] = [];
   let notFoundRoute: Route;
   let destroyed = false;
@@ -57,20 +57,34 @@ export default function Navigo(r?: string) {
     }
   }
   function _checkForLeaveHook(context: QContext, done) {
-    if (current && current.route.hooks && current.route.hooks.leave) {
-      current.route.hooks.leave((moveForward: boolean) => {
-        if (typeof moveForward === "undefined" || moveForward === true) {
-          done();
-        }
-      }, current);
+    _required(context, ["match"]);
+    // at least one of the matched routes has a different path
+    if (current && current[0].route.path !== context.match.route.path) {
+      Q([
+        ...current.map((match) => {
+          return (_, leaveLoopDone) => {
+            if (match.route.hooks && match.route.hooks.leave) {
+              match.route.hooks.leave((moveForward: boolean) => {
+                if (
+                  typeof moveForward === "undefined" ||
+                  moveForward === true
+                ) {
+                  leaveLoopDone();
+                }
+              }, match);
+            }
+          };
+        }),
+        () => done(),
+      ]);
       return;
     }
     done();
   }
   function _checkForBeforeHook(context: QContext, done) {
-    _required(context, ["route", "match"]);
-    if (context.route.hooks && context.route.hooks.before) {
-      context.route.hooks.before((moveForward: boolean) => {
+    _required(context, ["match"]);
+    if (context.match.route.hooks && context.match.route.hooks.before) {
+      context.match.route.hooks.before((moveForward: boolean) => {
         if (typeof moveForward === "undefined" || moveForward === true) {
           done();
         }
@@ -80,28 +94,28 @@ export default function Navigo(r?: string) {
     }
   }
   function _callHandler(context: QContext, done) {
-    _required(context, ["route", "match", "options"]);
+    _required(context, ["matches", "match", "options"]);
     if (undefinedOrTrue(context.options, "updateState")) {
-      current = self.current = context.match;
+      current = self.current = context.matches;
     }
     if (undefinedOrTrue(context.options, "callHandler")) {
-      context.route.handler(context.match);
+      context.match.route.handler(context.match);
     }
     updatePageLinks();
     done();
   }
   function _checkForAfterHook(context: QContext, done) {
-    _required(context, ["route", "match"]);
-    if (context.route.hooks && context.route.hooks.after) {
-      context.route.hooks.after(context.match);
+    _required(context, ["match"]);
+    if (context.match.route.hooks && context.match.route.hooks.after) {
+      context.match.route.hooks.after(context.match);
     }
     done();
   }
   function _checkForAlreadyHook(context: QContext, done) {
-    _required(context, ["route", "match"]);
+    _required(context, ["match"]);
     if (
       current &&
-      current.route === context.route &&
+      current.route === context.match.route &&
       current.url === context.match.url &&
       current.queryString === context.match.queryString
     ) {
@@ -128,7 +142,6 @@ export default function Navigo(r?: string) {
         route: notFoundRoute,
         params: queryString !== "" ? parseQuery(queryString) : null,
       };
-      context.route = notFoundRoute;
     }
     done();
   }
@@ -154,10 +167,10 @@ export default function Navigo(r?: string) {
         route
       );
       if (match) {
-        context.match = match;
-        context.route = route;
-        done();
-        return;
+        if (!context.matches) context.matches = [];
+        context.matches.push(match);
+        // done();
+        // return;
       }
     }
     done();
@@ -202,6 +215,23 @@ export default function Navigo(r?: string) {
   function _flushCurrent(context: QContext, done) {
     current = self.current = null;
     done();
+  }
+  function _processMatches(context: QContext, done) {
+    _required(context, ["matches"]);
+    let idx = 0;
+    (function nextMatch() {
+      if (idx === context.matches.length) {
+        done();
+        return;
+      }
+      Q(
+        lifecycle.concat(() => {
+          idx += 1;
+          nextMatch();
+        }),
+        { ...context, match: context.matches[idx] }
+      );
+    })();
   }
 
   // public APIs
@@ -259,7 +289,11 @@ export default function Navigo(r?: string) {
       [
         _setLocationPath,
         _matchPathToRegisteredRoutes,
-        Q.if(({ match }: QContext) => match, lifecycle, notFoundLifeCycle),
+        Q.if(
+          ({ matches }: QContext) => matches && matches.length > 0,
+          _processMatches,
+          notFoundLifeCycle
+        ),
       ],
       context
     );
@@ -274,7 +308,11 @@ export default function Navigo(r?: string) {
         _checkForDeprecationMethods,
         _checkForForceOp,
         _matchPathToRegisteredRoutes,
-        Q.if(({ match }: QContext) => match, lifecycle, notFoundLifeCycle),
+        Q.if(
+          ({ matches }: QContext) => matches && matches.length > 0,
+          _processMatches,
+          notFoundLifeCycle
+        ),
         _updateBrowserURL,
       ],
       context

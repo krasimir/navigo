@@ -27,8 +27,8 @@ export type NavigateTo = {
   force?: boolean;
 };
 export type QContext = {
+  matches?: Match[];
   match?: Match;
-  route?: Route;
   currentLocationPath?: string;
   to?: string;
   options?: NavigateTo;

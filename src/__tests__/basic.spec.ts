@@ -56,7 +56,7 @@ describe("Given the Navigo library", () => {
       add.mockRestore();
     });
     describe('and when using "named routes"', () => {
-      it("should allow us to define routes", () => {
+      fit("should allow us to define routes", () => {
         const r: NavigoRouter = new Navigo("/");
         const handler = jest.fn();
         const hook = jest.fn().mockImplementation((done) => {
@@ -255,6 +255,60 @@ describe("Given the Navigo library", () => {
         data: { id: "moo" },
         params: { a: "10" },
       });
+    });
+  });
+  describe("when defining multiple routes with the same paths", () => {
+    it("should resolve their handlers and their hooks", () => {
+      const r: NavigoRouter = new Navigo("/");
+      const order = [];
+      const handlerA = jest.fn().mockImplementation(() => order.push("a"));
+      const handlerB = jest.fn().mockImplementation(() => order.push("b"));
+
+      r.on("/foo", handlerA, {
+        before: (done) => {
+          order.push("beforeA");
+          done();
+        },
+        leave: (done) => {
+          order.push("leaveA");
+          done();
+        },
+        after: () => {
+          order.push("afterA");
+        },
+      });
+      r.on("/foo", handlerB, {
+        before: (done) => {
+          order.push("beforeB");
+          done();
+        },
+        leave: (done) => {
+          order.push("leaveB");
+          done();
+        },
+        after: () => {
+          order.push("afterB");
+        },
+      });
+
+      r.on("/bar", () => order.push("bar"));
+
+      r.navigate("/foo?a=b");
+      r.navigate("/bar?a=b");
+
+      expect(handlerA).toBeCalledTimes(1);
+      expect(handlerB).toBeCalledTimes(1);
+      expect(order).toStrictEqual([
+        "beforeA",
+        "a",
+        "afterA",
+        "beforeB",
+        "b",
+        "afterB",
+        "leaveA",
+        "leaveB",
+        "bar",
+      ]);
     });
   });
 });
