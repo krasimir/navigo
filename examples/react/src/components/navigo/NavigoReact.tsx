@@ -7,7 +7,10 @@ function getRouter(root?: string): Navigo {
   if (router) {
     return router;
   }
-  return (router = new Navigo(root || "/"));
+  router = new Navigo(root || "/");
+  // @ts-ignore
+  window.router = router;
+  return router;
 }
 
 export function Base({ root }: { root: string }) {
@@ -15,12 +18,20 @@ export function Base({ root }: { root: string }) {
   return null;
 }
 
-export function useRoute(path: string): [false | Match, Navigo] {
+export function useRoute(path: string): [false | Match] {
   const [match, setMatch] = useState<false | Match>(
     getRouter().matchLocation(path)
   );
 
   useEffect(() => {
+    const leave = (done: Function) => {
+      setMatch(false);
+      done();
+    };
+    if (match) {
+      getRouter().navigate(path, { force: true });
+      getRouter().current.route.hooks = { leave };
+    }
     getRouter()
       .updatePageLinks()
       .on(
@@ -28,17 +39,24 @@ export function useRoute(path: string): [false | Match, Navigo] {
         (match: Match) => {
           setMatch(match);
         },
-        {
-          leave: done => {
-            setMatch(false);
-            done();
-          }
-        }
+        { leave }
       );
     return () => {
       getRouter().off(path);
     };
   }, []);
 
-  return [match, getRouter()];
+  return [match];
+}
+
+export function useRouter(): [Navigo] {
+  return [getRouter()];
+}
+
+export function Route({ path, children }: { path: string; children: any }) {
+  const [match] = useRoute(path);
+  if (match) {
+    return children;
+  }
+  return null;
 }

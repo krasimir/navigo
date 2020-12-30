@@ -3369,10 +3369,10 @@ nanomatch@^1.2.9:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
-navigo@8.0.0-beta.22:
-  version "8.0.0-beta.22"
-  resolved "https://registry.yarnpkg.com/navigo/-/navigo-8.0.0-beta.22.tgz#81b98c5ffe30786d5fc9abcd9766c7d1de8bd8cc"
-  integrity sha512-wtZwCAIeeI+G2BIkJrz039h/MhU9cc/R3mvHigzHtPNC/QlzsNlBg7RIJYTV+VoIJEI0iIZL8QGJlTwnaTUcSQ==
+navigo@8.0.0-beta.23:
+  version "8.0.0-beta.23"
+  resolved "https://registry.yarnpkg.com/navigo/-/navigo-8.0.0-beta.23.tgz#8c7c83273e50716db2e3cef6fa907dba5931d7eb"
+  integrity sha512-Kl4ADd8x3o1+EeXoqM6XsoDVV5LRSqUZ3/Ps6sr4EvZOK16nefQ2vdJqdMF1PAJpuLVk7seo44nHBCl1lrqxVw==
 
 negotiator@0.6.2:
   version "0.6.2"

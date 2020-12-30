@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 
-import { Base } from "./navigo/NavigoReact";
+import { Base, Route } from "./navigo/NavigoReact";
 import Navigation from "./Navigation";
 import About from "./About";
 import Products from "./Products";
+import Team from "./Team";
 
 type ContainerProps = {
   padding?: string | 0;
@@ -22,7 +23,12 @@ export default function App() {
       <Base root="/app" />
       <Navigation />
       <About />
+      <Team />
       <Products />
+      <Route path="/about/team">
+        <hr />
+        Team page footer
+      </Route>
     </Container>
   );
 }
