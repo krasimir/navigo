@@ -145,7 +145,7 @@ export default function Navigo(r?: string) {
     }
     done();
   }
-  function _findAMatch(context: QContext, done) {
+  function _matchPathToRegisteredRoutes(context: QContext, done) {
     _required(context, ["currentLocationPath"]);
     for (let i = 0; i < routes.length; i++) {
       const route = routes[i];
@@ -258,7 +258,7 @@ export default function Navigo(r?: string) {
     Q(
       [
         _setLocationPath,
-        _findAMatch,
+        _matchPathToRegisteredRoutes,
         Q.if(({ match }: QContext) => match, lifecycle, notFoundLifeCycle),
       ],
       context
@@ -273,7 +273,7 @@ export default function Navigo(r?: string) {
       [
         _checkForDeprecationMethods,
         _checkForForceOp,
-        _findAMatch,
+        _matchPathToRegisteredRoutes,
         Q.if(({ match }: QContext) => match, lifecycle, notFoundLifeCycle),
         _updateBrowserURL,
       ],
@@ -401,7 +401,7 @@ export default function Navigo(r?: string) {
       currentLocationPath: path,
       options: {},
     };
-    _findAMatch(context, () => {});
+    _matchPathToRegisteredRoutes(context, () => {});
     return context.match ? context.match : false;
   }
   function directMatchWithLocation(
