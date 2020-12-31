@@ -17,7 +17,7 @@ export type RouteHooks = {
   leave?: (done: Function, match: Match) => void;
   already?: (match: Match) => void;
 };
-export type NavigateTo = {
+export type NavigateOptions = {
   title?: string;
   stateObj?: Object;
   historyAPIMethod?: string;
@@ -25,13 +25,18 @@ export type NavigateTo = {
   callHandler?: boolean;
   updateState?: boolean;
   force?: boolean;
+  resolveOptions?: ResolveOptions;
+};
+export type ResolveOptions = {
+  strategy?: ONE | ALL;
 };
 export type QContext = {
   matches?: Match[];
   match?: Match;
   currentLocationPath?: string;
   to?: string;
-  options?: NavigateTo;
+  navigateOptions?: NavigateOptions;
+  resolveOptions?: ResolveOptions;
   notFoundHandled?: boolean;
 };
 class Navigo {
@@ -44,7 +49,7 @@ class Navigo {
   on(path: string | RegExp, f: Function, hooks?: RouteHooks): Navigo;
   off(path: string | RegExp): Navigo;
   off(handler: Function): Navigo;
-  navigate(to: string, options?: NavigateTo): void;
+  navigate(to: string, options?: NavigateOptions): void;
   resolve(path?: string): false | Match;
   destroy(): void;
   notFound(handler: Function, hooks?: RouteHooks): Navigo;

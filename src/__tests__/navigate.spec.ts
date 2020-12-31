@@ -99,18 +99,20 @@ describe("Given the Navigo library", () => {
           force: true,
         });
 
-        const expected = {
-          url: "login",
-          data: null,
-          queryString: "a=b",
-          params: { a: "b" },
-          route: {
-            handler: expect.any(Function),
-            hooks: undefined,
-            name: "login",
-            path: "login",
+        const expected = [
+          {
+            url: "login",
+            data: null,
+            queryString: "a=b",
+            params: { a: "b" },
+            route: {
+              handler: expect.any(Function),
+              hooks: undefined,
+              name: "login",
+              path: "login",
+            },
           },
-        };
+        ];
 
         expect(r.lastResolved()).toStrictEqual(expected);
         expect(r.current).toStrictEqual(expected);

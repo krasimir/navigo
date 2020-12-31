@@ -1,6 +1,6 @@
 import NavigoRouter from "../../index";
 import Navigo from "../index";
-import { parseNavigateToOptions } from "../utils";
+import { parseNavigateOptions } from "../utils";
 
 describe("Given the Navigo library", () => {
   describe("when we have data-navigo links on the page", () => {
@@ -82,7 +82,7 @@ describe("Given the Navigo library", () => {
     });
     it("should properly parse data-navigo-options attribute", () => {
       expect(
-        parseNavigateToOptions(
+        parseNavigateOptions(
           " updateBrowserURL  :false,   callHandler :false,updateState: false, force: false   ,historyAPIMethod: replaceState,foo:bar"
         )
       ).toStrictEqual({
@@ -92,7 +92,7 @@ describe("Given the Navigo library", () => {
         force: false,
         historyAPIMethod: "replaceState",
       });
-      expect(parseNavigateToOptions()).toStrictEqual({});
+      expect(parseNavigateOptions()).toStrictEqual({});
     });
     it("should not failed if the `data-navigo` is set to a non anchor tag", () => {
       const querySelectorAll = jest.spyOn(document, "querySelectorAll");

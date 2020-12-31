@@ -1,6 +1,5 @@
 import NavigoRouter from "../../index";
 import Navigo from "../index";
-import Q from "../Q";
 
 describe("Given the Navigo library", () => {
   beforeEach(() => {
@@ -56,7 +55,7 @@ describe("Given the Navigo library", () => {
       add.mockRestore();
     });
     describe('and when using "named routes"', () => {
-      fit("should allow us to define routes", () => {
+      it("should allow us to define routes", () => {
         const r: NavigoRouter = new Navigo("/");
         const handler = jest.fn();
         const hook = jest.fn().mockImplementation((done) => {
@@ -82,18 +81,20 @@ describe("Given the Navigo library", () => {
             route: expect.objectContaining({ name: "my bar" }),
           })
         );
-        expect(r.lastResolved()).toStrictEqual({
-          data: null,
-          params: null,
-          queryString: "",
-          route: {
-            handler: expect.any(Function),
-            hooks: undefined,
-            name: "my bar",
-            path: "bar",
+        expect(r.lastResolved()).toStrictEqual([
+          {
+            data: null,
+            params: null,
+            queryString: "",
+            route: {
+              handler: expect.any(Function),
+              hooks: undefined,
+              name: "my bar",
+              path: "bar",
+            },
+            url: "bar",
           },
-          url: "bar",
-        });
+        ]);
         expect(hook).toBeCalledTimes(1);
       });
       it("should allow us to generate a URL out of the named route", () => {
@@ -129,18 +130,20 @@ describe("Given the Navigo library", () => {
           handler: expect.any(Function),
         },
       ]);
-      expect(r.lastResolved()).toStrictEqual({
-        data: null,
-        params: { a: "b" },
-        queryString: "a=b",
-        route: {
-          name: "about",
-          path: "about",
-          hooks: undefined,
-          handler: expect.any(Function),
+      expect(r.lastResolved()).toStrictEqual([
+        {
+          data: null,
+          params: { a: "b" },
+          queryString: "a=b",
+          route: {
+            name: "about",
+            path: "about",
+            hooks: undefined,
+            handler: expect.any(Function),
+          },
+          url: "about",
         },
-        url: "about",
-      });
+      ]);
     });
   });
   describe("when we have a no matching route", () => {
@@ -176,8 +179,12 @@ describe("Given the Navigo library", () => {
       r.on("/foo", () => {});
       r.navigate("/foo");
 
-      expect(r.lastResolved()).toEqual(expect.objectContaining({ url: "foo" }));
-      expect(r.current).toEqual(expect.objectContaining({ url: "foo" }));
+      expect(r.lastResolved()).toStrictEqual([
+        expect.objectContaining({ url: "foo" }),
+      ]);
+      expect(r.current).toStrictEqual([
+        expect.objectContaining({ url: "foo" }),
+      ]);
 
       r.navigate("/bar");
 
@@ -293,8 +300,8 @@ describe("Given the Navigo library", () => {
 
       r.on("/bar", () => order.push("bar"));
 
-      r.navigate("/foo?a=b");
-      r.navigate("/bar?a=b");
+      r.navigate("/foo?a=b", { resolveOptions: { strategy: "ALL" } });
+      r.navigate("/bar?a=b", { resolveOptions: { strategy: "ALL" } });
 
       expect(handlerA).toBeCalledTimes(1);
       expect(handlerB).toBeCalledTimes(1);

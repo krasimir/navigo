@@ -1,4 +1,4 @@
-import { Match, Route, NavigateTo } from "../index";
+import { Match, Route, NavigateOptions } from "../index";
 
 import {
   PARAMETER_REGEXP,
@@ -104,10 +104,10 @@ export function pushStateAvailable(): boolean {
 export function undefinedOrTrue(obj, key: string): boolean {
   return typeof obj[key] === "undefined" || obj[key] === true;
 }
-export function parseNavigateToOptions(source?: string): NavigateTo {
+export function parseNavigateOptions(source?: string): NavigateOptions {
   if (!source) return {};
   const pairs = source.split(",");
-  const options: NavigateTo = {};
+  const options: NavigateOptions = {};
 
   pairs.forEach((str) => {
     const temp = str.split(":").map((v) => v.replace(/(^ +| +$)/g, ""));

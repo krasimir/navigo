@@ -125,9 +125,12 @@ describe("Given the Navigo library", () => {
           // @ts-ignore
           router.on(path, () => {});
           // @ts-ignore
-          expect(router.match(location as string))[
-            typeof expectedResult === "boolean" ? "toEqual" : "toMatchObject"
-          ](expectedResult);
+          const res = router.match(location as string);
+          if (typeof expectedResult === "boolean") {
+            expect(res).toEqual(false);
+          } else {
+            expect(res[0]).toMatchObject(expectedResult);
+          }
         }
       );
     });
@@ -138,20 +141,22 @@ describe("Given the Navigo library", () => {
       r.on("/user/:id", () => {});
 
       expect(r.match("/nope")).toEqual(false);
-      expect(r.match("/user/xxx/?a=b")).toStrictEqual({
-        data: {
-          id: "xxx",
+      expect(r.match("/user/xxx/?a=b")).toStrictEqual([
+        {
+          data: {
+            id: "xxx",
+          },
+          params: { a: "b" },
+          queryString: "a=b",
+          route: {
+            handler: expect.any(Function),
+            hooks: undefined,
+            name: "user/:id",
+            path: "user/:id",
+          },
+          url: "user/xxx",
         },
-        params: { a: "b" },
-        queryString: "a=b",
-        route: {
-          handler: expect.any(Function),
-          hooks: undefined,
-          name: "user/:id",
-          path: "user/:id",
-        },
-        url: "user/xxx",
-      });
+      ]);
     });
   });
 });

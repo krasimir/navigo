@@ -21,7 +21,8 @@
   - [Match](#match)
   - [Route](#route)
   - [RouteHooks](#routehooks)
-  - [NavigateTo](#navigateto)
+  - [NavigateOptions](#navigateoptions)
+  - [ResolveOptions](#resolveoptions)
 
 ---
 
@@ -52,7 +53,7 @@ Types
 | [Match](#match)            |
 | [Route](#route)            |
 | [RouteHooks](#routehooks)  |
-| [NavigateTo](#navigateto)  |
+| [NavigateOptions](#navigateoptions)  |
 
 ## Initializing
 
@@ -193,10 +194,10 @@ To remove a route call the `off` method by passing the path.
 
 ```typescript
 interface Navigo {
-  navigate(to: string, options?: NavigateTo): void;
+  navigate(to: string, options?: NavigateOptions): void;
 }
 
-type NavigateTo = {
+type NavigateOptions = {
   title?: string;
   stateObj?: Object;
   historyAPIMethod?: string;
@@ -204,6 +205,7 @@ type NavigateTo = {
   callHandler?: boolean;
   updateState?: boolean;
   force?: boolean;
+  resolveOptions?: ResolveOptions;
 };
 ```
 
@@ -499,7 +501,7 @@ interface Navigo {
   on(path: string | RegExp, f: Function, hooks?: RouteHooks): Navigo;
   off(path: string | RegExp): Navigo;
   off(handler: Function): Navigo;
-  navigate(to: string, options?: NavigateTo): void;
+  navigate(to: string, options?: NavigateOptions): void;
   resolve(path?: string): false | Match;
   destroy(): void;
   notFound(handler: Function, hooks?: RouteHooks): Navigo;
@@ -550,10 +552,10 @@ type RouteHooks = {
 };
 ```
 
-### NavigateTo
+### NavigateOptions
 
 ```typescript
-type NavigateTo = {
+type NavigateOptions = {
   title?: string;
   stateObj?: Object;
   historyAPIMethod?: string;
@@ -561,5 +563,14 @@ type NavigateTo = {
   callHandler?: boolean;
   updateState?: boolean;
   force?: boolean;
+  resolveOptions?: ResolveOptions;
+};
+```
+
+### ResolveOptions
+
+```typescript
+export type ResolveOptions = {
+  strategy?: ONE | ALL;
 };
 ```
