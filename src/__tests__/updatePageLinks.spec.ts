@@ -53,7 +53,7 @@ describe("Given the Navigo library", () => {
                 case "href":
                   return "/foo/bar";
                 case "data-navigo-options":
-                  return "updateBrowserURL:false, callHandler:false,updateState: false,force: false,historyAPIMethod: replaceState";
+                  return "updateBrowserURL:false, callHandler:false,updateState: false,force: false,historyAPIMethod: replaceState,resolveOptionsStrategy: ALL";
               }
             },
           },
@@ -76,6 +76,7 @@ describe("Given the Navigo library", () => {
         updateState: false,
         force: false,
         historyAPIMethod: "replaceState",
+        resolveOptions: { strategy: "ALL" },
       });
 
       querySelectorAll.mockRestore();

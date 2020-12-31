@@ -31,7 +31,7 @@ export default function Navigo(r?: string) {
   let self = this;
   const isPushStateAvailable = pushStateAvailable();
   const isWindowAvailable = typeof window !== "undefined";
-  const lifecycle = [
+  const foundLifecycle = [
     _checkForAlreadyHook,
     _checkForLeaveHook,
     _checkForBeforeHook,
@@ -40,7 +40,7 @@ export default function Navigo(r?: string) {
   ];
   const notFoundLifeCycle = [
     _checkForNotFoundHandler,
-    Q.if(({ notFoundHandled }: QContext) => notFoundHandled, lifecycle, [
+    Q.if(({ notFoundHandled }: QContext) => notFoundHandled, foundLifecycle, [
       _errorOut,
       _checkForLeaveHook,
     ]),
@@ -55,16 +55,6 @@ export default function Navigo(r?: string) {
     root = clean(r);
   }
 
-  // functions that are part of Q (queue) processing
-  function _required(obj: Object, fields: string[]) {
-    for (let i = 0; i < fields.length; i++) {
-      if (typeof obj[fields[i]] === "undefined") {
-        throw new Error(
-          `Navigo internal error. Required field "${fields[i]}" is missing in a queue context.`
-        );
-      }
-    }
-  }
   function _checkForLeaveHook(context: QContext, done) {
     // at least one of the matched routes has a different path
     if (
@@ -97,7 +87,6 @@ export default function Navigo(r?: string) {
     done();
   }
   function _checkForBeforeHook(context: QContext, done) {
-    _required(context, ["match"]);
     if (context.match.route.hooks && context.match.route.hooks.before) {
       context.match.route.hooks.before((moveForward: boolean) => {
         if (typeof moveForward === "undefined" || moveForward === true) {
@@ -109,7 +98,6 @@ export default function Navigo(r?: string) {
     }
   }
   function _callHandler(context: QContext, done) {
-    _required(context, ["matches", "match", "navigateOptions"]);
     if (undefinedOrTrue(context.navigateOptions, "updateState")) {
       current = self.current = context.matches;
     }
@@ -120,14 +108,12 @@ export default function Navigo(r?: string) {
     done();
   }
   function _checkForAfterHook(context: QContext, done) {
-    _required(context, ["match"]);
     if (context.match.route.hooks && context.match.route.hooks.after) {
       context.match.route.hooks.after(context.match);
     }
     done();
   }
   function _checkForAlreadyHook(context: QContext, done) {
-    _required(context, ["match"]);
     if (
       current &&
       current[0] &&
@@ -146,7 +132,6 @@ export default function Navigo(r?: string) {
     done();
   }
   function _checkForNotFoundHandler(context: QContext, done) {
-    _required(context, ["currentLocationPath"]);
     if (notFoundRoute) {
       context.notFoundHandled = true;
       const [url, queryString] = extractGETParameters(
@@ -166,7 +151,6 @@ export default function Navigo(r?: string) {
     done();
   }
   function _errorOut(context: QContext, done) {
-    _required(context, ["currentLocationPath"]);
     console.warn(
       `Navigo: "${context.currentLocationPath}" didn't match any of the registered routes.`
     );
@@ -179,7 +163,6 @@ export default function Navigo(r?: string) {
     done();
   }
   function _matchPathToRegisteredRoutes(context: QContext, done) {
-    _required(context, ["currentLocationPath", "resolveOptions"]);
     for (let i = 0; i < routes.length; i++) {
       const route = routes[i];
       const match: false | Match = matchRoute(
@@ -211,7 +194,6 @@ export default function Navigo(r?: string) {
     done();
   }
   function _checkForForceOp(context: QContext, done) {
-    _required(context, ["navigateOptions"]);
     if (context.navigateOptions.force === true) {
       self.current = current = [pathToMatchObject(context.to)];
       done(false);
@@ -220,7 +202,6 @@ export default function Navigo(r?: string) {
     }
   }
   function _updateBrowserURL(context: QContext, done) {
-    _required(context, ["to", "navigateOptions"]);
     if (undefinedOrTrue(context.navigateOptions, "updateBrowserURL")) {
       if (isPushStateAvailable) {
         history[context.navigateOptions.historyAPIMethod || "pushState"](
@@ -239,7 +220,6 @@ export default function Navigo(r?: string) {
     done();
   }
   function _processMatches(context: QContext, done) {
-    _required(context, ["matches"]);
     let idx = 0;
     (function nextMatch() {
       if (idx === context.matches.length) {
@@ -248,8 +228,8 @@ export default function Navigo(r?: string) {
       }
       Q(
         [
-          ...lifecycle,
-          function processMatchesEnd() {
+          ...foundLifecycle,
+          function end() {
             idx += 1;
             nextMatch();
           },
@@ -308,7 +288,7 @@ export default function Navigo(r?: string) {
   function resolve(
     currentLocationPath?: string,
     options?: ResolveOptions
-  ): boolean | Match {
+  ): false | Match[] {
     const context: QContext = {
       currentLocationPath,
       navigateOptions: {},
@@ -330,7 +310,7 @@ export default function Navigo(r?: string) {
       context
     );
 
-    return context.match ? context.match : false;
+    return context.matches ? context.matches : false;
   }
   function navigate(to: string, navigateOptions?: NavigateOptions): void {
     to = `${clean(root)}/${clean(to)}`;

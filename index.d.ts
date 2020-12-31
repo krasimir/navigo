@@ -50,7 +50,7 @@ class Navigo {
   off(path: string | RegExp): Navigo;
   off(handler: Function): Navigo;
   navigate(to: string, options?: NavigateOptions): void;
-  resolve(path?: string): false | Match;
+  resolve(path?: string, resolveOptions?: ResolveOptions): false | Match;
   destroy(): void;
   notFound(handler: Function, hooks?: RouteHooks): Navigo;
   updatePageLinks(): Navigo;
@@ -59,7 +59,7 @@ class Navigo {
   generate(name: string, data?: Object): string;
   hooks(hooks: RouteHooks): Navigo;
   getLinkPath(link: Object): string;
-  match(path: string): false | Match;
+  match(path: string): false | Match[];
   matchLocation(path: string, currentLocation?: string): false | Match;
   _pathToMatchObject(path: string): Match;
   _clean(path: string): string;

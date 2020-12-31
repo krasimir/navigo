@@ -115,6 +115,11 @@ export function parseNavigateOptions(source?: string): NavigateOptions {
       case "historyAPIMethod":
         options.historyAPIMethod = temp[1];
         break;
+      case "resolveOptionsStrategy":
+        options.resolveOptions = {
+          strategy: temp[1],
+        };
+        break;
       case "updateBrowserURL":
       case "callHandler":
       case "updateState":
