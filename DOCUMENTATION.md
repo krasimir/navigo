@@ -286,6 +286,9 @@ interface Navigo {
   resolve(path?: string, resolveOptions?: ResolveOptions): false | Match[];
 }
 
+export type ResolveOptions = {
+  strategy?: ONE | ALL;
+};
 type Match = {
   url: string;
   queryString: string;
