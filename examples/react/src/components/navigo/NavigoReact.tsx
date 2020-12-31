@@ -7,7 +7,7 @@ function getRouter(root?: string): Navigo {
   if (router) {
     return router;
   }
-  router = new Navigo(root || "/");
+  router = new Navigo(root || "/", { strategy: "ALL" });
   // @ts-ignore
   window.router = router;
   return router;

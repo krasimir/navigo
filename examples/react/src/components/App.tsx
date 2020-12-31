@@ -23,12 +23,12 @@ export default function App() {
       <Base root="/app" />
       <Navigation />
       <About />
-      <Team />
+      {/* <Team />
       <Products />
       <Route path="/about/team">
         <hr />
         Team page footer
-      </Route>
+      </Route> */}
     </Container>
   );
 }

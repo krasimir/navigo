@@ -536,7 +536,7 @@ router.notFound(() => {
 class Navigo {
   constructor(root: string, resolveOptions?: ResolveOptions);
   destroyed: boolean;
-  current: Match;
+  current: Match[];
   routes: Route[];
   on(f: Function, hooks?: RouteHooks): Navigo;
   on(map: Object, hooks?: RouteHooks): Navigo;
@@ -549,7 +549,7 @@ class Navigo {
   notFound(handler: Function, hooks?: RouteHooks): Navigo;
   updatePageLinks(): Navigo;
   link(path: string): string;
-  lastResolved(): null | Match;
+  lastResolved(): null | Match[];
   generate(name: string, data?: Object): string;
   hooks(hooks: RouteHooks): Navigo;
   getLinkPath(link: Object): string;
