@@ -48,13 +48,14 @@ API
 
 Types
 
-| Object                     |
-| ---------------------------|
-| [Navigo](#navigo)          |
-| [Match](#match)            |
-| [Route](#route)            |
-| [RouteHooks](#routehooks)  |
+| Object                               |
+| -------------------------------------|
+| [Navigo](#navigo)                    |
+| [Match](#match)                      |
+| [Route](#route)                      |
+| [RouteHooks](#routehooks)            |
 | [NavigateOptions](#navigateoptions)  |
+| [ResolveOptions](#resolve-options)   |
 
 ## Initializing
 
