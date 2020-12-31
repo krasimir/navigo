@@ -58,11 +58,19 @@ Types
 
 ## Initializing
 
-Navigo constructor gets a single argument - the root path of your application. For example, if you are hosting the application at `https://site.com/my/project` the code should look like:
+Navigo constructor has one mandatory argument - the root path of your application. For example, if you are hosting the application at `https://site.com/my/project` you have to specify the following:
 
 ```js
 const router = new Navigo('/my/project');
 ```
+
+The second argument is the default [resolving options](#resolve-options). The `strategy` field there defines how many matches the router finds - one or many.
+
+```js
+const router = new Navigo('/my/project', { strategy: 'ALL' });
+```
+
+By default the strategy is equal to `"ONE"`. Meaning that when a match is found the router stops resolving other routes.
 
 ## Adding a route
 
@@ -524,7 +532,8 @@ router.notFound(() => {
 ### Navigo
 
 ```typescript
-interface Navigo {
+class Navigo {
+  constructor(root: string, resolveOptions?: ResolveOptions);
   destroyed: boolean;
   current: Match;
   routes: Route[];
@@ -534,7 +543,7 @@ interface Navigo {
   off(path: string | RegExp): Navigo;
   off(handler: Function): Navigo;
   navigate(to: string, options?: NavigateOptions): void;
-  resolve(path?: string, resolveOptions?: ResolveOptions): false | Match[];
+  resolve(path?: string, resolveOptions?: ResolveOptions): false | Match;
   destroy(): void;
   notFound(handler: Function, hooks?: RouteHooks): Navigo;
   updatePageLinks(): Navigo;
@@ -545,8 +554,6 @@ interface Navigo {
   getLinkPath(link: Object): string;
   match(path: string): false | Match[];
   matchLocation(path: string, currentLocation?: string): false | Match;
-  _pathToMatchObject(path: string): Match;
-  _clean(path: string): string;
 }
 ```
 

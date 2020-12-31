@@ -318,4 +318,35 @@ describe("Given the Navigo library", () => {
       ]);
     });
   });
+  describe("when we change the default resolving strategy", () => {
+    it("should use the new value", () => {
+      const r: NavigoRouter = new Navigo("/", { strategy: "ALL" });
+      const handlerA = jest.fn();
+      const handlerB = jest.fn();
+      const expectedObject = expect.objectContaining({ url: "foo/bar" });
+      r.on("/foo/bar", handlerA).on("/foo/:something", handlerB);
+      r.navigate("/foo/bar");
+      expect(handlerA).toBeCalledTimes(1);
+      expect(handlerB).toBeCalledTimes(1);
+      expect(r.lastResolved()).toHaveLength(2);
+      expect(r.current).toHaveLength(2);
+      expect(handlerA).toBeCalledWith(expectedObject);
+      expect(handlerB).toBeCalledWith(expectedObject);
+    });
+    it("should respect the resolveOptions passed to navigate and resolve", () => {
+      const r: NavigoRouter = new Navigo("/", { strategy: "ALL" });
+      const handlerA = jest.fn();
+      const handlerB = jest.fn();
+      r.on("/foo/bar", handlerA)
+        .on("/foo/:something", handlerB)
+        .notFound(() => {});
+      r.navigate("/foo/bar", { resolveOptions: { strategy: "ONE" } });
+      r.navigate("/nope");
+      r.resolve("/foo/bar", { strategy: "ONE" });
+      expect(handlerA).toBeCalledTimes(2);
+      expect(handlerB).toBeCalledTimes(0);
+      expect(r.lastResolved()).toHaveLength(1);
+      expect(r.current).toHaveLength(1);
+    });
+  });
 });

@@ -19,9 +19,10 @@ import {
 } from "./utils";
 import Q from "./Q";
 
-const DEFAULT_RESOLVE_OPTIONS: ResolveOptions = { strategy: "ONE" };
-
-export default function Navigo(r?: string) {
+export default function Navigo(r?: string, resolveOptions?: ResolveOptions) {
+  let DEFAULT_RESOLVE_OPTIONS: ResolveOptions = resolveOptions || {
+    strategy: "ONE",
+  };
   let root = "/";
   let current: Match[] = null;
   let routes: Route[] = [];

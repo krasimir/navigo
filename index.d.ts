@@ -40,7 +40,7 @@ export type QContext = {
   notFoundHandled?: boolean;
 };
 class Navigo {
-  constructor(root: string);
+  constructor(root: string, resolveOptions?: ResolveOptions);
   destroyed: boolean;
   current: Match;
   routes: Route[];
