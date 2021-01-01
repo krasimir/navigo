@@ -1,7 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import Navigo, { Match } from "navigo";
 
 let router: Navigo;
+
+export function configureRouter(root: string) {
+  getRouter(root);
+}
 
 function getRouter(root?: string): Navigo {
   if (router) {
@@ -13,36 +17,25 @@ function getRouter(root?: string): Navigo {
   return router;
 }
 
-export function Base({ root }: { root: string }) {
-  getRouter(root);
-  return null;
-}
-
 export function useRoute(path: string): [false | Match] {
-  const [match, setMatch] = useState<false | Match>(
-    getRouter().matchLocation(path)
-  );
+  const [match, setMatch] = useState<false | Match>(false);
+  const handler = useRef((match: false | Match) => {
+    setMatch(match);
+  });
 
   useEffect(() => {
-    const leave = (done: Function) => {
-      setMatch(false);
-      done();
-    };
-    if (match) {
-      getRouter().navigate(path, { force: true });
-      getRouter().current.route.hooks = { leave };
-    }
+    // @ts-ignore
     getRouter()
-      .updatePageLinks()
-      .on(
-        path,
-        (match: Match) => {
-          setMatch(match);
-        },
-        { leave }
-      );
+      .on(path, handler.current, {
+        leave: done => {
+          setMatch(false);
+          done();
+        }
+      })
+      .updatePageLinks();
+    setTimeout(() => getRouter().resolve(), 0);
     return () => {
-      getRouter().off(path);
+      getRouter().off(handler.current);
     };
   }, []);
 
