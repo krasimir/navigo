@@ -185,6 +185,19 @@ describe("Given the Navigo library", () => {
       expect(pushState).toBeCalledWith({}, "", "/nope");
       pushState.mockRestore();
     });
+    describe("and we have matched routes after which we have no-matching url", () => {
+      it("should call the leave hook of the last matched one", () => {
+        const warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+        const r: NavigoRouter = new Navigo("/");
+        const leaveHook = jest.fn().mockImplementation((done) => done());
+        r.on("/foo", () => {}, { leave: leaveHook });
+        r.navigate("/foo");
+        r.navigate("/bar");
+        expect(leaveHook).toBeCalledTimes(1);
+        expect(leaveHook).toBeCalledWith(expect.any(Function), undefined);
+        warn.mockRestore();
+      });
+    });
     describe("and we have already matched route with ? symbol", () => {
       it("should not call the leave hook of the already matched route", () => {
         const r: NavigoRouter = new Navigo("/", { strategy: "ALL" });
@@ -209,17 +222,28 @@ describe("Given the Navigo library", () => {
         expect(BHooks.leave).not.toBeCalled();
       });
     });
-    describe("and we have matched routes after which we have no-matching url", () => {
-      it("should call the leave hook of the last matched one", () => {
-        const warn = jest.spyOn(console, "warn").mockImplementation(() => {});
-        const r: NavigoRouter = new Navigo("/");
-        const leaveHook = jest.fn().mockImplementation((done) => done());
-        r.on("/foo", () => {}, { leave: leaveHook });
-        r.navigate("/foo");
-        r.navigate("/bar");
-        expect(leaveHook).toBeCalledTimes(1);
-        expect(leaveHook).toBeCalledWith(expect.any(Function), undefined);
-        warn.mockRestore();
+    describe("and we have two routes with the same paths", () => {
+      it("should not call the leave hook on the first one", () => {
+        history.pushState({}, "", "/foo/bar");
+        const r: NavigoRouter = new Navigo("/", { strategy: "ALL" });
+        const handlerA = jest.fn();
+        const AHooks = {
+          leave: jest.fn().mockImplementation((done) => done()),
+        };
+        const handlerB = jest.fn();
+        const BHooks = {
+          leave: jest.fn().mockImplementation((done) => done()),
+        };
+
+        r.on("/foo/:id", handlerA, AHooks);
+        r.resolve(undefined, { noMatchWarning: true });
+        r.on("/foo/:id", handlerB, BHooks);
+        r.resolve(undefined, { noMatchWarning: true });
+
+        expect(handlerA).toBeCalledTimes(1);
+        expect(handlerB).toBeCalledTimes(1);
+        expect(AHooks.leave).not.toBeCalled();
+        expect(BHooks.leave).not.toBeCalled();
       });
     });
   });
