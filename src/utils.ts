@@ -7,6 +7,8 @@ import {
   REPLACE_WILDCARD,
   START_BY_SLASH_REGEXP,
   MATCH_REGEXP_FLAGS,
+  REPLACE_NOT_SURE,
+  NOT_SURE_REGEXP,
 } from "./constants";
 
 export function clean(s: string) {
@@ -61,7 +63,8 @@ export function matchRoute(currentPath: string, route: Route): false | Match {
           paramNames.push(name);
           return REPLACE_VARIABLE_REGEXP;
         })
-        .replace(WILDCARD_REGEXP, REPLACE_WILDCARD) +
+        .replace(WILDCARD_REGEXP, REPLACE_WILDCARD)
+        .replace(NOT_SURE_REGEXP, REPLACE_NOT_SURE) +
       "$";
     if (clean(route.path as string) === "") {
       if (clean(current) === "") {

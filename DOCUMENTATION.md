@@ -2,6 +2,7 @@
 - [Adding a route](#adding-a-route)
   - [Parameterized routes](#parameterized-routes)
   - [Reading GET params](#reading-get-params)
+  - [Matching logic](#matching-logic)
 - [Removing a route](#removing-a-route)
 - [Navigating between routes](#navigating-between-routes)
 - [Augment your `<a>` tags](#augment-your-a-tags)
@@ -189,6 +190,33 @@ router.on('/user/:id/:action', ({ data, params, queryString }) => {
 });
 
 router.resolve('/user/xxx/save?m=n&k=z');
+```
+
+### Matching logic
+
+Navigo relies on regular expressions to match strings against location paths. This logic is abstracted and for the final user we have a simple [DSL](https://en.wikipedia.org/wiki/Domain-specific_language). Here are couple of examples:
+
+```js
+router.on('/foo', () => {});
+// matches specifically "/foo"
+
+router.on('/foo/:name', () => {});
+// matches "/foo/my-name-here"
+
+router.on(':page', () => {});
+// matches "/about-page"
+
+router.on('/foo/*', () => {});
+// matches "/foo/a/b/c"
+
+router.on('*', () => {});
+// matches "/foo/bar/moo"
+
+router.on(/rock\/(.*)\/(.*)/, () => {});
+// matches "/rock/paper/scissors"
+
+router.on('/foo/:id/?', () => {});
+// matches "/foo/20/save" and also "/foo/20"
 ```
 
 ## Removing a route

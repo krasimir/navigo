@@ -114,6 +114,10 @@ describe("Given the Navigo library", () => {
         { data: ["paper", "scissors"] },
       ],
       ["/rock/?a=b&c=d", "/rock", { data: null, params: { a: "b", c: "d" } }],
+      ["/foo/20/save", "/foo/:id/?", { data: { id: "20" } }],
+      ["/foo/20", "/foo/:id/?", { data: { id: "20" } }],
+      ["/foo/20/save/nope", "/foo/:id/?", false],
+      ["/foo/20/save/nope", "/foo/:id/?/?", { data: { id: "20" } }],
     ].forEach(([location, path, expectedResult, only]) => {
       const f = only ? fit : it;
       f(
