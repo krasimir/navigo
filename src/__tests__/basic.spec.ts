@@ -145,6 +145,30 @@ describe("Given the Navigo library", () => {
         },
       ]);
     });
+    describe("and we have a custom path and switch routes", () => {
+      it("should properly register the routes", () => {
+        history.pushState({}, "", "/app/foo/bar");
+        const r: NavigoRouter = new Navigo("/app", { strategy: "ALL" });
+        const handlerA = jest.fn();
+        const hooksA = {
+          leave: jest.fn().mockImplementation((done) => done()),
+        };
+        const handlerB = jest.fn();
+        const hooksB = {
+          leave: jest.fn().mockImplementation((done) => done()),
+        };
+
+        r.on("/foo/:id", handlerA, hooksA);
+        r.resolve();
+        r.on("/foo/:id", handlerB, hooksB);
+        r.resolve();
+
+        expect(handlerA).toBeCalledTimes(1);
+        expect(handlerB).toBeCalledTimes(1);
+        expect(hooksA.leave).not.toBeCalled();
+        expect(hooksB.leave).not.toBeCalled();
+      });
+    });
   });
   describe("when we have a no matching route", () => {
     it("should log a warning and return false", () => {

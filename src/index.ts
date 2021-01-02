@@ -489,10 +489,13 @@ export default function Navigo(r?: string, resolveOptions?: ResolveOptions) {
   ): false | Match {
     const context: QContext = { currentLocationPath: currentLocation };
     _setLocationPath(context, () => {});
-    const match = matchRoute(
-      context.currentLocationPath,
-      createRoute(clean(path), () => {}, {})
-    );
+    path = clean(path);
+    const match = matchRoute(context.currentLocationPath, {
+      name: path,
+      path,
+      handler: () => {},
+      hooks: {},
+    });
     return match ? match : false;
   }
 
