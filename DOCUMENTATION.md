@@ -73,6 +73,8 @@ const router = new Navigo('/my/project', { strategy: 'ALL' });
 
 By default the strategy is equal to `"ONE"`. Meaning that when a match is found the router stops resolving other routes.
 
+Another option available is `noMatchWarning`. Which if you set to `true` will prevent the router of warning a message if there is no matching route.
+
 ## Adding a route
 
 ```typescript
@@ -284,7 +286,7 @@ Which will result in the following options:
   updateState: false,
   force: false,
   historyAPIMethod: "replaceState",
-  resolveOptions: { strategy: "ALL" },
+  resolveOptions: { strategy: "ALL", noMatchWarning: false },
 }
 ```
 
@@ -297,6 +299,7 @@ interface Navigo {
 
 export type ResolveOptions = {
   strategy?: ONE | ALL;
+  noMatchWarning?: true | false;
 };
 type Match = {
   url: string;
@@ -328,15 +331,19 @@ If you need to see the latest match (or matches) you can access it via the `last
 * It calls hooks (if any) and your route handler.
 * Updates the internal state of the router.
 
+Another option available is `noMatchWarning`. Which if you set to `true` will prevent the router of warning a message if there is no matching route.
+
 ### Resolve options
 
 ```typescript
 export type ResolveOptions = {
   strategy?: ONE | ALL;
+  noMatchWarning?: true | false;
 };
 ```
 
 * `strategy` - either `"ONE"` (by default) or `"ALL"`.
+* `noMatchWarning` - `false` (by default) or `true`
 
 ## Direct matching of registered routes
 
@@ -612,5 +619,6 @@ type NavigateOptions = {
 ```typescript
 export type ResolveOptions = {
   strategy?: ONE | ALL;
+  noMatchWarning?: true | false;
 };
 ```

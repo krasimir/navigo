@@ -22,6 +22,7 @@ import Q from "./Q";
 export default function Navigo(r?: string, resolveOptions?: ResolveOptions) {
   let DEFAULT_RESOLVE_OPTIONS: ResolveOptions = resolveOptions || {
     strategy: "ONE",
+    noMatchWarning: false,
   };
   let root = "/";
   let current: Match[] = null;
@@ -155,9 +156,14 @@ export default function Navigo(r?: string, resolveOptions?: ResolveOptions) {
     done();
   }
   function _errorOut(context: QContext, done) {
-    console.warn(
-      `Navigo: "${context.currentLocationPath}" didn't match any of the registered routes.`
-    );
+    if (
+      !context.resolveOptions ||
+      context.resolveOptions.noMatchWarning === false ||
+      typeof context.resolveOptions.noMatchWarning === "undefined"
+    )
+      console.warn(
+        `Navigo: "${context.currentLocationPath}" didn't match any of the registered routes.`
+      );
     done();
   }
   function _setLocationPath(context: QContext, done) {
