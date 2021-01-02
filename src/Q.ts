@@ -27,6 +27,7 @@ export default function Q(
       next();
     } else {
       // console.log(funcs[idx].name + " / " + JSON.stringify(context));
+      // console.log(funcs[idx].name);
       (funcs[idx] as Function)(context, (moveForward) => {
         if (typeof moveForward === "undefined" || moveForward === true) {
           idx += 1;

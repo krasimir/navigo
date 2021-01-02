@@ -205,10 +205,10 @@ describe("Given the Navigo library", () => {
       expect(h2).toBeCalledTimes(1);
       expect(hooks.leave).toBeCalledTimes(2);
       expect(hooks.leave.mock.calls[0][1]).toMatchObject({
-        url: "foo/bar",
+        url: "x/y",
       });
       expect(hooks.leave.mock.calls[1][1]).toMatchObject({
-        url: "x/y",
+        url: "",
       });
     });
   });

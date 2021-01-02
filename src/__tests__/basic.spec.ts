@@ -205,21 +205,6 @@ describe("Given the Navigo library", () => {
 
       warn.mockRestore();
     });
-    it("should call the leave hook of the last matched one", () => {
-      const warn = jest.spyOn(console, "warn");
-      warn.mockImplementation(() => {});
-      const r: NavigoRouter = new Navigo("/");
-      const leaveHook = jest.fn().mockImplementation((done) => done());
-      r.on("/foo", () => {}, { leave: leaveHook });
-      r.navigate("/foo");
-      r.navigate("/bar");
-      expect(leaveHook).toBeCalledTimes(1);
-      expect(leaveHook).toBeCalledWith(
-        expect.any(Function),
-        expect.objectContaining({ url: "foo" })
-      );
-      warn.mockRestore();
-    });
   });
   describe("when resolving a route", () => {
     it("should call our handler", () => {

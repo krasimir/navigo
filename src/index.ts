@@ -58,38 +58,46 @@ export default function Navigo(r?: string, resolveOptions?: ResolveOptions) {
   }
 
   function _checkForLeaveHook(context: QContext, done) {
-    // at least one of the matched routes has a different path
-    if (
-      current &&
-      current[0] &&
-      current[0].route &&
-      (!context.match || current[0].route.path !== context.match.route.path)
-    ) {
-      Q(
-        [
-          ...current.map((match) => {
-            return (_, leaveLoopDone) => {
-              if (match.route.hooks && match.route.hooks.leave) {
-                match.route.hooks.leave((moveForward: boolean) => {
-                  if (
-                    typeof moveForward === "undefined" ||
-                    moveForward === true
-                  ) {
-                    leaveLoopDone();
-                  }
-                }, match);
-              } else {
-                leaveLoopDone();
-              }
-            };
-          }),
-        ],
-        {},
-        () => done()
-      );
+    if (!current) {
+      done();
       return;
     }
-    done();
+    // console.log(`url=${context.match.url} OLD=${current.length}`);
+    Q(
+      [
+        ...current.map((oldMatch) => {
+          return (_, leaveLoopDone) => {
+            // no leave hook
+            if (!oldMatch.route.hooks || !oldMatch.route.hooks.leave) {
+              leaveLoopDone();
+              return;
+            }
+            // no match or different path
+            if (
+              !context.match ||
+              !directMatchWithLocation(
+                oldMatch.route.path as string,
+                context.match.url
+              )
+            ) {
+              oldMatch.route.hooks.leave((moveForward: boolean) => {
+                if (
+                  typeof moveForward === "undefined" ||
+                  moveForward === true
+                ) {
+                  leaveLoopDone();
+                }
+              }, context.match);
+              return;
+            } else {
+              leaveLoopDone();
+            }
+          };
+        }),
+      ],
+      {},
+      () => done()
+    );
   }
   function _checkForBeforeHook(context: QContext, done) {
     if (context.match.route.hooks && context.match.route.hooks.before) {
