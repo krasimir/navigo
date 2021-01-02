@@ -64,25 +64,28 @@ export default function Navigo(r?: string, resolveOptions?: ResolveOptions) {
       current[0].route &&
       (!context.match || current[0].route.path !== context.match.route.path)
     ) {
-      Q([
-        ...current.map((match) => {
-          return (_, leaveLoopDone) => {
-            if (match.route.hooks && match.route.hooks.leave) {
-              match.route.hooks.leave((moveForward: boolean) => {
-                if (
-                  typeof moveForward === "undefined" ||
-                  moveForward === true
-                ) {
-                  leaveLoopDone();
-                }
-              }, match);
-            } else {
-              leaveLoopDone();
-            }
-          };
-        }),
-        () => done(),
-      ]);
+      Q(
+        [
+          ...current.map((match) => {
+            return (_, leaveLoopDone) => {
+              if (match.route.hooks && match.route.hooks.leave) {
+                match.route.hooks.leave((moveForward: boolean) => {
+                  if (
+                    typeof moveForward === "undefined" ||
+                    moveForward === true
+                  ) {
+                    leaveLoopDone();
+                  }
+                }, match);
+              } else {
+                leaveLoopDone();
+              }
+            };
+          }),
+        ],
+        {},
+        () => done()
+      );
       return;
     }
     done();
@@ -222,20 +225,22 @@ export default function Navigo(r?: string, resolveOptions?: ResolveOptions) {
   }
   function _processMatches(context: QContext, done) {
     let idx = 0;
+    // console.log(
+    //   "_processMatches matches=" +
+    //     (context.matches ? context.matches.length : 0)
+    // );
     (function nextMatch() {
       if (idx === context.matches.length) {
         done();
         return;
       }
       Q(
-        [
-          ...foundLifecycle,
-          function end() {
-            idx += 1;
-            nextMatch();
-          },
-        ],
-        { ...context, match: context.matches[idx] }
+        foundLifecycle,
+        { ...context, match: context.matches[idx] },
+        function end() {
+          idx += 1;
+          nextMatch();
+        }
       );
     })();
   }

@@ -263,6 +263,24 @@ describe("Given the Navigo library", () => {
         params: { a: "10" },
       });
     });
+    describe("and we add the same matching route again", () => {
+      it("should resolve the newly added route", () => {
+        const r: NavigoRouter = new Navigo("/", { strategy: "ALL" });
+        const h1 = jest.fn();
+        const h2 = jest.fn();
+
+        r.on("/foo", h1);
+        r.resolve("/foo");
+        r.on("/foo", h2);
+        r.resolve("/foo");
+
+        expect(r.routes).toHaveLength(2);
+        expect(h1).toBeCalledTimes(1);
+        expect(h1).toBeCalledWith(expect.objectContaining({ url: "foo" }));
+        expect(h2).toBeCalledTimes(1);
+        expect(h2).toBeCalledWith(expect.objectContaining({ url: "foo" }));
+      });
+    });
   });
   describe("when defining multiple routes with the same paths", () => {
     it("should resolve their handlers and their hooks", () => {

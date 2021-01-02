@@ -5,13 +5,19 @@ type QChild = {
 
 export default function Q(
   funcs: Array<Function | Array<any> | QChild>,
-  c?: any
+  c?: any,
+  done?: Function
 ) {
   const context = c || {};
   let idx = 0;
 
   (function next() {
-    if (!funcs[idx]) return;
+    if (!funcs[idx]) {
+      if (done) {
+        done(context);
+      }
+      return;
+    }
     if (Array.isArray(funcs[idx])) {
       funcs.splice(
         idx,
@@ -25,6 +31,8 @@ export default function Q(
         if (typeof moveForward === "undefined" || moveForward === true) {
           idx += 1;
           next();
+        } else if (done) {
+          done(context);
         }
       });
     }
