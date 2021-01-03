@@ -1,3 +1,58 @@
+## 8.0.0
+
+This is a complete re-write of the router. I decided to be a bad guy and kill/change some features. This is in favor of having cleaner code and I hope more stable implementation. The library was also doing bunch of assumptions for the root of your application which proved to be buggy and non-deterministic. So I'm removing this logic and asking you to set the root of your application.
+
+### Deprecations
+
+* Hash-based support for older browsers
+* `pause` and `resume`. There is `shouldResolve` in the `navigate` method instead.
+* `historyAPIUpdateMethod` method. It's now an option of the `navigate` method.
+* `helpers` method
+* `disableIfAPINotAvailable` method
+
+### New features
+
+* The `navigate` method now accepts options as a second argument which are there to cover more use cases.
+* There is `data-navigo-options` HTML attributes for your links so you can pass options to the `navigate` method.
+
+### Migration guide
+
+* Change the initialization of the router to accept a single argument - the root of your application.
+* Checkout your handlers if they read data from a parameterized URL or a GET param. If so make sure that they get the data from the single object passed to the function (an object of type `Match`)
+  ```js
+  type Match = {
+    url: string;
+    queryString: string;
+    route: Route;
+    data: Object | null; // data coming in the URL
+    params: Object | null; // data coming in the query string
+  };
+  ```
+  where `Route` is
+  ```js
+  type Route = {
+    path: string;
+    handler: Function;
+    hooks: RouteHooks;
+  };
+  ```
+* If you are using `historyAPIUpdateMethod` you'll need to pass a `historyAPIMethod` field to the options of navigate. For example:
+  ```js
+  router.navigate('/foo/bar', { historyAPIMethod: 'replaceState' })
+  ```
+* I hope you didn't use `router.helpers` but if you do explore the alternatives:
+  ```js
+  router.match -> router._matchRoute
+  router.root -> router.root
+  router.clean -> router._clean
+  router.getOnlyURL -> router.extractGETParameters
+  ```
+* If you used the `pause` and `resume` methods you have to migrate your app to use `shouldResolve` param of the `navigate` method. Or in other words when navigating to define whether you want to have route handling or not. Example:
+  ```js
+  router.navigate('/foo/bar', { shouldResolve: false });
+  ```
+* `lastRouteResolved` becomes `lastResolved` and it returns an object of type `Match`. Checkout above. (or `null` if there is no resolved URL so far)
+
 ## 7.1.2
 
 Open in new tab when Ctrl-key is pressed (#199)

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Navigo</title>
+    <link href="/styles.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div>
+      <a href="/about" data-navigo>About</a>
+      <a href="/products" data-navigo>Products</a>
+      <a href="/login" data-navigo>Login</a>
+    </div>
+    <hr />
+    <div id="content"></div>
+    <script src="/navigo.js"></script>
+    <script>
+      window.addEventListener("load", () => {
+        const router = new Navigo("/");
+        const render = (content) =>
+          (document.querySelector("#content").innerHTML = content);
+
+        window.sessionId = -1;
+
+        router.hooks({
+          before: function (done, match) {
+            if (window.sessionId === -1 && match.url !== "login") {
+              console.log("redirect to login");
+              router.navigate("/login");
+              return;
+            }
+            done();
+          },
+        });
+
+        router
+          .on("/about", (match) => {
+            render("About");
+          })
+          .on("/products", (match) => {
+            render("Products");
+          })
+          .on("/login", (match) => {
+            render("Login");
+          })
+          .resolve();
+      });
+    </script>
+    <div id="content"></div>
+  </body>
+</html>

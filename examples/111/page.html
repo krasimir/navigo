@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Navigo</title>
+    <link href="/styles.css" rel="stylesheet" />
+    <style>
+      p {
+        width: 600px;
+        margin: 6em 1em;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="content"></div>
+    <script src="/navigo.js"></script>
+    <script>
+      window.addEventListener("load", () => {
+        const router = new Navigo("/");
+
+        router
+          .on("/about", () => {
+            document.querySelector("#content").innerHTML = "about";
+          })
+          .on("/links", () => {
+            document.querySelector("#my-links").innerHTML = "links!!!";
+          })
+          .resolve();
+      });
+    </script>
+    <a href="/about" data-navigo>Go to about</a> |
+    <a href="/links#my-links" data-navigo>Go to links</a>
+    <hr />
+    <div id="content"></div>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+      gravida lacinia sagittis. Nunc eu tortor et enim sagittis eleifend. Proin
+      congue pretium sem, eget sodales libero porttitor quis. Nulla libero arcu,
+      fermentum sed suscipit sit amet, posuere in ligula. Phasellus placerat
+      nibh a accumsan ultricies. Duis porttitor sodales elit, sit amet vulputate
+      mi dignissim porta. Cras at neque nec felis lobortis tincidunt. Nunc
+      dignissim massa id vestibulum auctor. Nullam id arcu eu velit pretium
+      elementum. Nam iaculis id dolor nec dapibus. Cras scelerisque sapien sed
+      neque congue, ac faucibus nibh tempus. Etiam cursus ornare egestas. In hac
+      habitasse platea dictumst. Curabitur ac scelerisque ligula, eget congue
+      erat. Donec pellentesque dolor orci, ac finibus tellus imperdiet quis.
+    </p>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+      gravida lacinia sagittis. Nunc eu tortor et enim sagittis eleifend. Proin
+      congue pretium sem, eget sodales libero porttitor quis. Nulla libero arcu,
+      fermentum sed suscipit sit amet, posuere in ligula. Phasellus placerat
+      nibh a accumsan ultricies. Duis porttitor sodales elit, sit amet vulputate
+      mi dignissim porta. Cras at neque nec felis lobortis tincidunt. Nunc
+      dignissim massa id vestibulum auctor. Nullam id arcu eu velit pretium
+      elementum. Nam iaculis id dolor nec dapibus. Cras scelerisque sapien sed
+      neque congue, ac faucibus nibh tempus. Etiam cursus ornare egestas. In hac
+      habitasse platea dictumst. Curabitur ac scelerisque ligula, eget congue
+      erat. Donec pellentesque dolor orci, ac finibus tellus imperdiet quis.
+    </p>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+      gravida lacinia sagittis. Nunc eu tortor et enim sagittis eleifend. Proin
+      congue pretium sem, eget sodales libero porttitor quis. Nulla libero arcu,
+      fermentum sed suscipit sit amet, posuere in ligula. Phasellus placerat
+      nibh a accumsan ultricies. Duis porttitor sodales elit, sit amet vulputate
+      mi dignissim porta. Cras at neque nec felis lobortis tincidunt. Nunc
+      dignissim massa id vestibulum auctor. Nullam id arcu eu velit pretium
+      elementum. Nam iaculis id dolor nec dapibus. Cras scelerisque sapien sed
+      neque congue, ac faucibus nibh tempus. Etiam cursus ornare egestas. In hac
+      habitasse platea dictumst. Curabitur ac scelerisque ligula, eget congue
+      erat. Donec pellentesque dolor orci, ac finibus tellus imperdiet quis.
+    </p>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+      gravida lacinia sagittis. Nunc eu tortor et enim sagittis eleifend. Proin
+      congue pretium sem, eget sodales libero porttitor quis. Nulla libero arcu,
+      fermentum sed suscipit sit amet, posuere in ligula. Phasellus placerat
+      nibh a accumsan ultricies. Duis porttitor sodales elit, sit amet vulputate
+      mi dignissim porta. Cras at neque nec felis lobortis tincidunt. Nunc
+      dignissim massa id vestibulum auctor. Nullam id arcu eu velit pretium
+      elementum. Nam iaculis id dolor nec dapibus. Cras scelerisque sapien sed
+      neque congue, ac faucibus nibh tempus. Etiam cursus ornare egestas. In hac
+      habitasse platea dictumst. Curabitur ac scelerisque ligula, eget congue
+      erat. Donec pellentesque dolor orci, ac finibus tellus imperdiet quis.
+    </p>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+      gravida lacinia sagittis. Nunc eu tortor et enim sagittis eleifend. Proin
+      congue pretium sem, eget sodales libero porttitor quis. Nulla libero arcu,
+      fermentum sed suscipit sit amet, posuere in ligula. Phasellus placerat
+      nibh a accumsan ultricies. Duis porttitor sodales elit, sit amet vulputate
+      mi dignissim porta. Cras at neque nec felis lobortis tincidunt. Nunc
+      dignissim massa id vestibulum auctor. Nullam id arcu eu velit pretium
+      elementum. Nam iaculis id dolor nec dapibus. Cras scelerisque sapien sed
+      neque congue, ac faucibus nibh tempus. Etiam cursus ornare egestas. In hac
+      habitasse platea dictumst. Curabitur ac scelerisque ligula, eget congue
+      erat. Donec pellentesque dolor orci, ac finibus tellus imperdiet quis.
+    </p>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+      gravida lacinia sagittis. Nunc eu tortor et enim sagittis eleifend. Proin
+      congue pretium sem, eget sodales libero porttitor quis. Nulla libero arcu,
+      fermentum sed suscipit sit amet, posuere in ligula. Phasellus placerat
+      nibh a accumsan ultricies. Duis porttitor sodales elit, sit amet vulputate
+      mi dignissim porta. Cras at neque nec felis lobortis tincidunt. Nunc
+      dignissim massa id vestibulum auctor. Nullam id arcu eu velit pretium
+      elementum. Nam iaculis id dolor nec dapibus. Cras scelerisque sapien sed
+      neque congue, ac faucibus nibh tempus. Etiam cursus ornare egestas. In hac
+      habitasse platea dictumst. Curabitur ac scelerisque ligula, eget congue
+      erat. Donec pellentesque dolor orci, ac finibus tellus imperdiet quis.
+    </p>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+      gravida lacinia sagittis. Nunc eu tortor et enim sagittis eleifend. Proin
+      congue pretium sem, eget sodales libero porttitor quis. Nulla libero arcu,
+      fermentum sed suscipit sit amet, posuere in ligula. Phasellus placerat
+      nibh a accumsan ultricies. Duis porttitor sodales elit, sit amet vulputate
+      mi dignissim porta. Cras at neque nec felis lobortis tincidunt. Nunc
+      dignissim massa id vestibulum auctor. Nullam id arcu eu velit pretium
+      elementum. Nam iaculis id dolor nec dapibus. Cras scelerisque sapien sed
+      neque congue, ac faucibus nibh tempus. Etiam cursus ornare egestas. In hac
+      habitasse platea dictumst. Curabitur ac scelerisque ligula, eget congue
+      erat. Donec pellentesque dolor orci, ac finibus tellus imperdiet quis.
+    </p>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+      gravida lacinia sagittis. Nunc eu tortor et enim sagittis eleifend. Proin
+      congue pretium sem, eget sodales libero porttitor quis. Nulla libero arcu,
+      fermentum sed suscipit sit amet, posuere in ligula. Phasellus placerat
+      nibh a accumsan ultricies. Duis porttitor sodales elit, sit amet vulputate
+      mi dignissim porta. Cras at neque nec felis lobortis tincidunt. Nunc
+      dignissim massa id vestibulum auctor. Nullam id arcu eu velit pretium
+      elementum. Nam iaculis id dolor nec dapibus. Cras scelerisque sapien sed
+      neque congue, ac faucibus nibh tempus. Etiam cursus ornare egestas. In hac
+      habitasse platea dictumst. Curabitur ac scelerisque ligula, eget congue
+      erat. Donec pellentesque dolor orci, ac finibus tellus imperdiet quis.
+    </p>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+      gravida lacinia sagittis. Nunc eu tortor et enim sagittis eleifend. Proin
+      congue pretium sem, eget sodales libero porttitor quis. Nulla libero arcu,
+      fermentum sed suscipit sit amet, posuere in ligula. Phasellus placerat
+      nibh a accumsan ultricies. Duis porttitor sodales elit, sit amet vulputate
+      mi dignissim porta. Cras at neque nec felis lobortis tincidunt. Nunc
+      dignissim massa id vestibulum auctor. Nullam id arcu eu velit pretium
+      elementum. Nam iaculis id dolor nec dapibus. Cras scelerisque sapien sed
+      neque congue, ac faucibus nibh tempus. Etiam cursus ornare egestas. In hac
+      habitasse platea dictumst. Curabitur ac scelerisque ligula, eget congue
+      erat. Donec pellentesque dolor orci, ac finibus tellus imperdiet quis.
+    </p>
+    <a id="my-links">my links here</a>
+    <a href="#another-one">another one</a>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+      gravida lacinia sagittis. Nunc eu tortor et enim sagittis eleifend. Proin
+      congue pretium sem, eget sodales libero porttitor quis. Nulla libero arcu,
+      fermentum sed suscipit sit amet, posuere in ligula. Phasellus placerat
+      nibh a accumsan ultricies. Duis porttitor sodales elit, sit amet vulputate
+      mi dignissim porta. Cras at neque nec felis lobortis tincidunt. Nunc
+      dignissim massa id vestibulum auctor. Nullam id arcu eu velit pretium
+      elementum. Nam iaculis id dolor nec dapibus. Cras scelerisque sapien sed
+      neque congue, ac faucibus nibh tempus. Etiam cursus ornare egestas. In hac
+      habitasse platea dictumst. Curabitur ac scelerisque ligula, eget congue
+      erat. Donec pellentesque dolor orci, ac finibus tellus imperdiet quis.
+    </p>
+    <a id="another-one">Another one</a>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+      gravida lacinia sagittis. Nunc eu tortor et enim sagittis eleifend. Proin
+      congue pretium sem, eget sodales libero porttitor quis. Nulla libero arcu,
+      fermentum sed suscipit sit amet, posuere in ligula. Phasellus placerat
+      nibh a accumsan ultricies. Duis porttitor sodales elit, sit amet vulputate
+      mi dignissim porta. Cras at neque nec felis lobortis tincidunt. Nunc
+      dignissim massa id vestibulum auctor. Nullam id arcu eu velit pretium
+      elementum. Nam iaculis id dolor nec dapibus. Cras scelerisque sapien sed
+      neque congue, ac faucibus nibh tempus. Etiam cursus ornare egestas. In hac
+      habitasse platea dictumst. Curabitur ac scelerisque ligula, eget congue
+      erat. Donec pellentesque dolor orci, ac finibus tellus imperdiet quis.
+    </p>
+  </body>
+</html>
