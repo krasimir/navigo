@@ -19,7 +19,10 @@ import {
 } from "./utils";
 import Q from "./Q";
 
-export default function Navigo(r?: string, resolveOptions?: ResolveOptions) {
+export default function Navigo(
+  appRoute?: string,
+  resolveOptions?: ResolveOptions
+) {
   let DEFAULT_RESOLVE_OPTIONS: ResolveOptions = resolveOptions || {
     strategy: "ONE",
     noMatchWarning: false,
@@ -49,12 +52,12 @@ export default function Navigo(r?: string, resolveOptions?: ResolveOptions) {
     _flushCurrent,
   ];
 
-  if (!r) {
+  if (!appRoute) {
     console.warn(
       'Navigo requires a root path in its constructor. If not provided will use "/" as default.'
     );
   } else {
-    root = clean(r);
+    root = clean(appRoute);
   }
 
   function _checkForLeaveHook(context: QContext, done) {
@@ -474,6 +477,11 @@ export default function Navigo(r?: string, resolveOptions?: ResolveOptions) {
       params: params,
     };
   }
+  function getCurrentLocation(): Match {
+    return pathToMatchObject(
+      clean(getCurrentEnvURL()).replace(new RegExp(`^${root}`), "")
+    );
+  }
   function directMatchWithRegisteredRoutes(path: string): false | Match[] {
     const context: QContext = {
       currentLocationPath: path,
@@ -519,6 +527,7 @@ export default function Navigo(r?: string, resolveOptions?: ResolveOptions) {
   this.getLinkPath = getLinkPath;
   this.match = directMatchWithRegisteredRoutes;
   this.matchLocation = directMatchWithLocation;
+  this.getCurrentLocation = getCurrentLocation;
   this._pathToMatchObject = pathToMatchObject;
   this._clean = clean;
 

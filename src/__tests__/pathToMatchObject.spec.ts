@@ -27,4 +27,38 @@ describe("Given the Navigo library", () => {
       });
     });
   });
+  describe("when using `getCurrentLocation`", () => {
+    it("should return a Match object respecting the root of the router #1", () => {
+      history.pushState({}, "", "/app/about/team?users=100");
+      const r: NavigoRouter = new Navigo("app");
+      expect(r.getCurrentLocation()).toStrictEqual({
+        url: "about/team",
+        queryString: "users=100",
+        route: {
+          name: "about/team",
+          path: "app/about/team",
+          handler: expect.any(Function),
+          hooks: undefined,
+        },
+        data: null,
+        params: { users: "100" },
+      });
+    });
+    it("should return a Match object respecting the root of the router #1", () => {
+      history.pushState({}, "", "/app/about/team?users=100");
+      const r: NavigoRouter = new Navigo("/");
+      expect(r.getCurrentLocation()).toStrictEqual({
+        url: "app/about/team",
+        queryString: "users=100",
+        route: {
+          name: "app/about/team",
+          path: "app/about/team",
+          handler: expect.any(Function),
+          hooks: undefined,
+        },
+        data: null,
+        params: { users: "100" },
+      });
+    });
+  });
 });

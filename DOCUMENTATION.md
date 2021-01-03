@@ -18,6 +18,7 @@
 - [Destroying the router](#destroying-the-router)
 - [Generating paths](#generating-paths)
 - [Handling a not-found page](#handling-a-not-found-page)
+- [Getting current location of the browser](#getting-current-location-of-the-browser)
 - [Types](#types)
   - [Navigo](#navigo)
   - [Match](#match)
@@ -30,22 +31,23 @@
 
 API
 
-| Method                                           |
-| -------------------------------------------------|
-| [`constructor`](#initializing)                   |
-| [`on`](#adding-a-route)                          |
-| [`off`](#removing-a-route)                       |
-| [`navigate`](#navigating-between-routes)         |
-| [`resolve`](#resolving-routes)                   |
-| [`match`](#direct-matching-of-registered-routes) |
-| [`matchLocation`](#direct-matching-of-paths)     |
-| [`destroy`](#destroying-the-router)              |
-| [`notFound`](#handling-a-not-found-page)         |
-| [`updatePageLinks`](#augment-your-a-tags)        |
-| [`link`](#generating-paths)                      |
-| [`generate`](#generating-paths)                  |
-| [`lastResolved`](#resolving-routes)              |
-| [`hooks`](#defining-hooks-for-all-the-routes)    |
+| Method                                                              |
+| --------------------------------------------------------------------|
+| [`constructor`](#initializing)                                      |
+| [`on`](#adding-a-route)                                             |
+| [`off`](#removing-a-route)                                          |
+| [`navigate`](#navigating-between-routes)                            |
+| [`resolve`](#resolving-routes)                                      |
+| [`match`](#direct-matching-of-registered-routes)                    |
+| [`matchLocation`](#direct-matching-of-paths)                        |
+| [`destroy`](#destroying-the-router)                                 |
+| [`notFound`](#handling-a-not-found-page)                            |
+| [`updatePageLinks`](#augment-your-a-tags)                           |
+| [`link`](#generating-paths)                                         |
+| [`generate`](#generating-paths)                                     |
+| [`lastResolved`](#resolving-routes)                                 |
+| [`hooks`](#defining-hooks-for-all-the-routes)                       |
+| [`getCurrentLocation`](#getting-current-location-of-the-browser)    |
 
 Types
 
@@ -563,6 +565,10 @@ router.notFound(() => {
 });
 ```
 
+## Getting current location of the browser
+
+`router.getCurrentLocation()` returns the current location of the browser in the format of a [Match](#match) object.
+
 ## Types
 
 ### Navigo
@@ -590,6 +596,7 @@ class Navigo {
   getLinkPath(link: Object): string;
   match(path: string): false | Match[];
   matchLocation(path: string, currentLocation?: string): false | Match;
+  getCurrentLocation(): Match;
 }
 ```
 

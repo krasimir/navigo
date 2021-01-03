@@ -10,7 +10,7 @@ A simple dependency-free minimalistic JavaScript router
 * [Changelog](./CHANGELOG.md)
 
 - [Navigo](#navigo)
-  - [Features](#features)
+  - [Selling points](#selling-points)
   - [Installation](#installation)
   - [Quick start](#quick-start)
   - [Development](#development)
@@ -18,15 +18,17 @@ A simple dependency-free minimalistic JavaScript router
   - [Tests](#tests)
   - [MISC](#misc)
 
-## Features
+## Selling points
 
-* Uses the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) so it does update the URL of the page
-* Mapping of route to a function call
+* Dependency free
+* Less ~8KB minified, ~3KB gzipped
+* Based on [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) so it does update the URL of the page
+* Simple mapping of route to a function call
 * Parameterized routes
 * Navigating between routes
 * Hooks (_before_, _after_, _leave_, _already_)
 * Not-found and default handler
-* Trigger Navigo routes with just `data-navigo` HTML attribute
+* Easy integration with HTML links via `data-navigo` HTML attribute
 
 ---
 
@@ -71,24 +73,27 @@ After that when you need a page change call the `navigate` method. This one chan
 router.navigate('/about');
 ```
 
+Add `data-navigo` attribute to your page links and they'll be transformed into `navigate` callers.
+
+```html
+<a href="/about/contacts" data-navigo>Contacts</a>
+```
+
 ## Development
 
 ```
-> yarn install
 > yarn dev
 ```
 
 ## Building
 
 ```
-> yarn install
 > yarn build
 ```
 
 ## Tests
 
 ```
-> yarn install
 > yarn test
 > yarn test-watch
 ```
