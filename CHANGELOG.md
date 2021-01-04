@@ -1,3 +1,7 @@
+## 8.0.1
+
+A really minor update in the pseudo not-found route used internally.
+
 ## 8.0.0
 
 This is a complete re-write of the router. I decided to be a bad guy and kill/change some features. This is in favor of having cleaner code and I hope more stable implementation. The library was also doing bunch of assumptions for the root of your application which proved to be buggy and non-deterministic. So I'm removing this logic and asking you to set the root of your application.
