@@ -3,6 +3,7 @@
 A simple dependency-free minimalistic JavaScript router
 
 [![npm downloads](https://img.shields.io/npm/dm/navigo.svg?style=flat-square)](https://www.npmjs.com/package/navigo)
+![size](https://badgen.net/bundlephobia/minzip/react)
 
 * [v.8+ documentation](./DOCUMENTATION.md)
 * [v.7 documentation](./README_v7.md)
