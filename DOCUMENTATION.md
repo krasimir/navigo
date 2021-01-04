@@ -5,8 +5,8 @@
 | [`constructor`](#initializing)                                      | 
 | [`on`](#adding-a-route)                                             | Registers a route |
 | [`off`](#removing-a-route)                                          | Removes a registered route |
-| [`navigate`](#navigating-between-routes)                            | Navigates to a route with a change of the browser URL |
-| [`resolve`](#resolving-routes)                                      | Navigates to a route but it doesn't change the browser URL |
+| [`navigate`](#navigating-between-routes)                            | Navigates to a route with a change of the browser URL. You usually are calling this as a result of user interaction. You want to change the URL. |
+| [`resolve`](#resolving-routes)                                      | Navigates to a route but it doesn't change the browser URL. You should fire this at least one in the beginning. |
 | [`match`](#direct-matching-of-registered-routes)                    | Checks if the passed path matches some of the routes. It doesn't trigger handlers or hooks. |
 | [`matchLocation`](#direct-matching-of-paths)                        | The bare matching logic of Navigo |
 | [`destroy`](#destroying-the-router)                                 | Removing the currently registered routes |
