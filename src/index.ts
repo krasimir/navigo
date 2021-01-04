@@ -389,7 +389,7 @@ export default function Navigo(
   }
   function notFound(handler, hooks?: RouteHooks) {
     notFoundRoute = createRoute(
-      "/",
+      "*",
       handler,
       hooks || genericHooks,
       "__NOT_FOUND__"

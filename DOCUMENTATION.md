@@ -1,53 +1,57 @@
-- [Initializing](#initializing)
-- [Adding a route](#adding-a-route)
-  - [Parameterized routes](#parameterized-routes)
-  - [Reading GET params](#reading-get-params)
-  - [Matching logic](#matching-logic)
-- [Removing a route](#removing-a-route)
-- [Navigating between routes](#navigating-between-routes)
-- [Augment your `<a>` tags](#augment-your-a-tags)
-  - [Passing options to the `navigate` method](#passing-options-to-the-navigate-method)
-- [Resolving routes](#resolving-routes)
-  - [Resolve options](#resolve-options)
-- [Direct matching of registered routes](#direct-matching-of-registered-routes)
-- [Direct matching of paths](#direct-matching-of-paths)
-- [Hooks](#hooks)
-  - [Type of hooks](#type-of-hooks)
-  - [Defining hooks for specific route](#defining-hooks-for-specific-route)
-  - [Defining hooks for all the routes](#defining-hooks-for-all-the-routes)
-- [Destroying the router](#destroying-the-router)
-- [Generating paths](#generating-paths)
-- [Handling a not-found page](#handling-a-not-found-page)
-- [Getting current location of the browser](#getting-current-location-of-the-browser)
-- [Types](#types)
-  - [Navigo](#navigo)
-  - [Match](#match)
-  - [Route](#route)
-  - [RouteHooks](#routehooks)
-  - [NavigateOptions](#navigateoptions)
-  - [ResolveOptions](#resolveoptions)
+# API
+
+| Method                                                              | What it does |
+| --------------------------------------------------------------------| -------------|
+| [`constructor`](#initializing)                                      | 
+| [`on`](#adding-a-route)                                             | Registers a route |
+| [`off`](#removing-a-route)                                          | Removes a registered route |
+| [`navigate`](#navigating-between-routes)                            | Navigates to a route with a change of the browser URL |
+| [`resolve`](#resolving-routes)                                      | Navigates to a route but it doesn't change the browser URL |
+| [`match`](#direct-matching-of-registered-routes)                    | Checks if the passed path matches some of the routes. It doesn't trigger handlers or hooks. |
+| [`matchLocation`](#direct-matching-of-paths)                        | The bare matching logic of Navigo |
+| [`destroy`](#destroying-the-router)                                 | Removing the currently registered routes |
+| [`notFound`](#handling-a-not-found-page)                            | Defining a not-found handler |
+| [`updatePageLinks`](#augment-your-a-tags)                           | Call this if you re-render (change the DOM) and want Navigo to recognize the links with `data-navigo` attribute |
+| [`link`](#generating-paths)                                         | Constructs a path |
+| [`generate`](#generating-paths)                                     | Constructs a path based on a registered route |
+| [`lastResolved`](#resolving-routes)                                 | Returns the last resolved route/s |
+| [`hooks`](#defining-hooks-for-all-the-routes)                       | Define all-routes hooks |
+| [`getCurrentLocation`](#getting-current-location-of-the-browser)    | Returns a [Match](#match) object for the current browser location |
+
+# Topics
+
+- [API](#api)
+- [Topics](#topics)
+  - [Initializing](#initializing)
+  - [Adding a route](#adding-a-route)
+    - [Parameterized routes](#parameterized-routes)
+    - [Reading GET params](#reading-get-params)
+    - [Matching logic](#matching-logic)
+  - [Removing a route](#removing-a-route)
+  - [Navigating between routes](#navigating-between-routes)
+  - [Augment your `<a>` tags](#augment-your-a-tags)
+    - [Passing options to the `navigate` method](#passing-options-to-the-navigate-method)
+  - [Resolving routes](#resolving-routes)
+    - [Resolve options](#resolve-options)
+  - [Direct matching of registered routes](#direct-matching-of-registered-routes)
+  - [Direct matching of paths](#direct-matching-of-paths)
+  - [Hooks](#hooks)
+    - [Type of hooks](#type-of-hooks)
+    - [Defining hooks for specific route](#defining-hooks-for-specific-route)
+    - [Defining hooks for all the routes](#defining-hooks-for-all-the-routes)
+  - [Destroying the router](#destroying-the-router)
+  - [Generating paths](#generating-paths)
+  - [Handling a not-found page](#handling-a-not-found-page)
+  - [Getting current location of the browser](#getting-current-location-of-the-browser)
+  - [Types](#types)
+    - [Navigo](#navigo)
+    - [Match](#match)
+    - [Route](#route)
+    - [RouteHooks](#routehooks)
+    - [NavigateOptions](#navigateoptions)
+    - [ResolveOptions](#resolveoptions)
 
 ---
-
-API
-
-| Method                                                              |
-| --------------------------------------------------------------------|
-| [`constructor`](#initializing)                                      |
-| [`on`](#adding-a-route)                                             |
-| [`off`](#removing-a-route)                                          |
-| [`navigate`](#navigating-between-routes)                            |
-| [`resolve`](#resolving-routes)                                      |
-| [`match`](#direct-matching-of-registered-routes)                    |
-| [`matchLocation`](#direct-matching-of-paths)                        |
-| [`destroy`](#destroying-the-router)                                 |
-| [`notFound`](#handling-a-not-found-page)                            |
-| [`updatePageLinks`](#augment-your-a-tags)                           |
-| [`link`](#generating-paths)                                         |
-| [`generate`](#generating-paths)                                     |
-| [`lastResolved`](#resolving-routes)                                 |
-| [`hooks`](#defining-hooks-for-all-the-routes)                       |
-| [`getCurrentLocation`](#getting-current-location-of-the-browser)    |
 
 Types
 
