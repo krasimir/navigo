@@ -22,7 +22,7 @@ A simple dependency-free minimalistic JavaScript router
 ## Selling points
 
 * Dependency free
-* Less ~8KB minified, ~3KB gzipped
+* ~8KB minified, ~3KB gzipped
 * Based on [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) so it does update the URL of the page
 * Simple mapping of route to a function call
 * Parameterized routes
