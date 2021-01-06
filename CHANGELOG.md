@@ -57,6 +57,10 @@ This is a complete re-write of the router. I decided to be a bad guy and kill/ch
   ```
 * `lastRouteResolved` becomes `lastResolved` and it returns an object of type `Match`. Checkout above. (or `null` if there is no resolved URL so far)
 
+## 7.1.3
+
+This version was released by accident. It contains a small change in the README + a useless "examples" folder from the new 8.0.0 version.
+
 ## 7.1.2
 
 Open in new tab when Ctrl-key is pressed (#199)
