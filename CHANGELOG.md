@@ -59,7 +59,10 @@ This is a complete re-write of the router. I decided to be a bad guy and kill/ch
 
 ## 7.1.3
 
-This version was released by accident. It contains a small change in the README + a useless "examples" folder from the new 8.0.0 version.
+This version just adds a the following warning to the library:
+```
+console.warn("Navigo router library will have soon a major upgrade to version 8.0.0. If you don't have time for such migration please stick with the latest 7.1.2 version. To avoid seeing this message set a strict 7.1.2 in your package.json file.");
+```
 
 ## 7.1.2
 
