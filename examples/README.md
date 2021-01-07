@@ -6,6 +6,7 @@ To try the examples run `yarn install` into the `examples` directory. Then go in
 * Basic routing (SPA experience) - [source](./basic-spa)
 * Using regular expressions - [source](./regexp)
 * Node - [source](./node)
+* Routing based on the hash in the URL - [source](./hash)
 
 Examples done to investigate issues:
 

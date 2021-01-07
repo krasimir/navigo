@@ -170,4 +170,42 @@ describe("Given the Navigo library", () => {
       querySelectorAll.mockRestore();
     });
   });
+  describe("when we have a link with a hash (issue #111)", () => {
+    it("should keep the hash when updating the browser URL", () => {
+      const querySelectorAll = jest.spyOn(document, "querySelectorAll");
+      let handler;
+      let routeHandler = jest.fn();
+
+      // @ts-ignore
+      querySelectorAll.mockImplementationOnce(() => {
+        return [
+          {
+            addEventListener(eventType, h) {
+              handler = h;
+            },
+            getAttribute(attr) {
+              if (attr === "href") {
+                return "/foo/bar#should-work";
+              }
+            },
+          },
+        ];
+      });
+
+      const r: NavigoRouter = new Navigo("/");
+      r.on("/foo/bar", routeHandler);
+
+      handler({
+        ctrlKey: false,
+        preventDefault: () => {},
+      });
+
+      expect(routeHandler).toBeCalledTimes(1);
+      expect(location.pathname + location.search + location.hash).toEqual(
+        "/foo/bar#should-work"
+      );
+
+      querySelectorAll.mockRestore();
+    });
+  });
 });

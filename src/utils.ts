@@ -12,7 +12,7 @@ import {
 } from "./constants";
 
 export function clean(s: string) {
-  return s.split("#")[0].replace(/\/+$/, "").replace(/^\/+/, "");
+  return s.replace(/\/+$/, "").replace(/^\/+/, "");
 }
 export function isString(s: any): boolean {
   return typeof s === "string";
