@@ -224,6 +224,33 @@ export default function Navigo(
       done();
     }
   }
+  function _updateBrowserURL(context: QContext, done) {
+    if (undefinedOrTrue(context.navigateOptions, "updateBrowserURL")) {
+      const value = `${context.to}`.replace(/\/\//g, "/"); // making sure that we don't have two slashes
+      const isItUsingHash =
+        isWindowAvailable &&
+        context.resolveOptions &&
+        context.resolveOptions.hash === true;
+      if (isPushStateAvailable) {
+        history[context.navigateOptions.historyAPIMethod || "pushState"](
+          context.navigateOptions.stateObj || {},
+          context.navigateOptions.title || "",
+          isItUsingHash ? `#${value}` : value
+        );
+        // This is to solve a nasty bug where the page doesn't scroll to the anchor.
+        // We set a microtask to update the hash only.
+        if (!isItUsingHash && value.indexOf("#") >= 0 && location) {
+          setTimeout(() => {
+            location.hash = "";
+            location.hash = value.split("#").pop();
+          }, 0);
+        }
+      } else if (isWindowAvailable) {
+        window.location.href = context.to;
+      }
+    }
+    done();
+  }
   function _flushCurrent(context: QContext, done) {
     current = self.current = null;
     done();
@@ -259,35 +286,53 @@ export default function Navigo(
     }
     return url;
   }
-  function _updateBrowserURL(context: QContext, done) {
-    if (undefinedOrTrue(context.navigateOptions, "updateBrowserURL")) {
-      const value = `${context.to}`.replace(/\/\//g, "/"); // making sure that we don't have two slashes
-      const isItUsingHash =
-        isWindowAvailable &&
-        context.resolveOptions &&
-        context.resolveOptions.hash === true;
-      if (isPushStateAvailable) {
-        history[context.navigateOptions.historyAPIMethod || "pushState"](
-          context.navigateOptions.stateObj || {},
-          context.navigateOptions.title || "",
-          isItUsingHash ? `#${value}` : value
-        );
-        // This is to solve a nasty bug where the page doesn't scroll to the anchor.
-        // We set a microtask to update the hash only.
-        if (!isItUsingHash && value.indexOf("#") >= 0 && location) {
-          setTimeout(() => {
-            location.hash = "";
-            location.hash = value.split("#").pop();
-          }, 0);
-        }
-      } else if (isWindowAvailable) {
-        window.location.href = context.to;
-      }
-    }
-    done();
-  }
 
   // public APIs
+  function createRoute(
+    path: string | RegExp,
+    handler: Function,
+    hooks: RouteHooks,
+    name?: string
+  ): Route {
+    path = isString(path) ? clean(`${root}/${clean(path as string)}`) : path;
+    return {
+      name: name || String(path),
+      path,
+      handler,
+      hooks,
+    };
+  }
+  function getCurrentEnvURL(): string {
+    if (isWindowAvailable) {
+      return location.pathname + location.search + location.hash;
+    }
+    return root;
+  }
+  function on(
+    path: string | Function | Object | RegExp,
+    handler?: Function,
+    hooks?: RouteHooks
+  ) {
+    if (typeof path === "object" && !(path instanceof RegExp)) {
+      Object.keys(path).forEach((p) => {
+        if (typeof path[p] === "function") {
+          this.on(p, path[p]);
+        } else {
+          const { uses: handler, as: name, hooks } = path[p];
+          routes.push(createRoute(p, handler, hooks || genericHooks, name));
+        }
+      });
+      return this;
+    } else if (typeof path === "function") {
+      hooks = handler as RouteHooks;
+      handler = path as Function;
+      path = root;
+    }
+    routes.push(
+      createRoute(path as string | RegExp, handler, hooks || genericHooks)
+    );
+    return this;
+  }
   function resolve(
     currentLocationPath?: string,
     options?: ResolveOptions
@@ -340,51 +385,6 @@ export default function Navigo(
       ],
       context
     );
-  }
-  function createRoute(
-    path: string | RegExp,
-    handler: Function,
-    hooks: RouteHooks,
-    name?: string
-  ): Route {
-    path = isString(path) ? clean(`${root}/${clean(path as string)}`) : path;
-    return {
-      name: name || String(path),
-      path,
-      handler,
-      hooks,
-    };
-  }
-  function getCurrentEnvURL(): string {
-    if (isWindowAvailable) {
-      return location.pathname + location.search + location.hash;
-    }
-    return root;
-  }
-  function on(
-    path: string | Function | Object | RegExp,
-    handler?: Function,
-    hooks?: RouteHooks
-  ) {
-    if (typeof path === "object" && !(path instanceof RegExp)) {
-      Object.keys(path).forEach((p) => {
-        if (typeof path[p] === "function") {
-          this.on(p, path[p]);
-        } else {
-          const { uses: handler, as: name, hooks } = path[p];
-          routes.push(createRoute(p, handler, hooks || genericHooks, name));
-        }
-      });
-      return this;
-    } else if (typeof path === "function") {
-      hooks = handler as RouteHooks;
-      handler = path as Function;
-      path = root;
-    }
-    routes.push(
-      createRoute(path as string | RegExp, handler, hooks || genericHooks)
-    );
-    return this;
   }
   function off(what: string | RegExp | Function) {
     this.routes = routes = routes.filter((r) => {
