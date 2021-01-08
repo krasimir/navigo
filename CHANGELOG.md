@@ -1,3 +1,7 @@
+## 8.1.0
+
+Bringing back the hash based routing.
+
 ## 8.0.1
 
 A really minor update in the pseudo not-found route used internally.
@@ -8,7 +12,7 @@ This is a complete re-write of the router. I decided to be a bad guy and kill/ch
 
 ### Deprecations
 
-* Hash-based support for older browsers
+* ~Hash-based support for older browsers~ (it's back in 8.1.0 version)
 * `pause` and `resume`. There is `shouldResolve` in the `navigate` method instead.
 * `historyAPIUpdateMethod` method. It's now an option of the `navigate` method.
 * `helpers` method
