@@ -20,7 +20,7 @@ describe("Given the Navigo library", () => {
 
       expect(handler).toBeCalledTimes(1);
     });
-    it("should change the hash bit if we navigate", () => {
+    it("should change the hash when we navigate", () => {
       history.pushState({}, "", "/app/foo/bar");
       const r: NavigoRouter = new Navigo("/", { hash: true });
       const handler = jest.fn();
