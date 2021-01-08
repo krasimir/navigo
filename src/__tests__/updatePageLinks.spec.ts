@@ -30,6 +30,7 @@ describe("Given the Navigo library", () => {
       handler({
         ctrlKey: false,
         preventDefault,
+        stopPropagation: () => {},
       });
 
       expect(preventDefault).toBeCalledTimes(1);
@@ -67,6 +68,7 @@ describe("Given the Navigo library", () => {
       handler({
         ctrlKey: false,
         preventDefault: () => {},
+        stopPropagation: () => {},
       });
 
       expect(navigate).toBeCalledTimes(1);
@@ -119,6 +121,7 @@ describe("Given the Navigo library", () => {
       handler({
         ctrlKey: false,
         preventDefault: () => {},
+        stopPropagation: () => {},
       });
       querySelectorAll.mockRestore();
     });
@@ -151,6 +154,7 @@ describe("Given the Navigo library", () => {
       handler({
         ctrlKey: false,
         preventDefault: () => {},
+        stopPropagation: () => {},
       });
 
       expect(routeHandler).toBeCalledTimes(1);
@@ -171,7 +175,7 @@ describe("Given the Navigo library", () => {
     });
   });
   describe("when we have a link with a hash (issue #111)", () => {
-    it("should keep the hash when updating the browser URL", () => {
+    it("should keep the hash when updating the browser URL", (done) => {
       const querySelectorAll = jest.spyOn(document, "querySelectorAll");
       let handler;
       let routeHandler = jest.fn();
@@ -198,12 +202,17 @@ describe("Given the Navigo library", () => {
       handler({
         ctrlKey: false,
         preventDefault: () => {},
+        stopPropagation: () => {},
       });
 
-      expect(routeHandler).toBeCalledTimes(1);
-      expect(location.pathname + location.search + location.hash).toEqual(
-        "/foo/bar#should-work"
-      );
+      // setTimeout to exercise the anchor fix in the _updateBrowserURL
+      setTimeout(() => {
+        expect(routeHandler).toBeCalledTimes(1);
+        expect(location.pathname + location.search + location.hash).toEqual(
+          "/foo/bar#should-work"
+        );
+        done();
+      }, 50);
 
       querySelectorAll.mockRestore();
     });
