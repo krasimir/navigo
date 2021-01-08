@@ -25,6 +25,7 @@ export default function Navigo(
 ) {
   let DEFAULT_RESOLVE_OPTIONS: ResolveOptions = resolveOptions || {
     strategy: "ONE",
+    hash: false,
     noMatchWarning: false,
   };
   let root = "/";
@@ -181,6 +182,7 @@ export default function Navigo(
     if (typeof context.currentLocationPath === "undefined") {
       context.currentLocationPath = getCurrentEnvURL();
     }
+    context.currentLocationPath = _checkForAHash(context.currentLocationPath);
     done();
   }
   function _matchPathToRegisteredRoutes(context: QContext, done) {
@@ -224,12 +226,26 @@ export default function Navigo(
   }
   function _updateBrowserURL(context: QContext, done) {
     if (undefinedOrTrue(context.navigateOptions, "updateBrowserURL")) {
+      const value = `${context.to}`.replace(/\/\//g, "/"); // making sure that we don't have two slashes
+      const isItUsingHash =
+        isWindowAvailable &&
+        context.resolveOptions &&
+        context.resolveOptions.hash === true;
       if (isPushStateAvailable) {
         history[context.navigateOptions.historyAPIMethod || "pushState"](
           context.navigateOptions.stateObj || {},
           context.navigateOptions.title || "",
-          `/${context.to}`.replace(/\/\//g, "/") // making sure that we don't have two slashes
+          isItUsingHash ? `#${value}` : value
         );
+        // This is to solve a nasty bug where the page doesn't scroll to the anchor.
+        // We set a microtask to update the hash only.
+        if (location && location.hash) {
+          setTimeout(() => {
+            let tmp = location.hash;
+            location.hash = "";
+            location.hash = tmp;
+          }, 1);
+        }
       } else if (isWindowAvailable) {
         window.location.href = context.to;
       }
@@ -260,6 +276,16 @@ export default function Navigo(
         }
       );
     })();
+  }
+  function _checkForAHash(url: string): string {
+    if (url.indexOf("#") >= 0) {
+      if (DEFAULT_RESOLVE_OPTIONS.hash === true) {
+        url = url.split("#")[1] || "/";
+      } else {
+        url = url.split("#")[0];
+      }
+    }
+    return url;
   }
 
   // public APIs
@@ -344,7 +370,7 @@ export default function Navigo(
         navigateOptions && navigateOptions.resolveOptions
           ? navigateOptions.resolveOptions
           : DEFAULT_RESOLVE_OPTIONS,
-      currentLocationPath: to,
+      currentLocationPath: _checkForAHash(to),
     };
     Q(
       [
@@ -424,6 +450,7 @@ export default function Navigo(
 
           if (!destroyed) {
             e.preventDefault();
+            e.stopPropagation();
             self.navigate(clean(location), options);
           }
         });
@@ -521,7 +548,8 @@ export default function Navigo(
   this.updatePageLinks = updatePageLinks;
   this.link = link;
   this.hooks = setGenericHooks;
-  this.extractGETParameters = extractGETParameters;
+  this.extractGETParameters = (url) =>
+    extractGETParameters(_checkForAHash(url));
   this.lastResolved = lastResolved;
   this.generate = generate;
   this.getLinkPath = getLinkPath;

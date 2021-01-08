@@ -1,4 +1,4 @@
-import { Match, Route, NavigateOptions } from "../index";
+import { Match, Route, NavigateOptions, ResolveOptions } from "../index";
 
 import {
   PARAMETER_REGEXP,
@@ -12,7 +12,7 @@ import {
 } from "./constants";
 
 export function clean(s: string) {
-  return s.split("#")[0].replace(/\/+$/, "").replace(/^\/+/, "");
+  return s.replace(/\/+$/, "").replace(/^\/+/, "");
 }
 export function isString(s: any): boolean {
   return typeof s === "string";
@@ -111,6 +111,7 @@ export function parseNavigateOptions(source?: string): NavigateOptions {
   if (!source) return {};
   const pairs = source.split(",");
   const options: NavigateOptions = {};
+  let resolveOptions: ResolveOptions;
 
   pairs.forEach((str) => {
     const temp = str.split(":").map((v) => v.replace(/(^ +| +$)/g, ""));
@@ -119,9 +120,12 @@ export function parseNavigateOptions(source?: string): NavigateOptions {
         options.historyAPIMethod = temp[1];
         break;
       case "resolveOptionsStrategy":
-        options.resolveOptions = {
-          strategy: temp[1],
-        };
+        if (!resolveOptions) resolveOptions = {};
+        resolveOptions.strategy = temp[1];
+        break;
+      case "resolveOptionsHash":
+        if (!resolveOptions) resolveOptions = {};
+        resolveOptions.hash = temp[1] === "true";
         break;
       case "updateBrowserURL":
       case "callHandler":
@@ -131,6 +135,8 @@ export function parseNavigateOptions(source?: string): NavigateOptions {
         break;
     }
   });
-
+  if (resolveOptions) {
+    options.resolveOptions = resolveOptions;
+  }
   return options;
 }

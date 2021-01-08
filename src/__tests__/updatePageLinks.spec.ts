@@ -30,6 +30,7 @@ describe("Given the Navigo library", () => {
       handler({
         ctrlKey: false,
         preventDefault,
+        stopPropagation: () => {},
       });
 
       expect(preventDefault).toBeCalledTimes(1);
@@ -67,6 +68,7 @@ describe("Given the Navigo library", () => {
       handler({
         ctrlKey: false,
         preventDefault: () => {},
+        stopPropagation: () => {},
       });
 
       expect(navigate).toBeCalledTimes(1);
@@ -84,7 +86,7 @@ describe("Given the Navigo library", () => {
     it("should properly parse data-navigo-options attribute", () => {
       expect(
         parseNavigateOptions(
-          " updateBrowserURL  :false,   callHandler :false,updateState: false, force: false   ,historyAPIMethod: replaceState,foo:bar"
+          " updateBrowserURL  :false,   callHandler :false,updateState: false, force: false   ,historyAPIMethod: replaceState,foo:bar, resolveOptionsStrategy:    ALL, resolveOptionsHash: true"
         )
       ).toStrictEqual({
         updateBrowserURL: false,
@@ -92,6 +94,10 @@ describe("Given the Navigo library", () => {
         updateState: false,
         force: false,
         historyAPIMethod: "replaceState",
+        resolveOptions: {
+          strategy: "ALL",
+          hash: true,
+        },
       });
       expect(parseNavigateOptions()).toStrictEqual({});
     });
@@ -119,6 +125,7 @@ describe("Given the Navigo library", () => {
       handler({
         ctrlKey: false,
         preventDefault: () => {},
+        stopPropagation: () => {},
       });
       querySelectorAll.mockRestore();
     });
@@ -151,6 +158,7 @@ describe("Given the Navigo library", () => {
       handler({
         ctrlKey: false,
         preventDefault: () => {},
+        stopPropagation: () => {},
       });
 
       expect(routeHandler).toBeCalledTimes(1);
@@ -166,6 +174,49 @@ describe("Given the Navigo library", () => {
         },
         url: "foo/bar",
       });
+
+      querySelectorAll.mockRestore();
+    });
+  });
+  describe("when we have a link with a hash (issue #111)", () => {
+    it("should keep the hash when updating the browser URL", (done) => {
+      const querySelectorAll = jest.spyOn(document, "querySelectorAll");
+      let handler;
+      let routeHandler = jest.fn();
+
+      // @ts-ignore
+      querySelectorAll.mockImplementationOnce(() => {
+        return [
+          {
+            addEventListener(eventType, h) {
+              handler = h;
+            },
+            getAttribute(attr) {
+              if (attr === "href") {
+                return "/foo/bar#should-work";
+              }
+            },
+          },
+        ];
+      });
+
+      const r: NavigoRouter = new Navigo("/");
+      r.on("/foo/bar", routeHandler);
+
+      handler({
+        ctrlKey: false,
+        preventDefault: () => {},
+        stopPropagation: () => {},
+      });
+
+      // setTimeout to exercise the anchor fix in the _updateBrowserURL
+      setTimeout(() => {
+        expect(routeHandler).toBeCalledTimes(1);
+        expect(location.pathname + location.search + location.hash).toEqual(
+          "/foo/bar#should-work"
+        );
+        done();
+      }, 50);
 
       querySelectorAll.mockRestore();
     });

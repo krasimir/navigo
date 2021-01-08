@@ -29,7 +29,8 @@ export type NavigateOptions = {
 };
 export type ResolveOptions = {
   strategy?: ONE | ALL;
-  noMatchWarning?: true | false;
+  hash?: boolean;
+  noMatchWarning?: boolean;
 };
 export type QContext = {
   matches?: Match[];

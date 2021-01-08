@@ -33,6 +33,7 @@
     - [Passing options to the `navigate` method](#passing-options-to-the-navigate-method)
   - [Resolving routes](#resolving-routes)
     - [Resolve options](#resolve-options)
+    - [Hash based routing](#hash-based-routing)
   - [Direct matching of registered routes](#direct-matching-of-registered-routes)
   - [Direct matching of paths](#direct-matching-of-paths)
   - [Hooks](#hooks)
@@ -308,7 +309,7 @@ Navigo has a method called `updatePageLinks` which you have to call every time w
 As we learned above, when a link with `data-navigo` attribute is clicked the `navigate` method of the router gets executed. That same method accepts options and if you want to pass some of them use the following syntax:
 
 ```html
-<a href="/foo/bar" data-navigo data-navigo-options="updateBrowserURL:false, callHandler: false, updateState: false, force: false, historyAPIMethod: replaceState, resolveOptionsStrategy: ALL">my link</a>
+<a href="/foo/bar" data-navigo data-navigo-options="updateBrowserURL:false, callHandler: false, updateState: false, force: false, historyAPIMethod: replaceState, resolveOptionsStrategy: ALL, resolveOptionsHash: true">my link</a>
 ```
 
 Which will result in the following options:
@@ -320,7 +321,7 @@ Which will result in the following options:
   updateState: false,
   force: false,
   historyAPIMethod: "replaceState",
-  resolveOptions: { strategy: "ALL", noMatchWarning: false },
+  resolveOptions: { strategy: "ALL", hash: true },
 }
 ```
 
@@ -372,12 +373,22 @@ Another option available is `noMatchWarning`. Which if you set to `true` will pr
 ```typescript
 export type ResolveOptions = {
   strategy?: ONE | ALL;
+  hash?: boolean;
   noMatchWarning?: true | false;
 };
 ```
 
 * `strategy` - either `"ONE"` (by default) or `"ALL"`.
+* `hash` - whether to use hash based routing or not (by default is `false`).
 * `noMatchWarning` - `false` (by default) or `true`
+
+### Hash based routing
+
+Navigo supports hash based routing. Which means that it uses the hash string as path for routing. For example `/my/app/#/about/team` is treated as `/about/team`. To enable this mode you have to pass `hash: true` when creating the router.
+
+```js
+const router = new Navigo('/', { hash: true });
+```
 
 ## Direct matching of registered routes
 
@@ -658,6 +669,7 @@ type NavigateOptions = {
 ```typescript
 export type ResolveOptions = {
   strategy?: ONE | ALL;
+  hash?: boolean;
   noMatchWarning?: true | false;
 };
 ```
