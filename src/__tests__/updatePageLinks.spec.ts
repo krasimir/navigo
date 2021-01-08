@@ -86,7 +86,7 @@ describe("Given the Navigo library", () => {
     it("should properly parse data-navigo-options attribute", () => {
       expect(
         parseNavigateOptions(
-          " updateBrowserURL  :false,   callHandler :false,updateState: false, force: false   ,historyAPIMethod: replaceState,foo:bar"
+          " updateBrowserURL  :false,   callHandler :false,updateState: false, force: false   ,historyAPIMethod: replaceState,foo:bar, resolveOptionsStrategy:    ALL, resolveOptionsHash: true"
         )
       ).toStrictEqual({
         updateBrowserURL: false,
@@ -94,6 +94,10 @@ describe("Given the Navigo library", () => {
         updateState: false,
         force: false,
         historyAPIMethod: "replaceState",
+        resolveOptions: {
+          strategy: "ALL",
+          hash: true,
+        },
       });
       expect(parseNavigateOptions()).toStrictEqual({});
     });

@@ -309,7 +309,7 @@ Navigo has a method called `updatePageLinks` which you have to call every time w
 As we learned above, when a link with `data-navigo` attribute is clicked the `navigate` method of the router gets executed. That same method accepts options and if you want to pass some of them use the following syntax:
 
 ```html
-<a href="/foo/bar" data-navigo data-navigo-options="updateBrowserURL:false, callHandler: false, updateState: false, force: false, historyAPIMethod: replaceState, resolveOptionsStrategy: ALL">my link</a>
+<a href="/foo/bar" data-navigo data-navigo-options="updateBrowserURL:false, callHandler: false, updateState: false, force: false, historyAPIMethod: replaceState, resolveOptionsStrategy: ALL, resolveOptionsHash: true">my link</a>
 ```
 
 Which will result in the following options:
@@ -321,7 +321,7 @@ Which will result in the following options:
   updateState: false,
   force: false,
   historyAPIMethod: "replaceState",
-  resolveOptions: { strategy: "ALL", noMatchWarning: false },
+  resolveOptions: { strategy: "ALL", hash: true },
 }
 ```
 

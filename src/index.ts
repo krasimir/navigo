@@ -239,11 +239,12 @@ export default function Navigo(
         );
         // This is to solve a nasty bug where the page doesn't scroll to the anchor.
         // We set a microtask to update the hash only.
-        if (!isItUsingHash && value.indexOf("#") >= 0 && location) {
+        if (location && location.hash) {
           setTimeout(() => {
+            let tmp = location.hash;
             location.hash = "";
-            location.hash = value.split("#").pop();
-          }, 0);
+            location.hash = tmp;
+          }, 1);
         }
       } else if (isWindowAvailable) {
         window.location.href = context.to;

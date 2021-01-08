@@ -7,6 +7,7 @@ To try the examples run `yarn install` into the `examples` directory. Then go in
 * Using regular expressions - [source](./regexp)
 * Node - [source](./node)
 * Routing based on the hash in the URL - [source](./hash)
+* Mixed routing - absolute URL navigation + hash based - [source](./hash-mixed)
 
 Examples done to investigate issues:
 
