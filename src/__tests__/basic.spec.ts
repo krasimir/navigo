@@ -11,7 +11,7 @@ describe("Given the Navigo library", () => {
       const router: NavigoRouter = new Navigo("/foo");
       router.on(handler);
       expect(router.routes).toStrictEqual([
-        { path: "foo/foo", handler, hooks: undefined, name: "foo/foo" },
+        { path: "foo/foo", handler, hooks: {}, name: "foo/foo" },
       ]);
     });
     it("should accept path and a function", () => {
@@ -19,7 +19,7 @@ describe("Given the Navigo library", () => {
       const router: NavigoRouter = new Navigo("/foo");
       router.on("/bar", handler);
       expect(router.routes).toStrictEqual([
-        { path: "foo/bar", handler, hooks: undefined, name: "foo/bar" },
+        { path: "foo/bar", handler, hooks: {}, name: "foo/bar" },
       ]);
     });
     it("should accept path as RegExp and a function", () => {
@@ -27,7 +27,7 @@ describe("Given the Navigo library", () => {
       const router: NavigoRouter = new Navigo("/foo");
       router.on(/^b/, handler);
       expect(router.routes).toStrictEqual([
-        { path: /^b/, handler, hooks: undefined, name: "/^b/" },
+        { path: /^b/, handler, hooks: {}, name: "/^b/" },
       ]);
     });
     it("should accept object with paths and handlers", () => {
@@ -38,8 +38,8 @@ describe("Given the Navigo library", () => {
         b: handler,
       });
       expect(router.routes).toStrictEqual([
-        { path: "foo/a", handler, hooks: undefined, name: "foo/a" },
-        { path: "foo/b", handler, hooks: undefined, name: "foo/b" },
+        { path: "foo/a", handler, hooks: {}, name: "foo/a" },
+        { path: "foo/b", handler, hooks: {}, name: "foo/b" },
       ]);
     });
     it("should allow chaining of the `on` method", () => {
@@ -88,7 +88,7 @@ describe("Given the Navigo library", () => {
             queryString: "",
             route: {
               handler: expect.any(Function),
-              hooks: undefined,
+              hooks: {},
               name: "my bar",
               path: "bar",
             },
@@ -120,13 +120,13 @@ describe("Given the Navigo library", () => {
         {
           name: "about",
           path: "about",
-          hooks: undefined,
+          hooks: {},
           handler: expect.any(Function),
         },
         {
           name: "",
           path: "",
-          hooks: undefined,
+          hooks: {},
           handler: expect.any(Function),
         },
       ]);
@@ -138,7 +138,7 @@ describe("Given the Navigo library", () => {
           route: {
             name: "about",
             path: "about",
-            hooks: undefined,
+            hooks: {},
             handler: expect.any(Function),
           },
           url: "about",

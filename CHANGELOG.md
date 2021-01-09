@@ -1,3 +1,7 @@
+## 8.2.0
+
+The router respects the combination between generic hooks and route specific hooks. It bundles them together. The order of execution is first the generic hook then the one defined for the route specifically.
+
 ## 8.1.1
 
 No changes. Just refactoring.

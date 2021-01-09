@@ -1,6 +1,5 @@
 import NavigoRouter from "../../index";
 import Navigo from "../index";
-import Q from "../Q";
 
 describe("Given the Navigo library", () => {
   describe("when we set hooks as part of the route map", () => {
@@ -369,6 +368,50 @@ describe("Given the Navigo library", () => {
       expect(h1).toBeCalledTimes(1);
       expect(h2).toBeCalledTimes(1);
       expect(h3).toBeCalledTimes(1);
+    });
+    describe("and we have a route specific hooks", () => {
+      it("should call both", () => {
+        const warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+        const whatHappened = [];
+        const r: NavigoRouter = new Navigo("/");
+        const createHooks = (prefix) => ({
+          before(done, match) {
+            whatHappened.push(prefix + "before");
+            done();
+          },
+          after() {
+            whatHappened.push(prefix + "after");
+          },
+          already() {
+            whatHappened.push(prefix + "already");
+          },
+          leave(done) {
+            whatHappened.push(prefix + "leave");
+            done();
+          },
+        });
+
+        r.hooks(createHooks("generic_"));
+
+        r.on("/foo/bar", jest.fn(), createHooks("route_"));
+
+        r.navigate("/foo/bar");
+        r.navigate("/foo/bar");
+        r.navigate("/boo");
+
+        expect(whatHappened).toStrictEqual([
+          "generic_before",
+          "route_before",
+          "generic_after",
+          "route_after",
+          "generic_already",
+          "route_already",
+          "generic_leave",
+          "route_leave",
+        ]);
+
+        warn.mockRestore();
+      });
     });
   });
 });

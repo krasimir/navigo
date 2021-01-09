@@ -18,6 +18,7 @@ import {
   parseNavigateOptions,
   windowAvailable,
   getCurrentEnvURL,
+  accumulateHooks,
 } from "./utils";
 import Q from "./Q";
 import setLocationPath from "./middlewares/setLocationPath";
@@ -67,11 +68,10 @@ export default function Navigo(
     return url;
   }
 
-  // public APIs
   function createRoute(
     path: string | RegExp,
     handler: Function,
-    hooks: RouteHooks,
+    hooks: RouteHooks[],
     name?: string
   ): Route {
     path = isString(path) ? clean(`${root}/${clean(path as string)}`) : path;
@@ -79,10 +79,11 @@ export default function Navigo(
       name: name || String(path),
       path,
       handler,
-      hooks,
+      hooks: accumulateHooks(hooks),
     };
   }
 
+  // public APIs
   function on(
     path: string | Function | Object | RegExp,
     handler?: Function,
@@ -94,7 +95,7 @@ export default function Navigo(
           this.on(p, path[p]);
         } else {
           const { uses: handler, as: name, hooks } = path[p];
-          routes.push(createRoute(p, handler, hooks || genericHooks, name));
+          routes.push(createRoute(p, handler, [genericHooks, hooks], name));
         }
       });
       return this;
@@ -104,7 +105,7 @@ export default function Navigo(
       path = root;
     }
     routes.push(
-      createRoute(path as string | RegExp, handler, hooks || genericHooks)
+      createRoute(path as string | RegExp, handler, [genericHooks, hooks])
     );
     return this;
   }
@@ -193,7 +194,7 @@ export default function Navigo(
     self._notFoundRoute = createRoute(
       "*",
       handler,
-      hooks || genericHooks,
+      [genericHooks, hooks],
       "__NOT_FOUND__"
     );
     return this;
@@ -271,7 +272,7 @@ export default function Navigo(
   function pathToMatchObject(path: string): Match {
     const [url, queryString] = extractGETParameters(clean(path));
     const params = queryString === "" ? null : parseQuery(queryString);
-    const route = createRoute(url, () => {}, genericHooks, url);
+    const route = createRoute(url, () => {}, [genericHooks], url);
     return {
       url,
       queryString,

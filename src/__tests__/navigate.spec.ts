@@ -107,7 +107,7 @@ describe("Given the Navigo library", () => {
             params: { a: "b" },
             route: {
               handler: expect.any(Function),
-              hooks: undefined,
+              hooks: {},
               name: "login",
               path: "login",
             },

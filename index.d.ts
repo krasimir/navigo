@@ -2,7 +2,7 @@ export type Route = {
   name: string;
   path: string | RegExp;
   handler: Function;
-  hooks: RouteHooks;
+  hooks: RouteHooksStorage;
 };
 export type Match = {
   url: string;
@@ -11,11 +11,21 @@ export type Match = {
   data: Object | null;
   params: Object | null;
 };
+export type BeforeHook = (done: Function, match: Match) => void;
+export type AfterHook = (match: Match) => void;
+export type LeaveHook = (done: Function, match: Match) => void;
+export type AlreadyHook = (match: Match) => void;
 export type RouteHooks = {
-  before?: (done: Function, match: Match) => void;
-  after?: (match: Match) => void;
-  leave?: (done: Function, match: Match) => void;
-  already?: (match: Match) => void;
+  before?: BeforeHook;
+  after?: AfterHook;
+  leave?: LeaveHook;
+  already?: AlreadyHook;
+};
+export type RouteHooksStorage = {
+  before?: BeforeHook[];
+  after?: AfterHook[];
+  leave?: LeaveHook[];
+  already?: AlreadyHook[];
 };
 export type NavigateOptions = {
   title?: string;

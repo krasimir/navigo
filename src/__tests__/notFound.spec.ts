@@ -16,7 +16,7 @@ describe("Given the Navigo library", () => {
         data: null,
         route: {
           handler: expect.any(Function),
-          hooks: undefined,
+          hooks: {},
           path: "foo/bar",
           name: "__NOT_FOUND__",
         },

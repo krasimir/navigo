@@ -11,7 +11,7 @@ export default function checkForAlreadyHook(context: QContext, done) {
   ) {
     current.forEach((c) => {
       if (c.route.hooks && c.route.hooks.already) {
-        c.route.hooks.already(context.match);
+        c.route.hooks.already.forEach((f) => f(context.match));
       }
     });
     done(false);

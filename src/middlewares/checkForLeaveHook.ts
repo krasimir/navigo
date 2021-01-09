@@ -24,11 +24,14 @@ export default function checkForLeaveHook(context: QContext, done) {
               context.match.url
             )
           ) {
-            oldMatch.route.hooks.leave((moveForward: boolean) => {
-              if (typeof moveForward === "undefined" || moveForward === true) {
-                leaveLoopDone();
-              }
-            }, context.match);
+            Q(
+              oldMatch.route.hooks.leave
+                .map((f) => {
+                  // just so we match the Q interface
+                  return (_, d) => f(d, context.match);
+                })
+                .concat([() => leaveLoopDone()])
+            );
             return;
           } else {
             leaveLoopDone();

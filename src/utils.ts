@@ -1,4 +1,10 @@
-import { Match, Route, NavigateOptions, ResolveOptions } from "../index";
+import {
+  RouteHooksStorage,
+  Match,
+  Route,
+  NavigateOptions,
+  ResolveOptions,
+} from "../index";
 
 import {
   PARAMETER_REGEXP,
@@ -148,4 +154,20 @@ export function parseNavigateOptions(source?: string): NavigateOptions {
 }
 export function windowAvailable() {
   return typeof window !== "undefined";
+}
+export function accumulateHooks(
+  hooks = [],
+  result: RouteHooksStorage = {}
+): RouteHooksStorage {
+  hooks
+    .filter((h) => h)
+    .forEach((h) => {
+      ["before", "after", "already", "leave"].forEach((type) => {
+        if (h[type]) {
+          if (!result[type]) result[type] = [];
+          result[type].push(h[type]);
+        }
+      });
+    });
+  return result as RouteHooksStorage;
 }

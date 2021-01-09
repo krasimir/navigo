@@ -18,7 +18,7 @@ describe("Given the Navigo library", () => {
         route: {
           handler: expect.any(Function),
           hooks: {
-            leave: expect.any(Function),
+            leave: [expect.any(Function)],
           },
           name: "foo/bar",
           path: "foo/bar",
@@ -38,7 +38,7 @@ describe("Given the Navigo library", () => {
           name: "about/team",
           path: "app/about/team",
           handler: expect.any(Function),
-          hooks: undefined,
+          hooks: {},
         },
         data: null,
         params: { users: "100" },
@@ -54,7 +54,7 @@ describe("Given the Navigo library", () => {
           name: "app/about/team",
           path: "app/about/team",
           handler: expect.any(Function),
-          hooks: undefined,
+          hooks: {},
         },
         data: null,
         params: { users: "100" },

@@ -168,7 +168,7 @@ describe("Given the Navigo library", () => {
         queryString: "x=y",
         route: {
           handler: expect.any(Function),
-          hooks: undefined,
+          hooks: {},
           name: "foo/bar",
           path: "foo/bar",
         },
