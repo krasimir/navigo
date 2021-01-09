@@ -27,6 +27,7 @@
 | [`addAlreadyHook`](#adding-a-hook-to-already-defined-route)         | Adding already hook on an already created route |
 | [`addLeaveHook`](#adding-a-hook-to-already-defined-route)           | Adding leave hook on an already created route |
 | [`getCurrentLocation`](#getting-current-location-of-the-browser)    | Returns a [Match](#match) object for the current browser location |
+| [`getRoute`](#getting-access-to-a-route)                            | Get a [Route](#route) by name/path |
 
 # Topics
 
@@ -55,6 +56,7 @@
   - [Generating paths](#generating-paths)
   - [Handling a not-found page](#handling-a-not-found-page)
   - [Getting current location of the browser](#getting-current-location-of-the-browser)
+  - [Getting access to a route](#getting-access-to-a-route)
   - [Types](#types)
     - [Navigo](#navigo)
     - [Match](#match)
@@ -612,6 +614,10 @@ router.notFound(() => {
 ## Getting current location of the browser
 
 `router.getCurrentLocation()` returns the current location of the browser in the format of a [Match](#match) object.
+
+## Getting access to a route
+
+There is `getRoute` method that accepts a route name/path. The object that you receive is of type [Route](#route).
 
 ## Types
 
