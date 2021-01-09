@@ -2,20 +2,26 @@
 
 | Method                                                              | What it does |
 | --------------------------------------------------------------------| -------------|
+| <td colspan=3>Frequently used</id> |
 | [`constructor`](#initializing)                                      | 
 | [`on`](#adding-a-route)                                             | Registers a route |
-| [`off`](#removing-a-route)                                          | Removes a registered route |
 | [`navigate`](#navigating-between-routes)                            | Navigates to a route with a change of the browser URL. You usually are calling this as a result of user interaction. You want to change the URL. |
 | [`resolve`](#resolving-routes)                                      | Navigates to a route but it doesn't change the browser URL. You should fire this at least one in the beginning. |
+| [`notFound`](#handling-a-not-found-page)                            | Defining a not-found handler |
+| <td colspan=3>Other methods</id> |
+| [`off`](#removing-a-route)                                          | Removes a registered route |
 | [`match`](#direct-matching-of-registered-routes)                    | Checks if the passed path matches some of the routes. It doesn't trigger handlers or hooks. |
 | [`matchLocation`](#direct-matching-of-paths)                        | The bare matching logic of Navigo |
 | [`destroy`](#destroying-the-router)                                 | Removing the currently registered routes |
-| [`notFound`](#handling-a-not-found-page)                            | Defining a not-found handler |
 | [`updatePageLinks`](#augment-your-a-tags)                           | Call this if you re-render (change the DOM) and want Navigo to recognize the links with `data-navigo` attribute |
 | [`link`](#generating-paths)                                         | Constructs a path |
 | [`generate`](#generating-paths)                                     | Constructs a path based on a registered route |
 | [`lastResolved`](#resolving-routes)                                 | Returns the last resolved route/s |
 | [`hooks`](#defining-hooks-for-all-the-routes)                       | Define all-routes hooks |
+| [`addBeforeHook`](#adding-a-hook-to-already-defined-route)          | Adding before hook on an already created route |
+| [`addAfterHook`](#adding-a-hook-to-already-defined-route)           | Adding after hook on an already created route |
+| [`addAlreadyHook`](#adding-a-hook-to-already-defined-route)         | Adding already hook on an already created route |
+| [`addLeaveHook`](#adding-a-hook-to-already-defined-route)           | Adding leave hook on an already created route |
 | [`getCurrentLocation`](#getting-current-location-of-the-browser)    | Returns a [Match](#match) object for the current browser location |
 
 # Topics
@@ -40,6 +46,7 @@
     - [Type of hooks](#type-of-hooks)
     - [Defining hooks for specific route](#defining-hooks-for-specific-route)
     - [Defining hooks for all the routes](#defining-hooks-for-all-the-routes)
+    - [Adding a hook to already defined route](#adding-a-hook-to-already-defined-route)
   - [Destroying the router](#destroying-the-router)
   - [Generating paths](#generating-paths)
   - [Handling a not-found page](#handling-a-not-found-page)
@@ -536,6 +543,24 @@ router.on("/foo/bar", () => {});
 router.on("/", () => {});
 ```
 
+### Adding a hook to already defined route
+
+Sometimes you may need to add a hook to a route later. In such cases use the following syntax:
+
+```js
+const router = new Navigo("/");
+
+router.on("/foo/bar", () => {});
+const cleanup = router.addBeforeHook('foo/bar', (done) => {
+  // my before hook logic
+})
+
+// ... some other logic
+cleanup();
+```
+
+With `addBeforeHook` we have `addAfterHook`, `addAlreadyHook` and `addLeaveHook` methods. All of them return a function which if called will remove the hook from the specific route.
+
 ## Destroying the router
 
 ```typescript
@@ -612,6 +637,11 @@ class Navigo {
   match(path: string): false | Match[];
   matchLocation(path: string, currentLocation?: string): false | Match;
   getCurrentLocation(): Match;
+  addBeforeHook(route: Route | string, hookFunction: Function): Function;
+  addAfterHook(route: Route | string, hookFunction: Function): Function;
+  addAlreadyHook(route: Route | string, hookFunction: Function): Function;
+  addLeaveHook(route: Route | string, hookFunction: Function): Function;
+  getRoute(name: string): Router | undefined;
 }
 ```
 

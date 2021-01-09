@@ -314,6 +314,30 @@ export default function Navigo(
     });
     return match ? match : false;
   }
+  function addHook(
+    type: string,
+    route: Route | string,
+    func: Function
+  ): Function {
+    if (typeof route === "string") {
+      route = getRoute(route);
+    }
+    if (route) {
+      if (!route.hooks[type]) route.hooks[type] = [];
+      route.hooks[type].push(func);
+      return () => {
+        (route as Route).hooks[type] = (route as Route).hooks[type].filter(
+          (f) => f !== func
+        );
+      };
+    } else {
+      console.warn(`Route doesn't exists: ${route}`);
+    }
+    return () => {};
+  }
+  function getRoute(name): Route | undefined {
+    return routes.find((r) => r.name === name);
+  }
 
   this.root = root;
   this.routes = routes;
@@ -337,6 +361,11 @@ export default function Navigo(
   this.match = directMatchWithRegisteredRoutes;
   this.matchLocation = directMatchWithLocation;
   this.getCurrentLocation = getCurrentLocation;
+  this.addBeforeHook = addHook.bind(this, "before");
+  this.addAfterHook = addHook.bind(this, "after");
+  this.addAlreadyHook = addHook.bind(this, "already");
+  this.addLeaveHook = addHook.bind(this, "leave");
+  this.getRoute = getRoute;
   this._pathToMatchObject = pathToMatchObject;
   this._clean = clean;
   this._checkForAHash = _checkForAHash;

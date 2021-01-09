@@ -414,4 +414,101 @@ describe("Given the Navigo library", () => {
       });
     });
   });
+  describe("when adding hooks to already existing routes", () => {
+    it("should register the hook and call it as part of the route resolving", (done) => {
+      const warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+      const whatHappened = [];
+      const r: NavigoRouter = new Navigo("/");
+      const createHooks = (prefix) => ({
+        before(done, match) {
+          setTimeout(() => {
+            whatHappened.push(prefix + "before");
+            done();
+          }, 20);
+        },
+        after() {
+          whatHappened.push(prefix + "after");
+        },
+        already() {
+          whatHappened.push(prefix + "already");
+        },
+        leave(done) {
+          whatHappened.push(prefix + "leave");
+          done();
+        },
+      });
+
+      r.on("/foo/bar", jest.fn(), createHooks("route_"));
+      r.addBeforeHook(r.routes[0], (done) => {
+        whatHappened.push("before");
+        done();
+      });
+      r.addLeaveHook(r.routes[0], (done) => {
+        whatHappened.push("leave");
+        done();
+      });
+      r.addAfterHook(r.routes[0], () => {
+        whatHappened.push("after");
+      });
+      r.addAlreadyHook(r.routes[0], () => {
+        whatHappened.push("already");
+      });
+
+      r.navigate("/foo/bar");
+
+      setTimeout(() => {
+        r.navigate("/foo/bar");
+        r.navigate("/boo");
+
+        expect(whatHappened).toStrictEqual([
+          "route_before",
+          "before",
+          "route_after",
+          "after",
+          "route_already",
+          "already",
+          "route_leave",
+          "leave",
+        ]);
+
+        warn.mockRestore();
+        done();
+      }, 30);
+    });
+    it("should provide a mechanism for removing the hook", () => {
+      const warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+      const r: NavigoRouter = new Navigo("/");
+      const handler = jest.fn();
+      const hookFunc = jest.fn().mockImplementation((done) => done());
+      r.on("/foo/bar", handler);
+      const remove = r.addBeforeHook(r.routes[0], hookFunc);
+
+      r.navigate("/foo/bar");
+      r.navigate("/boo");
+      remove();
+      r.navigate("/foo/bar");
+
+      expect(handler).toBeCalledTimes(2);
+      expect(hookFunc).toBeCalledTimes(1);
+      expect(r.routes[0].hooks.before).toHaveLength(0);
+
+      warn.mockRestore();
+    });
+    it("should be possible to add a hook based on route name", () => {
+      const warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+      const r: NavigoRouter = new Navigo("/");
+      const handler = jest.fn();
+      const hookFunc = jest.fn().mockImplementation((done) => done());
+      r.on("/foo/bar", handler);
+      r.addBeforeHook("foo/bar", hookFunc);
+
+      r.navigate("/foo/bar");
+
+      expect(handler).toBeCalledTimes(1);
+      expect(hookFunc).toBeCalledTimes(1);
+      expect(r.routes[0].hooks.before).toHaveLength(1);
+
+      warn.mockRestore();
+    });
+  });
 });

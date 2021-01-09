@@ -76,6 +76,11 @@ class Navigo {
   match(path: string): false | Match[];
   matchLocation(path: string, currentLocation?: string): false | Match;
   getCurrentLocation(): Match;
+  addBeforeHook(route: Route | string, hookFunction: Function): Function;
+  addAfterHook(route: Route | string, hookFunction: Function): Function;
+  addAlreadyHook(route: Route | string, hookFunction: Function): Function;
+  addLeaveHook(route: Route | string, hookFunction: Function): Function;
+  getRoute(name: string): Router | undefined;
   _pathToMatchObject(path: string): Match;
   _clean(path: string): string;
   _setCurrent(current: Match[]): void;
