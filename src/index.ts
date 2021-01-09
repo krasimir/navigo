@@ -76,7 +76,7 @@ export default function Navigo(
   ): Route {
     path = isString(path) ? clean(`${root}/${clean(path as string)}`) : path;
     return {
-      name: name || String(path),
+      name: name || clean(String(path)),
       path,
       handler,
       hooks: accumulateHooks(hooks),
@@ -335,8 +335,8 @@ export default function Navigo(
     }
     return () => {};
   }
-  function getRoute(name): Route | undefined {
-    return routes.find((r) => r.name === name);
+  function getRoute(name: string): Route | undefined {
+    return routes.find((r) => r.name === clean(name));
   }
 
   this.root = root;

@@ -20,7 +20,7 @@ describe("Given the Navigo library", () => {
       expect(r.routes).toHaveLength(3);
       expect(r.getRoute("foo")).toStrictEqual(r.routes[0]);
       expect(r.getRoute("xxx")).toStrictEqual(r.routes[1]);
-      expect(r.getRoute("/foo(.*)/")).toStrictEqual(r.routes[2]);
+      expect(r.getRoute("foo(.*)")).toStrictEqual(r.routes[2]);
       expect(r.getRoute("nope")).toEqual(undefined);
     });
   });

@@ -27,7 +27,7 @@ describe("Given the Navigo library", () => {
       const router: NavigoRouter = new Navigo("/foo");
       router.on(/^b/, handler);
       expect(router.routes).toStrictEqual([
-        { path: /^b/, handler, hooks: {}, name: "/^b/" },
+        { path: /^b/, handler, hooks: {}, name: "^b" },
       ]);
     });
     it("should accept object with paths and handlers", () => {

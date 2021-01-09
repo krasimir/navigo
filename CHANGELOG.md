@@ -1,3 +1,7 @@
+## 8.3.1
+
+Fixing a bug in the `getRoute` method.
+
 ## 8.3.0
 
 Adding `addBeforeHook`, `addAfterHook`, `addAlreadyHook`, `addLeaveHook` and `getRoute` methods.
