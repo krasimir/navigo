@@ -33,6 +33,7 @@ export type ResolveOptions = {
   noMatchWarning?: boolean;
 };
 export type QContext = {
+  instance: Navigo;
   matches?: Match[];
   match?: Match;
   currentLocationPath?: string;
@@ -43,10 +44,11 @@ export type QContext = {
 };
 class Navigo {
   constructor(root: string, resolveOptions?: ResolveOptions);
+  root: string;
+  routes: Route[];
   destroyed: boolean;
   current: null | Match[];
   lastResolved(): null | Match[];
-  routes: Route[];
   on(f: Function, hooks?: RouteHooks): Navigo;
   on(map: Object, hooks?: RouteHooks): Navigo;
   on(path: string | RegExp, f: Function, hooks?: RouteHooks): Navigo;
@@ -66,6 +68,9 @@ class Navigo {
   getCurrentLocation(): Match;
   _pathToMatchObject(path: string): Match;
   _clean(path: string): string;
+  _setCurrent(current: Match[]): void;
+  _checkForAHash(path: string): string;
+  _notFoundRoute: Route;
 }
 
 export default Navigo;

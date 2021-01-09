@@ -11,6 +11,12 @@ import {
   NOT_SURE_REGEXP,
 } from "./constants";
 
+export function getCurrentEnvURL(fallback = "/"): string {
+  if (windowAvailable()) {
+    return location.pathname + location.search + location.hash;
+  }
+  return fallback;
+}
 export function clean(s: string) {
   return s.replace(/\/+$/, "").replace(/^\/+/, "");
 }
@@ -139,4 +145,7 @@ export function parseNavigateOptions(source?: string): NavigateOptions {
     options.resolveOptions = resolveOptions;
   }
   return options;
+}
+export function windowAvailable() {
+  return typeof window !== "undefined";
 }
