@@ -2,7 +2,7 @@
 
 | Method                                                              | What it does |
 | --------------------------------------------------------------------| -------------|
-| <td colspan=3>Frequently used</id> |
+| <td colspan=3>Frequently used</id>
 | [`constructor`](#initializing)                                      | 
 | [`on`](#adding-a-route)                                             | Registers a route |
 | [`navigate`](#navigating-between-routes)                            | Navigates to a route with a change of the browser URL. You usually are calling this as a result of user interaction. You want to change the URL. |
