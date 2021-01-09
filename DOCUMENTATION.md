@@ -2,13 +2,13 @@
 
 | Method                                                              | What it does |
 | --------------------------------------------------------------------| -------------|
-| <td colspan=3>Frequently used</id>
+| <td colspan=2>Other methods</id> | |
 | [`constructor`](#initializing)                                      | 
 | [`on`](#adding-a-route)                                             | Registers a route |
 | [`navigate`](#navigating-between-routes)                            | Navigates to a route with a change of the browser URL. You usually are calling this as a result of user interaction. You want to change the URL. |
 | [`resolve`](#resolving-routes)                                      | Navigates to a route but it doesn't change the browser URL. You should fire this at least one in the beginning. |
 | [`notFound`](#handling-a-not-found-page)                            | Defining a not-found handler |
-| <td colspan=3>Other methods</id> |
+| <td colspan=2>Other methods</id> | |
 | [`off`](#removing-a-route)                                          | Removes a registered route |
 | [`match`](#direct-matching-of-registered-routes)                    | Checks if the passed path matches some of the routes. It doesn't trigger handlers or hooks. |
 | [`matchLocation`](#direct-matching-of-paths)                        | The bare matching logic of Navigo |
