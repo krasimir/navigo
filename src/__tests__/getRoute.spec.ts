@@ -23,5 +23,11 @@ describe("Given the Navigo library", () => {
       expect(r.getRoute("foo(.*)")).toStrictEqual(r.routes[2]);
       expect(r.getRoute("nope")).toEqual(undefined);
     });
+    it("should fond a route when we have router's root set up", () => {
+      const r: NavigoRouter = new Navigo("/app");
+      r.on("foo", () => {});
+
+      expect(r.getRoute("foo")).toStrictEqual(r.routes[0]);
+    });
   });
 });

@@ -1,3 +1,7 @@
+## 8.3.2
+
+Fixing yet another bug with `getRoute`. Making it using the route's root.
+
 ## 8.3.1
 
 Fixing a bug in the `getRoute` method.

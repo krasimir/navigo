@@ -68,13 +68,16 @@ export default function Navigo(
     return url;
   }
 
+  function composePathWithRoot(path: string) {
+    return clean(`${root}/${clean(path)}`);
+  }
   function createRoute(
     path: string | RegExp,
     handler: Function,
     hooks: RouteHooks[],
     name?: string
   ): Route {
-    path = isString(path) ? clean(`${root}/${clean(path as string)}`) : path;
+    path = isString(path) ? composePathWithRoot(path as string) : path;
     return {
       name: name || clean(String(path)),
       path,
@@ -336,7 +339,7 @@ export default function Navigo(
     return () => {};
   }
   function getRoute(name: string): Route | undefined {
-    return routes.find((r) => r.name === clean(name));
+    return routes.find((r) => r.name === composePathWithRoot(name));
   }
 
   this.root = root;
