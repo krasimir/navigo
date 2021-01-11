@@ -1,3 +1,7 @@
+## 8.4.0
+
+`getRoute` now supports getting a route by its handler. Probably better than the name/path.
+
 ## 8.3.2
 
 Fixing yet another bug with `getRoute`. Making it using the route's root.

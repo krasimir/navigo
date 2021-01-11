@@ -23,11 +23,20 @@ describe("Given the Navigo library", () => {
       expect(r.getRoute("foo(.*)")).toStrictEqual(r.routes[2]);
       expect(r.getRoute("nope")).toEqual(undefined);
     });
-    it("should fond a route when we have router's root set up", () => {
+    it("should find a route when we have router's root set up", () => {
       const r: NavigoRouter = new Navigo("/app");
       r.on("foo", () => {});
 
       expect(r.getRoute("foo")).toStrictEqual(r.routes[0]);
+    });
+    it("should find a route by its handler", () => {
+      const h = jest.fn();
+      const r: NavigoRouter = new Navigo("/app");
+      r.on("foo", () => {});
+      r.on("foo", h);
+      r.on("foo", () => {});
+
+      expect(r.getRoute(h)).toStrictEqual(r.routes[1]);
     });
   });
 });

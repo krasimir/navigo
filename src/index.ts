@@ -338,8 +338,11 @@ export default function Navigo(
     }
     return () => {};
   }
-  function getRoute(name: string): Route | undefined {
-    return routes.find((r) => r.name === composePathWithRoot(name));
+  function getRoute(nameOrHandler: string | Function): Route | undefined {
+    if (typeof nameOrHandler === "string") {
+      return routes.find((r) => r.name === composePathWithRoot(nameOrHandler));
+    }
+    return routes.find((r) => r.handler === nameOrHandler);
   }
 
   this.root = root;
