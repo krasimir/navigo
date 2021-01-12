@@ -1,3 +1,7 @@
+## 8.4.4
+
+ES build. Fixing #261.
+
 ## 8.4.3
 
 Better typing #264.
