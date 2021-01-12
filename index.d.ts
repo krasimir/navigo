@@ -38,7 +38,7 @@ export type NavigateOptions = {
   resolveOptions?: ResolveOptions;
 };
 export type ResolveOptions = {
-  strategy?: ONE | ALL;
+  strategy?: "ONE" | "ALL";
   hash?: boolean;
   noMatchWarning?: boolean;
 };
