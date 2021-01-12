@@ -1,3 +1,7 @@
+## 8.4.3
+
+Better typing #264.
+
 ## 8.4.2
 
 Fixing a problem with TypeScript compilation - [#261](https://github.com/krasimir/navigo/issues/261).
