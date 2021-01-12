@@ -52,7 +52,7 @@ export type QContext = {
   resolveOptions?: ResolveOptions;
   notFoundHandled?: boolean;
 };
-class Navigo {
+declare class Navigo {
   constructor(root: string, resolveOptions?: ResolveOptions);
   root: string;
   routes: Route[];
@@ -80,7 +80,7 @@ class Navigo {
   addAfterHook(route: Route | string, hookFunction: Function): Function;
   addAlreadyHook(route: Route | string, hookFunction: Function): Function;
   addLeaveHook(route: Route | string, hookFunction: Function): Function;
-  getRoute(nameOrHandler: string | Function): Router | undefined;
+  getRoute(nameOrHandler: string | Function): Route | undefined;
   _pathToMatchObject(path: string): Match;
   _clean(path: string): string;
   _setCurrent(current: Match[]): void;
