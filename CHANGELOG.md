@@ -1,3 +1,7 @@
+## 8.4.1
+
+Fixing a bug with `updateBrowserURL` middleware.
+
 ## 8.4.0
 
 `getRoute` now supports getting a route by its handler. Probably better than the name/path.

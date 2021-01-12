@@ -6,7 +6,7 @@ const isPushStateAvailable = pushStateAvailable();
 
 export default function updateBrowserURL(context: QContext, done) {
   if (undefinedOrTrue(context.navigateOptions, "updateBrowserURL")) {
-    const value = `${context.to}`.replace(/\/\//g, "/"); // making sure that we don't have two slashes
+    const value = `/${context.to}`.replace(/\/\//g, "/"); // making sure that we don't have two slashes
     const isItUsingHash =
       isWindowAvailable &&
       context.resolveOptions &&

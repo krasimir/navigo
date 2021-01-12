@@ -152,6 +152,7 @@ describe("Given the Navigo library", () => {
         r.navigate("/about");
 
         expect(handler).toBeCalledTimes(1);
+        expect(location.pathname).toEqual("/app/about");
       });
     });
   });

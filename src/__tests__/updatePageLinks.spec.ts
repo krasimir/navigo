@@ -3,6 +3,9 @@ import Navigo from "../index";
 import { parseNavigateOptions } from "../utils";
 
 describe("Given the Navigo library", () => {
+  // beforeEach(() => {
+  //   history.pushState({}, "", "/");
+  // });
   describe("when we have data-navigo links on the page", () => {
     it("should attach a click handler and call the navigate in case of we click on them", () => {
       const querySelectorAll = jest.spyOn(document, "querySelectorAll");
@@ -219,6 +222,46 @@ describe("Given the Navigo library", () => {
       }, 50);
 
       querySelectorAll.mockRestore();
+    });
+  });
+  describe("when we have a router root set", () => {
+    it("should navigate to the proper URL", (done) => {
+      const querySelectorAll = jest.spyOn(document, "querySelectorAll");
+      let handler;
+      let routeHandler = jest.fn();
+
+      // @ts-ignore
+      querySelectorAll.mockImplementationOnce(() => {
+        return [
+          {
+            addEventListener(eventType, h) {
+              handler = h;
+            },
+            getAttribute(attr) {
+              if (attr === "href") {
+                return "/foo/bar";
+              }
+            },
+          },
+        ];
+      });
+
+      const r: NavigoRouter = new Navigo("/app");
+      r.on("/foo/bar", routeHandler);
+
+      handler({
+        ctrlKey: false,
+        preventDefault: () => {},
+        stopPropagation: () => {},
+      });
+
+      // setTimeout to exercise the anchor fix in the _updateBrowserURL
+      setTimeout(() => {
+        expect(routeHandler).toBeCalledTimes(1);
+        expect(location.pathname).toEqual("/app/foo/bar");
+        done();
+        querySelectorAll.mockRestore();
+      }, 50);
     });
   });
 });
