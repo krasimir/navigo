@@ -2,6 +2,9 @@ import NavigoRouter from "../../index";
 import Navigo from "../index";
 
 describe("Given the Navigo library", () => {
+  beforeEach(() => {
+    history.pushState({}, "", "/");
+  });
   describe("and the problem described in #111", () => {
     it("should fallback to that route if no handler is found", () => {
       history.pushState({}, "", "/foo/bar?a=b");
@@ -268,6 +271,51 @@ describe("Given the Navigo library", () => {
       expect(before).toBeCalledWith(expect.any(Function), expectedMatch);
       expect(after).toBeCalledTimes(1);
       expect(after).toBeCalledWith(expectedMatch);
+    });
+  });
+  describe("and the problem described in #262", function () {
+    it("should replace the URL but execute the first route", () => {
+      history.pushState({}, "", "/abc-1234");
+      const router: NavigoRouter = new Navigo("/");
+      const handler1 = jest.fn();
+      const handler2 = jest.fn();
+
+      router.on({
+        "/abc-1234": {
+          as: "routeA",
+          uses: handler1,
+          hooks: {
+            before: (done, match) => {
+              router.navigate("/item/abc-1234", {
+                historyAPIMethod: "replaceState",
+                updateBrowserURL: true,
+                updateState: true,
+                callHandler: false,
+                force: false,
+              });
+              done();
+            },
+          },
+        },
+      });
+
+      router.on({
+        "/item/abc-1234": {
+          as: "routeB",
+          uses: handler2,
+        },
+      });
+
+      router.resolve();
+
+      expect(handler1).toBeCalledTimes(1);
+      expect(handler1).toBeCalledWith(
+        expect.objectContaining({
+          url: "abc-1234",
+        })
+      );
+      expect(handler2).not.toBeCalled();
+      expect(location.pathname).toBe("/item/abc-1234");
     });
   });
 });
