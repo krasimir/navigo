@@ -264,6 +264,7 @@ type NavigateOptions = {
   historyAPIMethod?: string;
   updateBrowserURL?: boolean;
   callHandler?: boolean;
+  callHooks?: boolean;
   updateState?: boolean;
   force?: boolean;
   resolveOptions?: ResolveOptions;
@@ -302,6 +303,7 @@ After the last line the browser will have in its address bar `/about` as a path 
 * If you don't want to have a new entry in the history you should pass `{ historyAPIMethod: 'replaceState' }`. By default is `pushState`.
 * If `updateBrowserURL` is set to `false` the library will not use the history API at all. Meaning, the browser URL will not change.
 * If `callHandler` is set to `false` your route handler will not be fired.
+* If `callHooks` is set to `false` your route hooks will be skipped.
 * If `updateState` is set to `false` the router will not update its internal state. This means that the `lastResolved()`/`current` route will not be updated.
 * If `force` is set to `true` the router will update its internal state only. This makes the router like it already resolved specific URL.
 * `resolveOptions` are the same options used in the [resolve](#resolving-routes) method.
@@ -705,6 +707,7 @@ type NavigateOptions = {
   historyAPIMethod?: string;
   updateBrowserURL?: boolean;
   callHandler?: boolean;
+  callHooks?: boolean;
   updateState?: boolean;
   force?: boolean;
   resolveOptions?: ResolveOptions;

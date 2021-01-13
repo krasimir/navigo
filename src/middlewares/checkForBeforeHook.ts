@@ -1,8 +1,13 @@
 import { QContext } from "../../index";
 import Q from "../Q";
+import { undefinedOrTrue } from "../utils";
 
 export default function checkForBeforeHook(context: QContext, done) {
-  if (context.match.route.hooks && context.match.route.hooks.before) {
+  if (
+    context.match.route.hooks &&
+    context.match.route.hooks.before &&
+    undefinedOrTrue(context.navigateOptions, "callHooks")
+  ) {
     Q(
       context.match.route.hooks.before
         .map((f) => {

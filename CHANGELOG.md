@@ -1,3 +1,7 @@
+## 8.6.0
+
+Introducing `callHooks` flag to the `navigate` options.
+
 ## 8.5.0
 
 * `data-navigo` now accepts a `"false"` (as string) argument.

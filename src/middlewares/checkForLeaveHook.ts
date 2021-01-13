@@ -1,5 +1,6 @@
 import { QContext } from "../../index";
 import Q from "../Q";
+import { undefinedOrTrue } from "../utils";
 
 export default function checkForLeaveHook(context: QContext, done) {
   const instance = context.instance;
@@ -16,13 +17,14 @@ export default function checkForLeaveHook(context: QContext, done) {
             leaveLoopDone();
             return;
           }
-          // no match or different path
+          // no match or different path or callHooks=false
           if (
-            !context.match ||
-            !instance.matchLocation(
-              oldMatch.route.path as string,
-              context.match.url
-            )
+            undefinedOrTrue(context.navigateOptions, "callHooks") &&
+            (!context.match ||
+              !instance.matchLocation(
+                oldMatch.route.path as string,
+                context.match.url
+              ))
           ) {
             Q(
               oldMatch.route.hooks.leave

@@ -2,6 +2,9 @@ import NavigoRouter from "../../index";
 import Navigo from "../index";
 
 describe("Given the Navigo library", () => {
+  beforeEach(() => {
+    history.pushState({}, "", "/");
+  });
   describe("when we set hooks as part of the route map", () => {
     it("should keep the hooks working", () => {
       const r: NavigoRouter = new Navigo("/");
@@ -68,6 +71,20 @@ describe("Given the Navigo library", () => {
       expect(h2).toBeCalledTimes(1);
       expect(h1).not.toBeCalled();
     });
+    it("should not fire the hook if callHooks is equal to `false`", () => {
+      const r: NavigoRouter = new Navigo("/");
+      const h1 = jest.fn();
+      const h2 = jest.fn().mockImplementation((done) => done());
+
+      r.on("/foo/:id", h1, {
+        before: h2,
+      });
+
+      r.navigate("/foo/100", { callHooks: false });
+
+      expect(h1).toBeCalledTimes(1);
+      expect(h2).not.toBeCalled();
+    });
   });
   describe("when using the `after` hook", () => {
     it("should fire the hook when the handler is resolved", () => {
@@ -94,6 +111,20 @@ describe("Given the Navigo library", () => {
       expect(h2).toBeCalledWith(expectedMatch);
       expect(h1).toBeCalledWith(expectedMatch);
       expect(order).toStrictEqual([1, 2]);
+    });
+    it("should not fire the hook if callHooks is equal to `false`", () => {
+      const r: NavigoRouter = new Navigo("/");
+      const h1 = jest.fn();
+      const h2 = jest.fn();
+
+      r.on("/foo/:id", h1, {
+        after: h2,
+      });
+
+      r.navigate("/foo/100", { callHooks: false });
+
+      expect(h1).toBeCalledTimes(1);
+      expect(h2).not.toBeCalled();
     });
   });
   describe("when using the `leave` hook", () => {
@@ -245,6 +276,23 @@ describe("Given the Navigo library", () => {
         expect(BHooks.leave).not.toBeCalled();
       });
     });
+    it("should not fire the hook if callHooks is equal to `false`", () => {
+      const warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+      const r: NavigoRouter = new Navigo("/");
+      const h1 = jest.fn();
+      const h2 = jest.fn();
+
+      r.on("/foo/:id", h1, {
+        leave: h2,
+      });
+
+      r.navigate("/foo/100?a=b");
+      r.navigate("bar", { callHooks: false });
+
+      expect(h1).toBeCalledTimes(1);
+      expect(h2).not.toBeCalled();
+      warn.mockRestore();
+    });
   });
   describe("when using the `already` hook", () => {
     it("should fire the hook when we are matching the same handler", () => {
@@ -272,6 +320,21 @@ describe("Given the Navigo library", () => {
       expect(h2).toBeCalledWith(expectedMatch);
       expect(h1).toBeCalledWith(expectedMatch);
       expect(order).toStrictEqual([1, 2]);
+    });
+    it("should not fire the hook if callHooks is equal to `false`", () => {
+      const r: NavigoRouter = new Navigo("/");
+      const h1 = jest.fn();
+      const h2 = jest.fn();
+
+      r.on("/foo/:id", h1, {
+        already: h2,
+      });
+
+      r.navigate("/foo/100?a=b");
+      r.navigate("/foo/100?a=b", { callHooks: false });
+
+      expect(h1).toBeCalledTimes(1);
+      expect(h2).not.toBeCalled();
     });
   });
   describe("when passing hooks to the default handler", () => {

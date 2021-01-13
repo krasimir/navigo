@@ -3,9 +3,9 @@ import Navigo from "../index";
 import { parseNavigateOptions } from "../utils";
 
 describe("Given the Navigo library", () => {
-  // beforeEach(() => {
-  //   history.pushState({}, "", "/");
-  // });
+  beforeEach(() => {
+    history.pushState({}, "", "/");
+  });
   describe("when we have data-navigo links on the page", () => {
     it("should attach a click handler and call the navigate in case of we click on them", () => {
       const querySelectorAll = jest.spyOn(document, "querySelectorAll");

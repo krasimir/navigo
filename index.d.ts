@@ -33,6 +33,7 @@ export type NavigateOptions = {
   historyAPIMethod?: string;
   updateBrowserURL?: boolean;
   callHandler?: boolean;
+  callHooks?: boolean;
   updateState?: boolean;
   force?: boolean;
   resolveOptions?: ResolveOptions;
