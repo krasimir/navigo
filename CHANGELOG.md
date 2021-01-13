@@ -1,3 +1,7 @@
+## 8.6.1
+
+Proper ES modules build.
+
 ## 8.6.0
 
 Introducing `callHooks` flag to the `navigate` options.
