@@ -205,8 +205,18 @@ export default function Navigo(
   function updatePageLinks() {
     if (!isWindowAvailable) return;
     findLinks().forEach((link) => {
+      if (
+        "false" === link.getAttribute("data-navigo") ||
+        "_blank" === link.getAttribute("target")
+      ) {
+        if (link.hasListenerAttached) {
+          link.removeEventListener("click", link.navigoHandler);
+        }
+        return;
+      }
       if (!link.hasListenerAttached) {
-        link.addEventListener("click", function (e) {
+        link.hasListenerAttached = true;
+        link.navigoHandler = function (e) {
           if (
             (e.ctrlKey || e.metaKey) &&
             e.target.tagName.toLowerCase() === "a"
@@ -233,8 +243,8 @@ export default function Navigo(
             e.stopPropagation();
             self.navigate(clean(location), options);
           }
-        });
-        link.hasListenerAttached = true;
+        };
+        link.addEventListener("click", link.navigoHandler);
       }
     });
     return self;

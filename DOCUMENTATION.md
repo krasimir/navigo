@@ -41,6 +41,7 @@
   - [Removing a route](#removing-a-route)
   - [Navigating between routes](#navigating-between-routes)
   - [Augment your `<a>` tags](#augment-your-a-tags)
+    - [`data-navigo` with value](#data-navigo-with-value)
     - [Passing options to the `navigate` method](#passing-options-to-the-navigate-method)
   - [Resolving routes](#resolving-routes)
     - [Resolve options](#resolve-options)
@@ -316,6 +317,12 @@ Let's say that we have a page with links (`<a>` tags). The links have `href` att
 When Navigo is initialized checks the page for such tags and attaches `click` handler which fires the router's `navigate` method.
 
 Navigo has a method called `updatePageLinks` which you have to call every time when you change the DOM and you expect to see new links on the page. Because Navigo is not wired to a rendering engine doesn't really know about the DOM manipulations. It does though makes an assumption - after each of your route handlers there is a `updatePageLinks` call. The router expects that after the successful route resolving the DOM is updated and calls that function again. Feel free to fire `updatePageLinks` multiple times on the same DOM tree. There will be just one `click` handler attached to your links.
+
+*Links with `target="_blank"` are ignored even if they have `data-navigo` attribute.*
+
+### `data-navigo` with value
+
+If you use `data-navigo="false"` the link will be ignored by Navigo and if there was a click handler for it the handler will be removed.
 
 ### Passing options to the `navigate` method
 

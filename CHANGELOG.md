@@ -1,3 +1,8 @@
+## 8.5.0
+
+* `data-navigo` now accepts a `"false"` (as string) argument.
+* links with `target="_blank"` are ignored.
+
 ## 8.4.4
 
 ES build. Fixing #261.

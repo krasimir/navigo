@@ -264,4 +264,93 @@ describe("Given the Navigo library", () => {
       }, 50);
     });
   });
+  describe("when the value of data-navigo is set to `false`", () => {
+    it("should skip the link", () => {
+      const querySelectorAll = jest.spyOn(document, "querySelectorAll");
+      let handler;
+
+      // @ts-ignore
+      querySelectorAll.mockImplementationOnce(() => {
+        return [
+          {
+            addEventListener(eventType, h) {
+              handler = h;
+            },
+            getAttribute(attr) {
+              if (attr === "href") {
+                return "/foo/bar";
+              } else if (attr === "data-navigo") {
+                return "false";
+              }
+            },
+          },
+        ];
+      });
+
+      new Navigo("/app");
+
+      expect(handler).toEqual(undefined);
+      querySelectorAll.mockRestore();
+    });
+  });
+  describe("when set data-navigo to `false` later on", () => {
+    it("should remove the listener from the link", () => {
+      const querySelectorAll = jest.spyOn(document, "querySelectorAll");
+      let count = 0;
+      const addEventListener = jest.fn();
+      const removeEventListener = jest.fn();
+      const link = {
+        addEventListener,
+        removeEventListener,
+        getAttribute(attr) {
+          count += 1;
+          if (attr === "href") {
+            return "/foo/bar";
+          } else if (attr === "data-navigo") {
+            if (count === 1) return "";
+            return "false";
+          }
+        },
+      };
+
+      // @ts-ignore
+      querySelectorAll.mockImplementation(() => [link]);
+
+      const r: NavigoRouter = new Navigo("/app");
+      r.updatePageLinks();
+
+      expect(addEventListener).toBeCalledTimes(1);
+      expect(removeEventListener).toBeCalledTimes(1);
+      querySelectorAll.mockRestore();
+    });
+  });
+  describe('when we have `target="_blank"` attribute', () => {
+    it("should skip the link", () => {
+      const querySelectorAll = jest.spyOn(document, "querySelectorAll");
+      let handler;
+
+      // @ts-ignore
+      querySelectorAll.mockImplementationOnce(() => {
+        return [
+          {
+            addEventListener(eventType, h) {
+              handler = h;
+            },
+            getAttribute(attr) {
+              if (attr === "href") {
+                return "/foo/bar";
+              } else if (attr === "target") {
+                return "_blank";
+              }
+            },
+          },
+        ];
+      });
+
+      new Navigo("/app");
+
+      expect(handler).toEqual(undefined);
+      querySelectorAll.mockRestore();
+    });
+  });
 });
