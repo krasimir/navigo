@@ -1,4 +1,4 @@
-## 8.6.2
+## 8.6.2, 8.6.3
 
 Fixing a bug with matching a wildcard.
 

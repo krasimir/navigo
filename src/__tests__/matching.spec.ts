@@ -164,13 +164,22 @@ describe("Given the Navigo library", () => {
     });
   });
   describe("when matching routes and we have a root set up", () => {
-    describe("and when we use a whilecard", () => {
-      it("should match", () => {
+    describe("and when we use a whilecard #", () => {
+      it("should match #1", () => {
         const handler = jest.fn();
         const r: NavigoRouter = new Navigo("/app");
         r.on("*", handler);
 
         r.resolve("/foo/bar");
+
+        expect(handler).toBeCalled();
+      });
+      it("should match #2", () => {
+        const handler = jest.fn();
+        const r: NavigoRouter = new Navigo("/app");
+        r.on("*", handler);
+
+        r.resolve("/");
 
         expect(handler).toBeCalled();
       });

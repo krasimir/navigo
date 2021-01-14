@@ -94,7 +94,7 @@ export function matchRoute(currentPath: string, route: Route): false | Match {
   }
   const regexp = new RegExp(pattern, MATCH_REGEXP_FLAGS);
   const match = current.match(regexp);
-
+  // console.log(current, regexp);
   if (match) {
     const data = isString(route.path)
       ? regExpResultToParams(match, paramNames)
