@@ -1,3 +1,7 @@
+## 8.6.2
+
+Fixing a bug with matching a wildcard.
+
 ## 8.6.1
 
 Proper ES modules build.

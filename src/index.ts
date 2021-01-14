@@ -67,7 +67,6 @@ export default function Navigo(
     }
     return url;
   }
-
   function composePathWithRoot(path: string) {
     return clean(`${root}/${clean(path)}`);
   }
@@ -112,13 +111,10 @@ export default function Navigo(
     );
     return this;
   }
-  function resolve(
-    currentLocationPath?: string,
-    options?: ResolveOptions
-  ): false | Match[] {
+  function resolve(to?: string, options?: ResolveOptions): false | Match[] {
     const context: QContext = {
       instance: self,
-      currentLocationPath,
+      currentLocationPath: to ? `${clean(root)}/${clean(to)}` : undefined,
       navigateOptions: {},
       resolveOptions: options || DEFAULT_RESOLVE_OPTIONS,
     };
