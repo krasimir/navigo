@@ -495,7 +495,7 @@ type RouteHooks = {
 
 * The `before` hook receives two arguments. The first one is a function that needs to be called with either no arguments or `false`. The no-argument version means "move forward". `false` stops the resolving and your handler will not be called.
 * `after` is called after your handler
-* `leave` is called when you are about to leave out of the route. Similarly to the `before` hook accepts a function as first argument and a [Match](#match) object as second. If the function is called with `false` Navigo will stop resolving the new matched route meaning "we cant' go out of the current route".
+* `leave` is called when you are about to leave out of the route. Similarly to the `before` hook accepts a function as first argument and a [Match](#match) object (or an array of [Match](#match) objects) as second. If the function is called with `false` Navigo will stop resolving the new matched route meaning "we cant' go out of the current route".
 * `already` is called when this is the current route and it matches again
 
 ### Defining hooks for specific route
@@ -693,7 +693,7 @@ type Route = {
 type RouteHooks = {
   before?: (done: Function, match: Match) => void;
   after?: (match: Match) => void;
-  leave?: (done: Function, match: Match) => void;
+  leave?: (done: Function, match: Match | Match[]) => void;
   already?: (match: Match) => void;
 };
 ```

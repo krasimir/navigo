@@ -1,3 +1,7 @@
+## 8.6.4
+
+Refactoring the leave hook implementation. The leave hook check now run a bit earlier and once per navigating. So far it was running for each of the matched routes. Also the hook now may accept an array of matches. Not only a single Match object.
+
 ## 8.6.2, 8.6.3
 
 Fixing a bug with matching a wildcard.
