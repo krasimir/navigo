@@ -1,16 +1,14 @@
 import { QContext } from "../../index";
 import Q from "../Q";
 import { foundLifecycle } from "../lifecycles";
+import updateState from "./updateState";
+import checkForLeaveHook from "./checkForLeaveHook";
 
 export default function processMatches(context: QContext, done) {
   let idx = 0;
-  // console.log(
-  //   "_processMatches matches=" +
-  //     (context.matches ? context.matches.length : 0)
-  // );
-  (function nextMatch() {
+  function nextMatch() {
     if (idx === context.matches.length) {
-      done();
+      updateState(context, done);
       return;
     }
     Q(
@@ -21,5 +19,6 @@ export default function processMatches(context: QContext, done) {
         nextMatch();
       }
     );
-  })();
+  }
+  checkForLeaveHook(context, nextMatch);
 }

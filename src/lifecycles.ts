@@ -11,17 +11,16 @@ import flushCurrent from "./middlewares/flushCurrent";
 
 export const foundLifecycle = [
   checkForAlreadyHook,
-  checkForLeaveHook,
   checkForBeforeHook,
   callHandler,
   checkForAfterHook,
 ];
 
 export const notFoundLifeCycle = [
+  checkForLeaveHook,
   checkForNotFoundHandler,
   Q.if(({ notFoundHandled }: QContext) => notFoundHandled, foundLifecycle, [
     errorOut,
-    checkForLeaveHook,
   ]),
   flushCurrent,
 ];
