@@ -293,6 +293,24 @@ describe("Given the Navigo library", () => {
       expect(h2).not.toBeCalled();
       warn.mockRestore();
     });
+    it("should call the hook for the `*` path", () => {
+      history.pushState({}, "", "/foo");
+      const r: NavigoRouter = new Navigo("/");
+      const hook1 = jest.fn().mockImplementation((done) => done());
+      const handler1 = jest.fn();
+      const handler2 = jest.fn();
+
+      r.on("/foo", handler2);
+      r.on("*", handler1, { leave: hook1 });
+
+      r.resolve();
+      r.navigate("/nope");
+      r.navigate("/foo");
+
+      expect(handler2).toBeCalledTimes(2);
+      expect(handler1).toBeCalledTimes(1);
+      expect(hook1).toBeCalledTimes(1);
+    });
   });
   describe("when using the `already` hook", () => {
     it("should fire the hook when we are matching the same handler", () => {

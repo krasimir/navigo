@@ -13,7 +13,7 @@ export type Match = {
 };
 export type BeforeHook = (done: Function, match: Match) => void;
 export type AfterHook = (match: Match) => void;
-export type LeaveHook = (done: Function, match: Match) => void;
+export type LeaveHook = (done: Function, match: Match | Match[]) => void;
 export type AlreadyHook = (match: Match) => void;
 export type RouteHooks = {
   before?: BeforeHook;

@@ -210,9 +210,7 @@ describe("Given the Navigo library", () => {
       expect(hooks.leave.mock.calls[0][1]).toMatchObject({
         url: "x/y",
       });
-      expect(hooks.leave.mock.calls[1][1]).toMatchObject({
-        url: "",
-      });
+      expect(hooks.leave.mock.calls[1][1]).toEqual(undefined);
     });
   });
   describe("and the request described in #208", function () {

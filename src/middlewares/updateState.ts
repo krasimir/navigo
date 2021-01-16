@@ -2,9 +2,8 @@ import { QContext } from "../../index";
 import { undefinedOrTrue } from "../utils";
 
 export default function callHandler(context: QContext, done) {
-  if (undefinedOrTrue(context.navigateOptions, "callHandler")) {
-    context.match.route.handler(context.match);
+  if (undefinedOrTrue(context.navigateOptions, "updateState")) {
+    context.instance._setCurrent(context.matches);
   }
-  context.instance.updatePageLinks();
   done();
 }
