@@ -310,6 +310,10 @@ describe("Given the Navigo library", () => {
       expect(handler2).toBeCalledTimes(2);
       expect(handler1).toBeCalledTimes(1);
       expect(hook1).toBeCalledTimes(1);
+      expect(hook1).toBeCalledWith(
+        expect.any(Function),
+        expect.objectContaining({ url: "foo" })
+      );
     });
   });
   describe("when using the `already` hook", () => {

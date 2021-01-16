@@ -123,10 +123,7 @@ export default function Navigo(
         setLocationPath,
         matchPathToRegisteredRoutes,
         Q.if(
-          ({ matches }: QContext) => {
-            // console.log(`${currentLocationPath} -> Matches: ${matches.length}`);
-            return matches && matches.length > 0;
-          },
+          ({ matches }: QContext) => matches && matches.length > 0,
           processMatches,
           notFoundLifeCycle
         ),
