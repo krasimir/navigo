@@ -1,3 +1,7 @@
+## 8.6.5
+
+Custom handling of a leave hook in case of path is `*`.
+
 ## 8.6.4
 
 Refactoring the leave hook implementation. The leave hook check now run a bit earlier and once per navigating. So far it was running for each of the matched routes. Also the hook now may accept an array of matches. Not only a single Match object.

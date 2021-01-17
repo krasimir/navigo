@@ -16,15 +16,22 @@ export default function checkForLeaveHook(context: QContext, done) {
           leaveLoopDone();
           return;
         }
-        const someOfTheLastOnesMatch = context.matches
-          ? context.matches.find((match) => {
-              return oldMatch.route.path === match.route.path;
-            })
-          : false;
-        if (
-          undefinedOrTrue(context.navigateOptions, "callHooks") &&
-          !someOfTheLastOnesMatch
-        ) {
+        let runHook = false;
+        const newLocationVSOldMatch = context.instance.matchLocation(
+          oldMatch.route.path as string,
+          context.currentLocationPath
+        );
+        if (oldMatch.route.path !== "*") {
+          runHook = !newLocationVSOldMatch;
+        } else {
+          const someOfTheLastOnesMatch = context.matches
+            ? context.matches.find((match) => {
+                return oldMatch.route.path === match.route.path;
+              })
+            : false;
+          runHook = !someOfTheLastOnesMatch;
+        }
+        if (undefinedOrTrue(context.navigateOptions, "callHooks") && runHook) {
           Q(
             oldMatch.route.hooks.leave
               .map((f) => {
