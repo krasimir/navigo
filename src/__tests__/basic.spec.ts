@@ -97,17 +97,39 @@ describe("Given the Navigo library", () => {
         ]);
         expect(hook).toBeCalledTimes(1);
       });
-      it("should allow us to generate a URL out of the named route", () => {
-        const r: NavigoRouter = new Navigo("/");
-        const handler = jest.fn();
+      describe("and we use the `generate` method", () => {
+        it("should allow us to generate a URL out of the named route", () => {
+          const r: NavigoRouter = new Navigo("/");
+          const handler = jest.fn();
 
-        r.on({
-          "/foo/:id/:action": { as: "my foo", uses: handler },
+          r.on({
+            "foo/:id/:action": { as: "my foo", uses: handler },
+          });
+
+          expect(r.generate("my foo", { id: "xxx", action: "save" })).toEqual(
+            "/foo/xxx/save"
+          );
         });
+        it("should return null if the name is not found", () => {
+          const r: NavigoRouter = new Navigo("/");
+          const handler = jest.fn();
 
-        expect(r.generate("my foo", { id: "xxx", action: "save" })).toEqual(
-          "/foo/xxx/save"
-        );
+          r.on({
+            "/foo/:id/:action": { as: "my foo", uses: handler },
+          });
+
+          expect(r.generate("blah", {})).toEqual(null);
+        });
+        it("should work even if we don't provide data", () => {
+          const r: NavigoRouter = new Navigo("/");
+          const handler = jest.fn();
+
+          r.on({
+            "/foo/:id/:action": { as: "my foo", uses: handler },
+          });
+
+          expect(r.generate("my foo")).toEqual("/foo/:id/:action");
+        });
       });
     });
     it("should create an instance of Route for each route and Match+Route if there is matching paths", () => {

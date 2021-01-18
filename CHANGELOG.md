@@ -1,3 +1,7 @@
+## 8.7.0
+
+Adding `navigateByName` method.
+
 ## 8.6.5
 
 Custom handling of a leave hook in case of path is `*`.

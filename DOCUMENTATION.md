@@ -13,6 +13,7 @@
 | | |
 | <span style="text-align:center">Other methods</span> |
 | | |
+| [`navigateByName`](#navigating-by-route-name)                       | Navigate to a route by having its name and supplying URL data args |
 | [`off`](#removing-a-route)                                          | Removes a registered route |
 | [`match`](#direct-matching-of-registered-routes)                    | Checks if the passed path matches some of the routes. It doesn't trigger handlers or hooks. |
 | [`matchLocation`](#direct-matching-of-paths)                        | The bare matching logic of Navigo |
@@ -40,6 +41,7 @@
     - [Matching logic](#matching-logic)
   - [Removing a route](#removing-a-route)
   - [Navigating between routes](#navigating-between-routes)
+    - [Navigating by route name](#navigating-by-route-name)
   - [Augment your `<a>` tags](#augment-your-a-tags)
     - [`data-navigo` with value](#data-navigo-with-value)
     - [Passing options to the `navigate` method](#passing-options-to-the-navigate-method)
@@ -307,6 +309,25 @@ After the last line the browser will have in its address bar `/about` as a path 
 * If `updateState` is set to `false` the router will not update its internal state. This means that the `lastResolved()`/`current` route will not be updated.
 * If `force` is set to `true` the router will update its internal state only. This makes the router like it already resolved specific URL.
 * `resolveOptions` are the same options used in the [resolve](#resolving-routes) method.
+
+### Navigating by route name
+
+Very often we have complex URLs and we want to have a quick way to reach them. `navigateByName` is a method that helps in such cases:
+
+```js
+route.on({
+  "/users/:name": { 
+    as: "user",
+    uses: (match) => {
+      console.log(match.data.name); // Krasimir
+    }
+  },
+});
+
+router.navigateByName("user", { name: "Krasimir" });
+```
+
+`/users/Krasimir` is set in the address bar of the browser and the handler is executed.
 
 ## Augment your `<a>` tags
 
@@ -644,6 +665,7 @@ class Navigo {
   off(path: string | RegExp): Navigo;
   off(handler: Function): Navigo;
   navigate(to: string, options?: NavigateOptions): void;
+  navigateByName(name: string, data?: Object, options?: NavigateOptions): void;
   resolve(path?: string, resolveOptions?: ResolveOptions): false | Match;
   destroy(): void;
   notFound(handler: Function, hooks?: RouteHooks): Navigo;

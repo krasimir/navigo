@@ -155,5 +155,23 @@ describe("Given the Navigo library", () => {
         expect(location.pathname).toEqual("/app/about");
       });
     });
+    describe("and we use the `navigateByName` method", () => {
+      it("should allow us to navigate to a route by its name", () => {
+        const r: NavigoRouter = new Navigo("/");
+        const handler = jest.fn();
+        r.on({
+          "/users/:name": { as: "user", uses: handler },
+        });
+
+        r.navigateByName("user", { name: "Krasimir" });
+
+        expect(handler).toBeCalledTimes(1);
+        expect(handler).toBeCalledWith(
+          expect.objectContaining({
+            url: "users/Krasimir",
+          })
+        );
+      });
+    });
   });
 });

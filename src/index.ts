@@ -160,6 +160,14 @@ export default function Navigo(
       context
     );
   }
+  function navigateByName(
+    name: string,
+    data?: Object,
+    options?: NavigateOptions
+  ): void {
+    const url = generate(name, data);
+    navigate(url, options);
+  }
   function off(what: string | RegExp | Function) {
     this.routes = routes = routes.filter((r) => {
       if (isString(what)) {
@@ -259,18 +267,17 @@ export default function Navigo(
     return current;
   }
   function generate(name: string, data?: Object): string {
-    const result = routes.reduce((result, route) => {
-      let key;
-
-      if (route.name === name) {
-        result = route.path as string;
-        for (key in data) {
+    const route = routes.find((r) => r.name === name);
+    if (route) {
+      let result = route.path as string;
+      if (data) {
+        for (let key in data) {
           result = result.replace(":" + key, data[key]);
         }
       }
-      return result;
-    }, "");
-    return !result.match(/^\//) ? `/${result}` : result;
+      return !result.match(/^\//) ? `/${result}` : result;
+    }
+    return null;
   }
   function getLinkPath(link) {
     return link.getAttribute("href");
@@ -357,6 +364,7 @@ export default function Navigo(
   this.off = off;
   this.resolve = resolve;
   this.navigate = navigate;
+  this.navigateByName = navigateByName;
   this.destroy = destroy;
   this.notFound = notFound;
   this.updatePageLinks = updatePageLinks;
