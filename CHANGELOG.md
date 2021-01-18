@@ -1,3 +1,7 @@
+## 8.7.1
+
+Fixing an edge case with `navigateByName`.
+
 ## 8.7.0
 
 Adding `navigateByName` method.

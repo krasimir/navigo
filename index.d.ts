@@ -66,7 +66,11 @@ declare class Navigo {
   off(path: string | RegExp): Navigo;
   off(handler: Function): Navigo;
   navigate(to: string, options?: NavigateOptions): void;
-  navigateByName(name: string, data?: Object, options?: NavigateOptions): void;
+  navigateByName(
+    name: string,
+    data?: Object,
+    options?: NavigateOptions
+  ): boolean;
   resolve(path?: string, resolveOptions?: ResolveOptions): false | Match;
   destroy(): void;
   notFound(handler: Function, hooks?: RouteHooks): Navigo;

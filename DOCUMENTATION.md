@@ -312,6 +312,11 @@ After the last line the browser will have in its address bar `/about` as a path 
 
 ### Navigating by route name
 
+```typescript
+interface Navigo {
+  navigateByName(name: string, data?:Object, options?: NavigateOptions): boolean;
+}
+
 Very often we have complex URLs and we want to have a quick way to reach them. `navigateByName` is a method that helps in such cases:
 
 ```js
@@ -328,6 +333,8 @@ router.navigateByName("user", { name: "Krasimir" });
 ```
 
 `/users/Krasimir` is set in the address bar of the browser and the handler is executed.
+
+The method returns `true` if there is such route with that name (i.e. the navigating happened) and `false` if it doesn't.
 
 ## Augment your `<a>` tags
 

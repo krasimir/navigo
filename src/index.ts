@@ -164,9 +164,13 @@ export default function Navigo(
     name: string,
     data?: Object,
     options?: NavigateOptions
-  ): void {
+  ): boolean {
     const url = generate(name, data);
-    navigate(url, options);
+    if (url !== null) {
+      navigate(url, options);
+      return true;
+    }
+    return false;
   }
   function off(what: string | RegExp | Function) {
     this.routes = routes = routes.filter((r) => {

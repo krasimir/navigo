@@ -172,6 +172,17 @@ describe("Given the Navigo library", () => {
           })
         );
       });
+      it("should do nothing if the route by this name doesn't exist", () => {
+        const r: NavigoRouter = new Navigo("/");
+        const handler = jest.fn();
+        r.on({
+          "/users/:name": { as: "user", uses: handler },
+        });
+
+        r.navigateByName("blah");
+
+        expect(handler).not.toBeCalled();
+      });
     });
   });
 });
