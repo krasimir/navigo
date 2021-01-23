@@ -1,3 +1,7 @@
+## 8.7.2
+
+Fixing a bug with `noMatchWarning` #267
+
 ## 8.7.1
 
 Fixing an edge case with `navigateByName`.
