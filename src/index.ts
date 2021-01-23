@@ -116,7 +116,7 @@ export default function Navigo(
       instance: self,
       currentLocationPath: to ? `${clean(root)}/${clean(to)}` : undefined,
       navigateOptions: {},
-      resolveOptions: options || DEFAULT_RESOLVE_OPTIONS,
+      resolveOptions: { ...DEFAULT_RESOLVE_OPTIONS, ...options },
     };
     Q(
       [

@@ -216,6 +216,21 @@ describe("Given the Navigo library", () => {
         expect(warn).not.toBeCalled();
         warn.mockRestore();
       });
+      describe("and we set noMatchWarning=true in the navigo constructor", () => {
+        it("should not print a warning if there is no matching route", () => {
+          const warn = jest.spyOn(console, "warn");
+          warn.mockImplementationOnce(() => {});
+          const r: NavigoRouter = new Navigo("/", {
+            hash: true,
+            noMatchWarning: true,
+          });
+          const res = r.resolve("/", {});
+
+          expect(res).toEqual(false);
+          expect(warn).not.toBeCalled();
+          warn.mockRestore();
+        });
+      });
     });
     it("should still update the browser URL", () => {
       const warn = jest.spyOn(console, "warn");
