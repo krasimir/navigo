@@ -1,3 +1,7 @@
+## 8.7.3
+
+Fixing a bug with the hash based routing #268
+
 ## 8.7.2
 
 Fixing a bug with `noMatchWarning` #267

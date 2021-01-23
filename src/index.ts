@@ -186,7 +186,9 @@ export default function Navigo(
   function listen() {
     if (isPushStateAvailable) {
       this.__popstateListener = () => {
-        resolve();
+        if (!self.__freezeListening) {
+          resolve();
+        }
       };
       window.addEventListener("popstate", this.__popstateListener);
     }
@@ -363,6 +365,7 @@ export default function Navigo(
   this.routes = routes;
   this.destroyed = destroyed;
   this.current = current;
+  this.__freezeListening = false;
 
   this.on = on;
   this.off = off;

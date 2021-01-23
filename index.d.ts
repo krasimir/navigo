@@ -92,6 +92,7 @@ declare class Navigo {
   _setCurrent(current: Match[]): void;
   _checkForAHash(path: string): string;
   _notFoundRoute: Route;
+  __freezeListening: boolean;
 }
 
 export default Navigo;

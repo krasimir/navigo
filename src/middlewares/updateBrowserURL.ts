@@ -20,10 +20,12 @@ export default function updateBrowserURL(context: QContext, done) {
       // This is to solve a nasty bug where the page doesn't scroll to the anchor.
       // We set a microtask to update the hash only.
       if (location && location.hash) {
+        context.instance.__freezeListening = true;
         setTimeout(() => {
           let tmp = location.hash;
           location.hash = "";
           location.hash = tmp;
+          context.instance.__freezeListening = false;
         }, 1);
       }
     } else if (isWindowAvailable) {
