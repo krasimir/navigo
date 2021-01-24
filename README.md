@@ -9,6 +9,7 @@ A simple dependency-free minimalistic JavaScript router
 * [v.7 documentation](./README_v7.md)
 * [Examples](./examples)
 * [Changelog](./CHANGELOG.md)
+* Using React? Checkout [navigo-react](https://github.com/krasimir/navigo-react) package.
 
 - [Navigo](#navigo)
   - [Selling points](#selling-points)
