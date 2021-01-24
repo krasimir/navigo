@@ -316,6 +316,7 @@ After the last line the browser will have in its address bar `/about` as a path 
 interface Navigo {
   navigateByName(name: string, data?:Object, options?: NavigateOptions): boolean;
 }
+```
 
 Very often we have complex URLs and we want to have a quick way to reach them. `navigateByName` is a method that helps in such cases:
 
