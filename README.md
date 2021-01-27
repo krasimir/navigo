@@ -10,7 +10,7 @@ A simple dependency-free minimalistic JavaScript router
 * [Examples](./examples)
 * [Changelog](./CHANGELOG.md)
 * Using React? Checkout [navigo-react](https://github.com/krasimir/navigo-react) package.
-* 🎮 Online playground here [codesandbox.io/s/navigo-example-jrui8](https://codesandbox.io/s/navigo-example-jrui8);
+* 🎮  Online playground here [codesandbox.io/s/navigo-example-jrui8](https://codesandbox.io/s/navigo-example-jrui8);
 
 - [Navigo](#navigo)
   - [Selling points](#selling-points)
