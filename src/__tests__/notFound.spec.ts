@@ -7,7 +7,7 @@ describe("Given the Navigo library", () => {
   });
   describe("when setting a not found handler", () => {
     it("should fallback to that route if no handler is found", () => {
-      history.pushState({}, "", "/foo/bar?a=b");
+      history.pushState({}, "", "/foo/bar?a=b#something-else");
       const r: NavigoRouter = new Navigo("/");
       const notFound = jest.fn();
       r.notFound(notFound).resolve();
@@ -22,6 +22,7 @@ describe("Given the Navigo library", () => {
         },
         url: "foo/bar",
         queryString: "a=b",
+        hashString: "something-else",
         params: { a: "b" },
       });
     });

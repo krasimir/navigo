@@ -37,6 +37,7 @@ describe("Given the Navigo library", () => {
         data: { id: "100" },
         params: { a: "b" },
         queryString: "a=b",
+        hashString: "",
         route: expect.any(Object),
         url: "foo/100",
       };
@@ -96,6 +97,7 @@ describe("Given the Navigo library", () => {
         data: { id: "100" },
         params: { a: "b" },
         queryString: "a=b",
+        hashString: "",
         route: expect.any(Object),
         url: "foo/100",
       };
@@ -151,6 +153,7 @@ describe("Given the Navigo library", () => {
         data: { id: "100" },
         params: { a: "b" },
         queryString: "a=b",
+        hashString: "",
         route: expect.any(Object),
         url: "foo/100",
       });
@@ -158,6 +161,7 @@ describe("Given the Navigo library", () => {
         data: { id: "100" },
         params: { a: "b" },
         queryString: "a=b",
+        hashString: "",
         route: expect.any(Object),
         url: "foo/100",
       });
@@ -326,6 +330,7 @@ describe("Given the Navigo library", () => {
         data: { id: "100" },
         params: { a: "b" },
         queryString: "a=b",
+        hashString: "",
         route: expect.any(Object),
         url: "foo/100",
       };
@@ -370,6 +375,7 @@ describe("Given the Navigo library", () => {
         data: null,
         params: null,
         queryString: "",
+        hashString: "",
         route: expect.any(Object),
         url: "",
       };
@@ -403,6 +409,7 @@ describe("Given the Navigo library", () => {
         data: null,
         params: null,
         queryString: "",
+        hashString: "",
         route: expect.any(Object),
         url: "wat",
       };
@@ -418,7 +425,6 @@ describe("Given the Navigo library", () => {
       });
 
       r.resolve("/wat");
-
       expect(h1).toBeCalledWith(expectedMatch);
       expect(h2).toBeCalledWith(expectedMatch);
       expect(h3).toBeCalledWith(expectedMatch);

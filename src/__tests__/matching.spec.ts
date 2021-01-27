@@ -152,6 +152,7 @@ describe("Given the Navigo library", () => {
           },
           params: { a: "b" },
           queryString: "a=b",
+          hashString: "",
           route: {
             handler: expect.any(Function),
             hooks: {},

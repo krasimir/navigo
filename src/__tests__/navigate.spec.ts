@@ -104,6 +104,7 @@ describe("Given the Navigo library", () => {
             url: "login",
             data: null,
             queryString: "a=b",
+            hashString: "",
             params: { a: "b" },
             route: {
               handler: expect.any(Function),
@@ -182,6 +183,37 @@ describe("Given the Navigo library", () => {
         r.navigateByName("blah");
 
         expect(handler).not.toBeCalled();
+      });
+    });
+    describe("and we have a hash in the URL", () => {
+      it("should keep the hash in the URL and make accessible in the Match object", () => {
+        const handler = jest.fn();
+        const r: NavigoRouter = new Navigo("/");
+
+        r.on({
+          appointments: {
+            as: "myRoute",
+            uses: handler,
+          },
+        });
+        r.navigate("/appointments?#start=2021-01-01&appointmentId=1");
+
+        expect(location.pathname).toBe("/appointments");
+        expect(location.hash).toBe("#start=2021-01-01&appointmentId=1");
+        expect(handler).toBeCalledTimes(1);
+        expect(handler).toBeCalledWith({
+          data: null,
+          params: null,
+          queryString: "",
+          hashString: "start=2021-01-01&appointmentId=1",
+          route: {
+            handler: expect.any(Function),
+            hooks: {},
+            name: "myRoute",
+            path: "appointments",
+          },
+          url: "appointments",
+        });
       });
     });
   });

@@ -86,6 +86,7 @@ describe("Given the Navigo library", () => {
             data: null,
             params: null,
             queryString: "",
+            hashString: "",
             route: {
               handler: expect.any(Function),
               hooks: {},
@@ -157,6 +158,7 @@ describe("Given the Navigo library", () => {
           data: null,
           params: { a: "b" },
           queryString: "a=b",
+          hashString: "",
           route: {
             name: "about",
             path: "about",
@@ -282,6 +284,7 @@ describe("Given the Navigo library", () => {
         route: expect.any(Object),
         url: expect.any(String),
         queryString: expect.any(String),
+        hashString: expect.any(String),
       });
     });
     it("should take into account the order of the routes definition", () => {

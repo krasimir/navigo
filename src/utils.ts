@@ -4,6 +4,8 @@ import {
   Route,
   NavigateOptions,
   ResolveOptions,
+  QContext,
+  ResolveStrategy,
 } from "../index";
 
 import {
@@ -31,6 +33,12 @@ export function isString(s: any): boolean {
 }
 export function isFunction(s: any): boolean {
   return typeof s === "function";
+}
+export function extractHashFromURL(url: string) {
+  if (url && url.indexOf("#") >= 0) {
+    return url.split("#").pop() || "";
+  }
+  return "";
 }
 export function regExpResultToParams(match, names: string[]) {
   if (names.length === 0) return null;
@@ -62,8 +70,10 @@ export function parseQuery(queryString: string): Object {
   }
   return query;
 }
-export function matchRoute(currentPath: string, route: Route): false | Match {
-  const [current, GETParams] = extractGETParameters(clean(currentPath));
+export function matchRoute(context: QContext, route: Route): false | Match {
+  const [current, GETParams] = extractGETParameters(
+    clean(context.currentLocationPath)
+  );
   const params = GETParams === "" ? null : parseQuery(GETParams);
   const paramNames = [];
   let pattern;
@@ -83,6 +93,7 @@ export function matchRoute(currentPath: string, route: Route): false | Match {
         return {
           url: current,
           queryString: GETParams,
+          hashString: extractHashFromURL(context.to),
           route: route,
           data: null,
           params,
@@ -102,6 +113,7 @@ export function matchRoute(currentPath: string, route: Route): false | Match {
     return {
       url: current,
       queryString: GETParams,
+      hashString: extractHashFromURL(context.to),
       route: route,
       data,
       params,
@@ -133,7 +145,7 @@ export function parseNavigateOptions(source?: string): NavigateOptions {
         break;
       case "resolveOptionsStrategy":
         if (!resolveOptions) resolveOptions = {};
-        resolveOptions.strategy = temp[1];
+        resolveOptions.strategy = temp[1] as ResolveStrategy;
         break;
       case "resolveOptionsHash":
         if (!resolveOptions) resolveOptions = {};

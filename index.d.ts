@@ -7,6 +7,7 @@ export type Route = {
 export type Match = {
   url: string;
   queryString: string;
+  hashString: string;
   route: Route;
   data: Object | null;
   params: Object | null;
@@ -38,17 +39,18 @@ export type NavigateOptions = {
   force?: boolean;
   resolveOptions?: ResolveOptions;
 };
+export type ResolveStrategy = "ONE" | "ALL";
 export type ResolveOptions = {
-  strategy?: "ONE" | "ALL";
+  strategy?: ResolveStrategy;
   hash?: boolean;
   noMatchWarning?: boolean;
 };
 export type QContext = {
+  currentLocationPath: string;
+  to: string;
   instance: Navigo;
   matches?: Match[];
   match?: Match;
-  currentLocationPath?: string;
-  to?: string;
   navigateOptions?: NavigateOptions;
   resolveOptions?: ResolveOptions;
   notFoundHandled?: boolean;

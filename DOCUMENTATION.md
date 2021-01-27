@@ -38,6 +38,7 @@
   - [Adding a route](#adding-a-route)
     - [Parameterized routes](#parameterized-routes)
     - [Reading GET params](#reading-get-params)
+    - [Reading hash params](#reading-hash-params)
     - [Matching logic](#matching-logic)
   - [Removing a route](#removing-a-route)
   - [Navigating between routes](#navigating-between-routes)
@@ -213,6 +214,20 @@ router.on('/user/:id/:action', ({ data, params, queryString }) => {
 });
 
 router.resolve('/user/xxx/save?m=n&k=z');
+```
+
+### Reading hash params
+
+Navigo captures the hash bit of the URL for the matched routes. For example:
+
+```js
+const router = new Navigo('/');
+
+router.on('/foobar', ({ hashString }) => {
+  console.log(hashString); // something-else
+});
+
+router.resolve('/foobar#something-else');
 ```
 
 ### Matching logic
@@ -700,6 +715,7 @@ class Navigo {
 type Match = {
   url: string;
   queryString: string;
+  hashString: string;
   route: Route;
   data: Object | null;
   params: Object | null;

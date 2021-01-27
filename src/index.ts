@@ -19,6 +19,7 @@ import {
   windowAvailable,
   getCurrentEnvURL,
   accumulateHooks,
+  extractHashFromURL,
 } from "./utils";
 import Q from "./Q";
 import setLocationPath from "./middlewares/setLocationPath";
@@ -112,9 +113,11 @@ export default function Navigo(
     return this;
   }
   function resolve(to?: string, options?: ResolveOptions): false | Match[] {
+    to = to ? `${clean(root)}/${clean(to)}` : undefined;
     const context: QContext = {
       instance: self,
-      currentLocationPath: to ? `${clean(root)}/${clean(to)}` : undefined,
+      to,
+      currentLocationPath: to,
       navigateOptions: {},
       resolveOptions: { ...DEFAULT_RESOLVE_OPTIONS, ...options },
     };
@@ -291,10 +294,12 @@ export default function Navigo(
   function pathToMatchObject(path: string): Match {
     const [url, queryString] = extractGETParameters(clean(path));
     const params = queryString === "" ? null : parseQuery(queryString);
+    const hashString = extractHashFromURL(path);
     const route = createRoute(url, () => {}, [genericHooks], url);
     return {
       url,
       queryString,
+      hashString,
       route,
       data: null,
       params: params,
@@ -309,6 +314,7 @@ export default function Navigo(
     const context: QContext = {
       instance: self,
       currentLocationPath: path,
+      to: path,
       navigateOptions: {},
       resolveOptions: DEFAULT_RESOLVE_OPTIONS,
     };
@@ -321,11 +327,12 @@ export default function Navigo(
   ): false | Match {
     const context: QContext = {
       instance: self,
+      to: currentLocation,
       currentLocationPath: currentLocation,
     };
     setLocationPath(context, () => {});
     path = clean(path);
-    const match = matchRoute(context.currentLocationPath, {
+    const match = matchRoute(context, {
       name: path,
       path,
       handler: () => {},

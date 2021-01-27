@@ -1,3 +1,7 @@
+## 8.8.0
+
+Adding a `hashString` to the `Match` object. #269
+
 ## 8.7.3
 
 Fixing a bug with the hash based routing #268

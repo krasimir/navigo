@@ -15,6 +15,7 @@ describe("Given the Navigo library", () => {
         data: null,
         params: { a: "b" },
         queryString: "a=b",
+        hashString: "",
         route: {
           handler: expect.any(Function),
           hooks: {
@@ -34,6 +35,7 @@ describe("Given the Navigo library", () => {
       expect(r.getCurrentLocation()).toStrictEqual({
         url: "about/team",
         queryString: "users=100",
+        hashString: "",
         route: {
           name: "about/team",
           path: "app/about/team",
@@ -50,6 +52,7 @@ describe("Given the Navigo library", () => {
       expect(r.getCurrentLocation()).toStrictEqual({
         url: "app/about/team",
         queryString: "users=100",
+        hashString: "",
         route: {
           name: "app/about/team",
           path: "app/about/team",
