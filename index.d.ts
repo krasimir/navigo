@@ -82,7 +82,7 @@ declare class Navigo {
   hooks(hooks: RouteHooks): Navigo;
   getLinkPath(link: Object): string;
   match(path: string): false | Match[];
-  matchLocation(path: string, currentLocation?: string): false | Match;
+  matchLocation(path: string | RegExp, currentLocation?: string): false | Match;
   getCurrentLocation(): Match;
   addBeforeHook(route: Route | string, hookFunction: Function): Function;
   addAfterHook(route: Route | string, hookFunction: Function): Function;

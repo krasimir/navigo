@@ -1,3 +1,7 @@
+## 8.8.2
+
+Fixing typing.
+
 ## 8.8.1
 
 Fixing a bug when a regexp is used as a path. #270
