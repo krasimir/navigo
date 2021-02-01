@@ -18,7 +18,7 @@ export default function checkForLeaveHook(context: QContext, done) {
         }
         let runHook = false;
         const newLocationVSOldMatch = context.instance.matchLocation(
-          oldMatch.route.path as string,
+          oldMatch.route.path,
           context.currentLocationPath
         );
         if (oldMatch.route.path !== "*") {

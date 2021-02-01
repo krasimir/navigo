@@ -1,3 +1,7 @@
+## 8.8.1
+
+Fixing a bug when a regexp is used as a path. #270
+
 ## 8.8.0
 
 Adding a `hashString` to the `Match` object. #269

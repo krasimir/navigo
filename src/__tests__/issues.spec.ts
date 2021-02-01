@@ -316,4 +316,39 @@ describe("Given the Navigo library", () => {
       expect(location.pathname).toBe("/item/abc-1234");
     });
   });
+  describe("and the problem described in #270", () => {
+    it("should not throw an error", () => {
+      const h1 = jest.fn();
+      const h2 = jest.fn();
+      const r: NavigoRouter = new Navigo("/");
+
+      r.on(/xyz\/[0-9a-z]{4,8}$/, h1, {
+        leave: (done, match) => {
+          done();
+        },
+      });
+
+      r.on(/xyz\/[0-9a-z]{4,8}\/sub$/, h2, {
+        leave: (done, match) => {
+          done();
+        },
+      });
+
+      r.navigate("/xyz/asdf");
+      r.navigate("/xyz/asdf/sub");
+
+      expect(h1).toBeCalledTimes(1);
+      expect(h1).toBeCalledWith(
+        expect.objectContaining({
+          url: "xyz/asdf",
+        })
+      );
+      expect(h2).toBeCalledTimes(1);
+      expect(h2).toBeCalledWith(
+        expect.objectContaining({
+          url: "xyz/asdf/sub",
+        })
+      );
+    });
+  });
 });

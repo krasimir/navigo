@@ -322,7 +322,7 @@ export default function Navigo(
     return context.matches ? context.matches : false;
   }
   function directMatchWithLocation(
-    path: string,
+    path: string | RegExp,
     currentLocation?: string
   ): false | Match {
     const context: QContext = {
@@ -331,9 +331,11 @@ export default function Navigo(
       currentLocationPath: currentLocation,
     };
     setLocationPath(context, () => {});
-    path = clean(path);
+    if (typeof path === "string") {
+      path = clean(path);
+    }
     const match = matchRoute(context, {
-      name: path,
+      name: String(path),
       path,
       handler: () => {},
       hooks: {},
