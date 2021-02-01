@@ -8,6 +8,7 @@ import checkForAlreadyHook from "./middlewares/checkForAlreadyHook";
 import checkForNotFoundHandler from "./middlewares/checkForNotFoundHandler";
 import errorOut from "./middlewares/errorOut";
 import flushCurrent from "./middlewares/flushCurrent";
+import updateState from "./middlewares/updateState";
 
 export const foundLifecycle = [
   checkForAlreadyHook,
@@ -19,8 +20,9 @@ export const foundLifecycle = [
 export const notFoundLifeCycle = [
   checkForLeaveHook,
   checkForNotFoundHandler,
-  Q.if(({ notFoundHandled }: QContext) => notFoundHandled, foundLifecycle, [
-    errorOut,
-  ]),
-  flushCurrent,
+  Q.if(
+    ({ notFoundHandled }: QContext) => notFoundHandled,
+    foundLifecycle.concat([updateState]),
+    [errorOut, flushCurrent]
+  ),
 ];

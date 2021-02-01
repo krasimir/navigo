@@ -138,6 +138,7 @@ export default function Navigo(
   }
   function navigate(to: string, navigateOptions?: NavigateOptions): void {
     to = `${clean(root)}/${clean(to)}`;
+    // console.log("---->" + to);
     const context: QContext = {
       instance: self,
       to,

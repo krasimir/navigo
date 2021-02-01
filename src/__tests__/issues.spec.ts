@@ -1,5 +1,6 @@
 import NavigoRouter from "../../index";
 import Navigo from "../index";
+import { Match } from "../../index";
 
 describe("Given the Navigo library", () => {
   beforeEach(() => {
@@ -323,12 +324,13 @@ describe("Given the Navigo library", () => {
       const r: NavigoRouter = new Navigo("/");
 
       r.on(/xyz\/[0-9a-z]{4,8}$/, h1, {
-        leave: (done, match) => {
+        leave: (done, match: Match) => {
+          expect(match.data).toStrictEqual(["asdf", "sub"]);
           done();
         },
       });
 
-      r.on(/xyz\/[0-9a-z]{4,8}\/sub$/, h2, {
+      r.on(/xyz\/([0-9a-z]{4,8})\/(sub)$/, h2, {
         leave: (done, match) => {
           done();
         },
@@ -347,8 +349,45 @@ describe("Given the Navigo library", () => {
       expect(h2).toBeCalledWith(
         expect.objectContaining({
           url: "xyz/asdf/sub",
+          data: ["asdf", "sub"],
         })
       );
+    });
+  });
+  describe("and the problem described in #271", () => {
+    it("should call the leave hook of the not found handler", () => {
+      const router: NavigoRouter = new Navigo("/");
+      const existing = jest.fn();
+      const nonExisting = jest.fn();
+      const leave = jest.fn().mockImplementation((done) => done());
+      const before = jest.fn().mockImplementation((done) => done());
+      const after = jest.fn();
+      const already = jest.fn();
+
+      router.on("existing", existing);
+      router.notFound(nonExisting, {
+        before,
+        after,
+        leave,
+        already,
+      });
+
+      router.navigate("/non-existent");
+      router.navigate("/non-existent");
+
+      expect(existing).toBeCalledTimes(0);
+      expect(nonExisting).toBeCalledTimes(1);
+      expect(leave).toBeCalledTimes(0);
+      expect(before).toBeCalledTimes(1);
+      expect(after).toBeCalledTimes(1);
+
+      router.navigate("/existing");
+
+      expect(existing).toBeCalledTimes(1);
+      expect(nonExisting).toBeCalledTimes(1);
+      expect(leave).toBeCalledTimes(1);
+
+      router.navigate("/blah");
     });
   });
 });

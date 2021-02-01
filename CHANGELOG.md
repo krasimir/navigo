@@ -1,3 +1,7 @@
+## 8.8.3
+
+Fixing a bug with notFound handler hooks. #271
+
 ## 8.8.2
 
 Fixing typing.
