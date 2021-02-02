@@ -105,10 +105,12 @@ export function matchRoute(context: QContext, route: Route): false | Match {
   }
   const regexp = new RegExp(pattern, MATCH_REGEXP_FLAGS);
   const match = current.match(regexp);
-  // console.log(current, regexp);
+
   if (match) {
     const data = isString(route.path)
       ? regExpResultToParams(match, paramNames)
+      : match.groups
+      ? match.groups
       : match.slice(1);
     return {
       url: current,

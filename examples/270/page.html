@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Navigo</title>
+    <link href="/styles.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div>
+      <a href="/xyz/foobar" data-navigo>Click me</a>
+    </div>
+    <hr />
+    <div id="content"></div>
+    <script src="/navigo.js"></script>
+    <script>
+      window.addEventListener("load", () => {
+        const router = new Navigo("/");
+        const render = (content) =>
+          (document.querySelector("#content").innerHTML = content);
+
+        router
+          .on(/xyz\/(?<myName>[0-9a-z]{4,8})$/, (match) => {
+            render(`<p>${match.data.myName}</p>`);
+          })
+          .resolve();
+      });
+    </script>
+  </body>
+</html>

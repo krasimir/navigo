@@ -1,3 +1,7 @@
+## 8.8.4
+
+Support of regexp named groups. #270
+
 ## 8.8.3
 
 Fixing a bug with notFound handler hooks. #271
