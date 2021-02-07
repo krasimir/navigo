@@ -1,3 +1,7 @@
+## 8.8.6
+
+Fixing an issue with the change introduced in 8.8.5.
+
 ## 8.8.5
 
 Fixing a case where a handler calls `navigate`. Introducing the concept of a `dirty` router state.

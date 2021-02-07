@@ -114,14 +114,14 @@ export default function Navigo(
     return this;
   }
   function resolve(to?: string, options?: ResolveOptions): false | Match[] {
-    to = to ? `${clean(root)}/${clean(to)}` : undefined;
-    // console.log("-- resolve --> " + to, self.__dirty);
     if (self.__dirty) {
       self.__waiting.push(() => self.resolve(to, options));
       return;
     } else {
       self.__dirty = true;
     }
+    to = to ? `${clean(root)}/${clean(to)}` : undefined;
+    // console.log("-- resolve --> " + to, self.__dirty);
     const context: QContext = {
       instance: self,
       to,
@@ -146,14 +146,14 @@ export default function Navigo(
     return context.matches ? context.matches : false;
   }
   function navigate(to: string, navigateOptions?: NavigateOptions): void {
-    to = `${clean(root)}/${clean(to)}`;
-    // console.log("-- navigate --> " + to, self.__dirty);
     if (self.__dirty) {
       self.__waiting.push(() => self.navigate(to, navigateOptions));
       return;
     } else {
       self.__dirty = true;
     }
+    to = `${clean(root)}/${clean(to)}`;
+    // console.log("-- navigate --> " + to, self.__dirty);
     const context: QContext = {
       instance: self,
       to,

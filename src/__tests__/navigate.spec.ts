@@ -218,7 +218,7 @@ describe("Given the Navigo library", () => {
     });
     describe("when we navigate as part of a handler", () => {
       it("should set a proper `current`", () => {
-        const r: NavigoRouter = new Navigo("/");
+        const r: NavigoRouter = new Navigo("/app");
         const h1 = jest.fn();
         const h2 = jest.fn().mockImplementation(() => {
           r.navigate("/login");
@@ -228,10 +228,10 @@ describe("Given the Navigo library", () => {
         r.on("*", h2);
         r.resolve();
 
-        expect(location.pathname).toBe("/login");
+        expect(location.pathname).toBe("/app/login");
         expect(r.current).toStrictEqual([
           expect.objectContaining({
-            url: "login",
+            url: "app/login",
           }),
         ]);
       });
