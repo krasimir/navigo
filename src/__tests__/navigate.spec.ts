@@ -216,5 +216,25 @@ describe("Given the Navigo library", () => {
         });
       });
     });
+    describe("when we navigate as part of a handler", () => {
+      it("should set a proper `current`", () => {
+        const r: NavigoRouter = new Navigo("/");
+        const h1 = jest.fn();
+        const h2 = jest.fn().mockImplementation(() => {
+          r.navigate("/login");
+        });
+
+        r.on("login", h1);
+        r.on("*", h2);
+        r.resolve();
+
+        expect(location.pathname).toBe("/login");
+        expect(r.current).toStrictEqual([
+          expect.objectContaining({
+            url: "login",
+          }),
+        ]);
+      });
+    });
   });
 });

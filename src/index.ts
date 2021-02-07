@@ -28,6 +28,7 @@ import checkForDeprecationMethods from "./middlewares/checkForDeprecationMethods
 import checkForForceOp from "./middlewares/checkForForceOp";
 import updateBrowserURL from "./middlewares/updateBrowserURL";
 import processMatches from "./middlewares/processMatches";
+import waitingList from "./middlewares/waitingList";
 
 import { notFoundLifeCycle } from "./lifecycles";
 
@@ -114,6 +115,13 @@ export default function Navigo(
   }
   function resolve(to?: string, options?: ResolveOptions): false | Match[] {
     to = to ? `${clean(root)}/${clean(to)}` : undefined;
+    // console.log("-- resolve --> " + to, self.__dirty);
+    if (self.__dirty) {
+      self.__waiting.push(() => self.resolve(to, options));
+      return;
+    } else {
+      self.__dirty = true;
+    }
     const context: QContext = {
       instance: self,
       to,
@@ -131,14 +139,21 @@ export default function Navigo(
           notFoundLifeCycle
         ),
       ],
-      context
+      context,
+      waitingList
     );
 
     return context.matches ? context.matches : false;
   }
   function navigate(to: string, navigateOptions?: NavigateOptions): void {
     to = `${clean(root)}/${clean(to)}`;
-    // console.log("---->" + to);
+    // console.log("-- navigate --> " + to, self.__dirty);
+    if (self.__dirty) {
+      self.__waiting.push(() => self.navigate(to, navigateOptions));
+      return;
+    } else {
+      self.__dirty = true;
+    }
     const context: QContext = {
       instance: self,
       to,
@@ -160,8 +175,10 @@ export default function Navigo(
           notFoundLifeCycle
         ),
         updateBrowserURL,
+        waitingList,
       ],
-      context
+      context,
+      waitingList
     );
   }
   function navigateByName(
@@ -376,6 +393,8 @@ export default function Navigo(
   this.destroyed = destroyed;
   this.current = current;
   this.__freezeListening = false;
+  this.__waiting = [];
+  this.__dirty = false;
 
   this.on = on;
   this.off = off;

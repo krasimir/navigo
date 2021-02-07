@@ -1,3 +1,7 @@
+## 8.8.5
+
+Fixing a case where a handler calls `navigate`. Introducing the concept of a `dirty` router state.
+
 ## 8.8.4
 
 Support of regexp named groups. #270

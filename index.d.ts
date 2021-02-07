@@ -95,6 +95,8 @@ declare class Navigo {
   _checkForAHash(path: string): string;
   _notFoundRoute: Route;
   __freezeListening: boolean;
+  __dirty: boolean;
+  __waiting: Function[];
 }
 
 export default Navigo;
