@@ -602,4 +602,58 @@ describe("Given the Navigo library", () => {
       warn.mockRestore();
     });
   });
+  describe("when we have `*` as route handler and generic hooks", () => {
+    it("should keep the hooks working", () => {
+      const r: NavigoRouter = new Navigo("/");
+      const before = jest.fn().mockImplementation((done) => done());
+      const after = jest.fn();
+      const leave = jest.fn().mockImplementation((done) => done());
+      const already = jest.fn();
+      const handler1 = jest.fn();
+      const handler2 = jest.fn();
+
+      r.hooks({
+        before,
+        after,
+        leave,
+        already,
+      });
+      r.on("/books", handler2);
+      r.on("*", handler1);
+
+      r.navigate("/foo/bar");
+      r.navigate("/foo/bar");
+      r.navigate("/bar/foo");
+      r.navigate("/books");
+
+      function expectCall(mock, numOfCall, numOfArg, url) {
+        expect(mock.mock.calls[numOfCall][numOfArg]).toEqual(
+          expect.objectContaining({ url })
+        );
+      }
+
+      expect(handler1).toBeCalledTimes(2);
+      expectCall(handler1, 0, 0, "foo/bar");
+      expectCall(handler1, 1, 0, "bar/foo");
+
+      expect(before).toBeCalledTimes(3);
+      expectCall(before, 0, 1, "foo/bar");
+      expectCall(before, 1, 1, "bar/foo");
+      expectCall(before, 2, 1, "books");
+
+      expect(after).toBeCalledTimes(3);
+      expectCall(before, 0, 1, "foo/bar");
+      expectCall(before, 1, 1, "bar/foo");
+      expectCall(before, 2, 1, "books");
+
+      expect(already).toBeCalledTimes(1);
+      expectCall(already, 0, 0, "foo/bar");
+
+      expect(leave).toBeCalledTimes(1);
+      expectCall(leave, 0, 1, "books");
+
+      expect(handler2).toBeCalledTimes(1);
+      expectCall(handler2, 0, 0, "books");
+    });
+  });
 });
