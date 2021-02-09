@@ -1,3 +1,7 @@
+## 8.8.7
+
+Making sure that the router is not "dirty" when the before and leave hook block the flow.
+
 ## 8.8.6
 
 Fixing an issue with the change introduced in 8.8.5.

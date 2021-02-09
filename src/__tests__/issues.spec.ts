@@ -390,4 +390,89 @@ describe("Given the Navigo library", () => {
       router.navigate("/blah");
     });
   });
+  describe("(#273) when we have a `*` as a route handler and we navigate out of a before hook", () => {
+    it("should allow the navigation", () => {
+      const r: NavigoRouter = new Navigo("/");
+      const h1 = jest.fn();
+      const h2 = jest.fn();
+      let authorized = false;
+      const before = jest.fn().mockImplementation((done, match) => {
+        if (!authorized) {
+          authorized = true;
+          done(false);
+          r.navigate("login");
+        } else {
+          done();
+        }
+      });
+
+      r.hooks({
+        before,
+      });
+      r.on("/login", h2);
+      r.on("*", h1);
+
+      r.navigate("/blah");
+
+      expect(before).toBeCalledTimes(2);
+      expect(before).toBeCalledWith(
+        expect.any(Function),
+        expect.objectContaining({ url: "blah" })
+      );
+      expect(h1).toBeCalledTimes(0);
+      expect(h2).toBeCalledTimes(1);
+    });
+  });
+  describe("(#273) when we have a `*` as a route handler and we navigate from the leave hook", () => {
+    it("should allow the navigation", (testFinished) => {
+      const r: NavigoRouter = new Navigo("/");
+      const h1 = jest.fn();
+      const h2 = jest.fn().mockImplementation(() => {
+        setTimeout(() => {
+          r.navigate("/products");
+        }, 10);
+      });
+      const h3 = jest.fn();
+      let authorized = false;
+      const leave = jest.fn().mockImplementation((done, match) => {
+        if (!authorized) {
+          authorized = true;
+          done(false);
+          r.navigate("/login");
+        } else {
+          done();
+        }
+      });
+
+      r.hooks({
+        leave,
+      });
+      r.on("/login", h2);
+      r.on("/products", h3);
+      r.on("*", h1);
+
+      r.navigate("/blah");
+      expect(location.pathname).toEqual("/blah");
+      r.navigate("/products");
+      expect(location.pathname).toEqual("/login");
+      setTimeout(() => {
+        expect(location.pathname).toEqual("/products");
+
+        expect(leave).toBeCalledTimes(3);
+        expect(leave.mock.calls[0][1]).toStrictEqual(
+          expect.objectContaining({ url: "products" })
+        );
+        expect(leave.mock.calls[1][1]).toStrictEqual(
+          expect.objectContaining({ url: "login" })
+        );
+        expect(leave.mock.calls[2][1]).toStrictEqual(
+          expect.objectContaining({ url: "products" })
+        );
+        expect(h1).toBeCalledTimes(1);
+        expect(h2).toBeCalledTimes(1);
+        expect(h3).toBeCalledTimes(1);
+        testFinished();
+      }, 20);
+    });
+  });
 });

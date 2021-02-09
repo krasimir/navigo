@@ -38,7 +38,13 @@ export default function checkForLeaveHook(context: QContext, done) {
                 // just so we match the Q interface
                 return (_, d) =>
                   f(
-                    d,
+                    (shouldStop) => {
+                      if (shouldStop === false) {
+                        context.instance.__dirty = false;
+                      } else {
+                        d();
+                      }
+                    },
                     context.matches && context.matches.length > 0
                       ? context.matches.length === 1
                         ? context.matches[0]

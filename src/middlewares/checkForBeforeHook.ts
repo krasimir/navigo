@@ -13,7 +13,13 @@ export default function checkForBeforeHook(context: QContext, done) {
         .map((f) => {
           // just so we match the Q interface
           return function beforeHookInternal(_, d) {
-            return f(d, context.match);
+            return f((shouldStop) => {
+              if (shouldStop === false) {
+                context.instance.__dirty = false;
+              } else {
+                d();
+              }
+            }, context.match);
           };
         })
         .concat([() => done()])

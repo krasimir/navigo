@@ -146,6 +146,7 @@ export default function Navigo(
     return context.matches ? context.matches : false;
   }
   function navigate(to: string, navigateOptions?: NavigateOptions): void {
+    // console.log("-- navigate --> " + to, self.__dirty);
     if (self.__dirty) {
       self.__waiting.push(() => self.navigate(to, navigateOptions));
       return;
@@ -153,7 +154,6 @@ export default function Navigo(
       self.__dirty = true;
     }
     to = `${clean(root)}/${clean(to)}`;
-    // console.log("-- navigate --> " + to, self.__dirty);
     const context: QContext = {
       instance: self,
       to,
