@@ -1,6 +1,6 @@
 {
   "name": "navigo",
-  "version": "8.8.7",
+  "version": "8.8.8",
   "description": "A simple vanilla JavaScript router",
   "main": "lib/navigo.js",
   "browser": "lib/navigo.min.js",

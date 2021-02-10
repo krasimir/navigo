@@ -341,7 +341,8 @@ export default function Navigo(
   }
   function directMatchWithLocation(
     path: string | RegExp,
-    currentLocation?: string
+    currentLocation?: string,
+    annotatePathWithRoot?: boolean
   ): false | Match {
     const context: QContext = {
       instance: self,
@@ -350,7 +351,10 @@ export default function Navigo(
     };
     setLocationPath(context, () => {});
     if (typeof path === "string") {
-      path = clean(path);
+      path =
+        typeof annotatePathWithRoot === "undefined" || annotatePathWithRoot
+          ? composePathWithRoot(path)
+          : path;
     }
     const match = matchRoute(context, {
       name: String(path),

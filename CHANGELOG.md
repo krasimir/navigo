@@ -1,3 +1,7 @@
+## 8.8.8
+
+Fixing a bug with `directMatchWithLocation`. It wasn't aware for the `root`.
+
 ## 8.8.7
 
 Making sure that the router is not "dirty" when the before and leave hook block the flow.
