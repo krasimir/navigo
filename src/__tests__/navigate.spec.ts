@@ -231,7 +231,7 @@ describe("Given the Navigo library", () => {
         expect(location.pathname).toBe("/app/login");
         expect(r.current).toStrictEqual([
           expect.objectContaining({
-            url: "app/login",
+            url: "login",
           }),
         ]);
       });

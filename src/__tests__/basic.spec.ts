@@ -428,4 +428,28 @@ describe("Given the Navigo library", () => {
       expect(r.current).toHaveLength(1);
     });
   });
+  describe("when we have a custom root and we have a match", () => {
+    it("should not include the root into the Match's url prop", () => {
+      const r: NavigoRouter = new Navigo("/app");
+      const h = jest.fn();
+
+      r.on("/login", h);
+      r.navigate("login");
+
+      expect(h).toBeCalledTimes(1);
+      expect(h).toBeCalledWith({
+        url: "login",
+        data: null,
+        params: null,
+        queryString: "",
+        hashString: "",
+        route: {
+          handler: expect.any(Function),
+          hooks: {},
+          name: "app/login",
+          path: "app/login",
+        },
+      });
+    });
+  });
 });

@@ -1,3 +1,7 @@
+## 8.8.9
+
+Proper `url` of the Match object in case of custom `root`.
+
 ## 8.8.8
 
 Fixing a bug with `directMatchWithLocation`. It wasn't aware for the `root`.

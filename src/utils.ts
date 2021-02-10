@@ -113,7 +113,7 @@ export function matchRoute(context: QContext, route: Route): false | Match {
       ? match.groups
       : match.slice(1);
     return {
-      url: current,
+      url: clean(current.replace(new RegExp(`^${context.instance.root}`), "")),
       queryString: GETParams,
       hashString: extractHashFromURL(context.to),
       route: route,
