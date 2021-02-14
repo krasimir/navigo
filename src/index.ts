@@ -344,6 +344,12 @@ export default function Navigo(
     currentLocation?: string,
     annotatePathWithRoot?: boolean
   ): false | Match {
+    if (
+      (currentLocation && typeof annotatePathWithRoot === "undefined") ||
+      annotatePathWithRoot
+    ) {
+      currentLocation = composePathWithRoot(currentLocation);
+    }
     const context: QContext = {
       instance: self,
       to: currentLocation,

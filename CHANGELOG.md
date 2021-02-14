@@ -1,3 +1,7 @@
+## 8.8.10
+
+Fixing a bug with `matchLocation`.
+
 ## 8.8.9
 
 Proper `url` of the Match object in case of custom `root`.

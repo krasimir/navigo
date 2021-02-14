@@ -452,4 +452,17 @@ describe("Given the Navigo library", () => {
       });
     });
   });
+  describe("when using matchLocation and we have a custom root", () => {
+    it("should properly match the path", () => {
+      const r: NavigoRouter = new Navigo("/app");
+
+      expect(r.matchLocation("posts/edit/:id", "posts/edit/xxx")).toStrictEqual(
+        expect.objectContaining({
+          data: {
+            id: "xxx",
+          },
+        })
+      );
+    });
+  });
 });
