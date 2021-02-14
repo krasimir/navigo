@@ -345,8 +345,8 @@ export default function Navigo(
     annotatePathWithRoot?: boolean
   ): false | Match {
     if (
-      (currentLocation && typeof annotatePathWithRoot === "undefined") ||
-      annotatePathWithRoot
+      typeof currentLocation !== "undefined" &&
+      (typeof annotatePathWithRoot === "undefined" || annotatePathWithRoot)
     ) {
       currentLocation = composePathWithRoot(currentLocation);
     }
