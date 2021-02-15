@@ -1,3 +1,7 @@
+## 8.8.12
+
+Adding types. #274 by @egorshulga.
+
 ## 8.8.10 and 8.8.11
 
 Fixing a bug with `matchLocation`.
