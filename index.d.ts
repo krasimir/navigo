@@ -1,16 +1,17 @@
 export type Route = {
   name: string;
   path: string | RegExp;
-  handler: Function;
+  handler: Handler;
   hooks: RouteHooksStorage;
 };
+export type Handler = (match: Match) => void
 export type Match = {
   url: string;
   queryString: string;
   hashString: string;
   route: Route;
-  data: Object | null;
-  params: Object | null;
+  data: { [key: string]: string } | null;
+  params: { [key: string]: string } | null;
 };
 export type BeforeHook = (done: Function, match: Match) => void;
 export type AfterHook = (match: Match) => void;
@@ -62,9 +63,9 @@ declare class Navigo {
   destroyed: boolean;
   current: null | Match[];
   lastResolved(): null | Match[];
-  on(f: Function, hooks?: RouteHooks): Navigo;
+  on(f: Handler, hooks?: RouteHooks): Navigo;
   on(map: Object, hooks?: RouteHooks): Navigo;
-  on(path: string | RegExp, f: Function, hooks?: RouteHooks): Navigo;
+  on(path: string | RegExp, f: Handler, hooks?: RouteHooks): Navigo;
   off(path: string | RegExp): Navigo;
   off(handler: Function): Navigo;
   navigate(to: string, options?: NavigateOptions): void;
