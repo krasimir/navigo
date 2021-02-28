@@ -1,3 +1,7 @@
+## 8.9.0
+
+Adding `generateOptions` to the `generate` method. That's because the method always included the `root` of the router. And in the case of a SPA we usually don't want this.
+
 ## 8.8.12
 
 Adding types. #274 by @egorshulga.

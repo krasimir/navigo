@@ -4,7 +4,7 @@ export type Route = {
   handler: Handler;
   hooks: RouteHooksStorage;
 };
-export type Handler = (match: Match) => void
+export type Handler = (match: Match) => void;
 export type Match = {
   url: string;
   queryString: string;
@@ -56,6 +56,9 @@ export type QContext = {
   resolveOptions?: ResolveOptions;
   notFoundHandled?: boolean;
 };
+export type GenerateOptions = {
+  includeRoot: boolean;
+};
 declare class Navigo {
   constructor(root: string, resolveOptions?: ResolveOptions);
   root: string;
@@ -79,7 +82,7 @@ declare class Navigo {
   notFound(handler: Function, hooks?: RouteHooks): Navigo;
   updatePageLinks(): Navigo;
   link(path: string): string;
-  generate(name: string, data?: Object): string;
+  generate(name: string, data?: Object, options?: GenerateOptions): string;
   hooks(hooks: RouteHooks): Navigo;
   getLinkPath(link: Object): string;
   match(path: string): false | Match[];

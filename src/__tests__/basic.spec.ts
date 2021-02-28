@@ -111,6 +111,38 @@ describe("Given the Navigo library", () => {
             "/foo/xxx/save"
           );
         });
+        it("should allow us to generate a URL out of the named route", () => {
+          const r: NavigoRouter = new Navigo("/sss");
+          const handler = jest.fn();
+
+          r.on({
+            "foo/:id/:action": { as: "my foo", uses: handler },
+          });
+
+          expect(
+            r.generate(
+              "my foo",
+              { id: "xxx", action: "save" },
+              { includeRoot: true }
+            )
+          ).toEqual("/sss/foo/xxx/save");
+        });
+        it("should allow us to generate a URL out of the named route", () => {
+          const r: NavigoRouter = new Navigo("/sss");
+          const handler = jest.fn();
+
+          r.on({
+            "foo/:id/:action": { as: "my foo", uses: handler },
+          });
+
+          expect(
+            r.generate(
+              "my foo",
+              { id: "xxx", action: "save" },
+              { includeRoot: false }
+            )
+          ).toEqual("/foo/xxx/save");
+        });
         it("should return null if the name is not found", () => {
           const r: NavigoRouter = new Navigo("/");
           const handler = jest.fn();
@@ -130,6 +162,20 @@ describe("Given the Navigo library", () => {
           });
 
           expect(r.generate("my foo")).toEqual("/foo/:id/:action");
+        });
+        describe("and we have a root path", () => {
+          it("should allow us to say if we want the root path or not", () => {
+            const r: NavigoRouter = new Navigo("/myapp");
+            const handler = jest.fn();
+
+            r.on({
+              "/foo/:id/:action": { as: "my foo", uses: handler },
+            });
+
+            expect(r.generate("my foo", null, { includeRoot: false })).toEqual(
+              "/foo/:id/:action"
+            );
+          });
         });
       });
     });

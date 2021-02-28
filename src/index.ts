@@ -5,6 +5,7 @@ import {
   QContext,
   NavigateOptions,
   ResolveOptions,
+  GenerateOptions,
 } from "../index";
 import NavigoRouter from "../index";
 import {
@@ -293,18 +294,26 @@ export default function Navigo(
   function lastResolved(): Match[] | null {
     return current;
   }
-  function generate(name: string, data?: Object): string {
+  function generate(
+    name: string,
+    data?: Object,
+    options?: GenerateOptions
+  ): string {
     const route = routes.find((r) => r.name === name);
+    let result = null;
     if (route) {
-      let result = route.path as string;
+      result = route.path as string;
       if (data) {
         for (let key in data) {
           result = result.replace(":" + key, data[key]);
         }
       }
-      return !result.match(/^\//) ? `/${result}` : result;
+      result = !result.match(/^\//) ? `/${result}` : result;
     }
-    return null;
+    if (result && options && !options.includeRoot) {
+      result = result.replace(new RegExp(`^/${root}`), "");
+    }
+    return result;
   }
   function getLinkPath(link) {
     return link.getAttribute("href");

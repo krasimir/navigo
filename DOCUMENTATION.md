@@ -68,6 +68,7 @@
     - [RouteHooks](#routehooks)
     - [NavigateOptions](#navigateoptions)
     - [ResolveOptions](#resolveoptions)
+    - [GenerateOptions](#generateoptions)
 
 ---
 
@@ -644,7 +645,7 @@ router.on({
 r.generate("RouteNameHere", { id: "xxx", action: "save" }); // "/my/app/user/xxx/save"
 ```
 
-Notice that the produced strings start always with the root that you passed to the Navigo's constructor.
+Notice that the produced strings by default start with the root that you passed to the Navigo's constructor. If you don't want this behavior pass a third argument to the function `{ includeRoot: false }`. In this case the second argument should be always present. Feel free to pass `null` if you don't have any data.
 
 ## Handling a not-found page
 
@@ -695,7 +696,7 @@ class Navigo {
   updatePageLinks(): Navigo;
   link(path: string): string;
   lastResolved(): null | Match[];
-  generate(name: string, data?: Object): string;
+  generate(name: string, data?: Object, options:? GenerateOptions): string;
   hooks(hooks: RouteHooks): Navigo;
   getLinkPath(link: Object): string;
   match(path: string): false | Match[];
@@ -767,5 +768,13 @@ export type ResolveOptions = {
   strategy?: ONE | ALL;
   hash?: boolean;
   noMatchWarning?: true | false;
+};
+```
+
+### GenerateOptions
+
+```typescript
+export type GenerateOptions = {
+  includeRoot: boolean;
 };
 ```
