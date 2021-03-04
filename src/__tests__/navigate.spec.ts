@@ -184,6 +184,26 @@ describe("Given the Navigo library", () => {
 
         expect(handler).not.toBeCalled();
       });
+      describe("and we have a root specified", () => {
+        it("should navigate properly", () => {
+          const r: NavigoRouter = new Navigo("/ops");
+          const handler = jest.fn();
+          r.on({
+            "/users/:name": { as: "user", uses: handler },
+          });
+
+          r.navigateByName("user", { name: "Krasimir" });
+
+          expect(location.pathname).toBe("/ops/users/Krasimir");
+
+          expect(handler).toBeCalledTimes(1);
+          expect(handler).toBeCalledWith(
+            expect.objectContaining({
+              url: "users/Krasimir",
+            })
+          );
+        });
+      });
     });
     describe("and we have a hash in the URL", () => {
       it("should keep the hash in the URL and make accessible in the Match object", () => {

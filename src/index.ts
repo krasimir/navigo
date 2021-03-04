@@ -189,7 +189,7 @@ export default function Navigo(
   ): boolean {
     const url = generate(name, data);
     if (url !== null) {
-      navigate(url, options);
+      navigate(url.replace(new RegExp(`^\/?${root}`), ""), options);
       return true;
     }
     return false;
