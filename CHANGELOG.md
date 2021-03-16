@@ -1,3 +1,8 @@
+## 8.10.0
+
+* Issue #281 - make sure that the waiting tasks are executed even if a hook stops the routing logic.
+* Introducing `linksSelector` option which allows you to use a custom CSS selector as a replacement of `data-navigo` attribute.
+
 ## 8.9.1
 
 Fixing a bug with `navigateByName` #276

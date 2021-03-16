@@ -15,7 +15,7 @@ export default function checkForBeforeHook(context: QContext, done) {
           return function beforeHookInternal(_, d) {
             return f((shouldStop) => {
               if (shouldStop === false) {
-                context.instance.__dirty = false;
+                context.instance.__markAsClean(context);
               } else {
                 d();
               }

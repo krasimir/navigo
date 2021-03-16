@@ -6,6 +6,8 @@ import {
   NavigateOptions,
   ResolveOptions,
   GenerateOptions,
+  Handler,
+  RouterOptions,
 } from "../index";
 import NavigoRouter from "../index";
 import {
@@ -33,14 +35,12 @@ import waitingList from "./middlewares/waitingList";
 
 import { notFoundLifeCycle } from "./lifecycles";
 
-export default function Navigo(
-  appRoute?: string,
-  resolveOptions?: ResolveOptions
-) {
-  let DEFAULT_RESOLVE_OPTIONS: ResolveOptions = resolveOptions || {
+export default function Navigo(appRoute?: string, options?: RouterOptions) {
+  let DEFAULT_RESOLVE_OPTIONS: RouterOptions = options || {
     strategy: "ONE",
     hash: false,
     noMatchWarning: false,
+    linksSelector: "[data-navigo]",
   };
   let self: NavigoRouter = this;
   let root = "/";
@@ -75,7 +75,7 @@ export default function Navigo(
   }
   function createRoute(
     path: string | RegExp,
-    handler: Function,
+    handler: Handler,
     hooks: RouteHooks[],
     name?: string
   ): Route {
@@ -91,7 +91,7 @@ export default function Navigo(
   // public APIs
   function on(
     path: string | Function | Object | RegExp,
-    handler?: Function,
+    handler?: Handler,
     hooks?: RouteHooks
   ) {
     if (typeof path === "object" && !(path instanceof RegExp)) {
@@ -106,7 +106,7 @@ export default function Navigo(
       return this;
     } else if (typeof path === "function") {
       hooks = handler as RouteHooks;
-      handler = path as Function;
+      handler = path as Handler;
       path = root;
     }
     routes.push(
@@ -280,7 +280,9 @@ export default function Navigo(
   }
   function findLinks() {
     if (isWindowAvailable) {
-      return [].slice.call(document.querySelectorAll("[data-navigo]"));
+      return [].slice.call(
+        document.querySelectorAll(DEFAULT_RESOLVE_OPTIONS.linksSelector)
+      );
     }
     return [];
   }
@@ -406,6 +408,12 @@ export default function Navigo(
     }
     return routes.find((r) => r.handler === nameOrHandler);
   }
+  function __markAsClean(context: QContext) {
+    context.instance.__dirty = false;
+    if (context.instance.__waiting.length > 0) {
+      context.instance.__waiting.shift()();
+    }
+  }
 
   this.root = root;
   this.routes = routes;
@@ -414,6 +422,7 @@ export default function Navigo(
   this.__freezeListening = false;
   this.__waiting = [];
   this.__dirty = false;
+  this.__markAsClean = __markAsClean;
 
   this.on = on;
   this.off = off;

@@ -45,6 +45,7 @@
     - [Navigating by route name](#navigating-by-route-name)
   - [Augment your `<a>` tags](#augment-your-a-tags)
     - [`data-navigo` with value](#data-navigo-with-value)
+    - [Custom selector](#custom-selector)
     - [Passing options to the `navigate` method](#passing-options-to-the-navigate-method)
   - [Resolving routes](#resolving-routes)
     - [Resolve options](#resolve-options)
@@ -66,6 +67,7 @@
     - [Match](#match)
     - [Route](#route)
     - [RouteHooks](#routehooks)
+    - [RouterOptions](#routeroptions)
     - [NavigateOptions](#navigateoptions)
     - [ResolveOptions](#resolveoptions)
     - [GenerateOptions](#generateoptions)
@@ -80,6 +82,7 @@ Types
 | [Match](#match)                      |
 | [Route](#route)                      |
 | [RouteHooks](#routehooks)            |
+| [RouterOptions](#routeroptions)  |
 | [NavigateOptions](#navigateoptions)  |
 | [ResolveOptions](#resolve-options)   |
 
@@ -91,7 +94,7 @@ Navigo constructor has one mandatory argument - the root path of your applicatio
 const router = new Navigo('/my/project');
 ```
 
-The second argument is the default [resolving options](#resolve-options). The `strategy` field there defines how many matches the router finds - one or many.
+The second argument is the default [router options](#routeroptions). The `strategy` field there defines how many matches the router finds - one or many.
 
 ```js
 const router = new Navigo('/my/project', { strategy: 'ALL' });
@@ -370,6 +373,16 @@ Navigo has a method called `updatePageLinks` which you have to call every time w
 ### `data-navigo` with value
 
 If you use `data-navigo="false"` the link will be ignored by Navigo and if there was a click handler for it the handler will be removed.
+
+### Custom selector
+
+If you are not happy with  `data-navigo` attribute you may provide your own CSS selector. You may even say "just augment all the links on the page".
+
+```js
+const router = new Navigo("/", { linksSelector: "a" });
+```
+
+Example [here](./examples/custom-selector/page.html).
 
 ### Passing options to the `navigate` method
 
@@ -679,7 +692,7 @@ There is `getRoute` method that accepts a route name/path. The object that you r
 
 ```typescript
 class Navigo {
-  constructor(root: string, resolveOptions?: ResolveOptions);
+  constructor(root: string, options?: RouterOptions);
   destroyed: boolean;
   current: Match[];
   routes: Route[];
@@ -743,6 +756,12 @@ type RouteHooks = {
   leave?: (done: Function, match: Match | Match[]) => void;
   already?: (match: Match) => void;
 };
+```
+
+### RouterOptions
+
+```typescript
+export type RouterOptions = ResolveOptions & { linksSelector?: string };
 ```
 
 ### NavigateOptions

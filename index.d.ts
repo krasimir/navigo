@@ -4,7 +4,7 @@ export type Route = {
   handler: Handler;
   hooks: RouteHooksStorage;
 };
-export type Handler = (match: Match) => void;
+export type Handler = (match?: Match) => void;
 export type Match = {
   url: string;
   queryString: string;
@@ -59,8 +59,9 @@ export type QContext = {
 export type GenerateOptions = {
   includeRoot: boolean;
 };
+export type RouterOptions = ResolveOptions & { linksSelector?: string };
 declare class Navigo {
-  constructor(root: string, resolveOptions?: ResolveOptions);
+  constructor(root: string, options?: RouterOptions);
   root: string;
   routes: Route[];
   destroyed: boolean;
@@ -105,6 +106,7 @@ declare class Navigo {
   __freezeListening: boolean;
   __dirty: boolean;
   __waiting: Function[];
+  __markAsClean: Function;
 }
 
 export default Navigo;

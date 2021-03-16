@@ -601,6 +601,30 @@ describe("Given the Navigo library", () => {
 
       warn.mockRestore();
     });
+    describe("and we want to navigate out from a hook", () => {
+      it("should properly land on the new path", () => {
+        const r: NavigoRouter = new Navigo();
+        const h1 = jest.fn();
+        const h2 = jest.fn();
+        r.hooks({
+          before(done, match) {
+            if (match.url !== "auth/sign-in") {
+              r.navigate("/auth/sign-in");
+              done(false);
+            } else {
+              done();
+            }
+          },
+        });
+        r.on("/auth/sign-in", h1);
+        r.on("/", h2);
+
+        r.resolve();
+
+        expect(h1).toBeCalledTimes(1);
+        expect(h2).not.toBeCalled();
+      });
+    });
   });
   describe("when we have `*` as route handler and generic hooks", () => {
     it("should keep the hooks working", () => {

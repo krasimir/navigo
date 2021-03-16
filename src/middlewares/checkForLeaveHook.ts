@@ -41,7 +41,7 @@ export default function checkForLeaveHook(context: QContext, done) {
                   f(
                     (shouldStop) => {
                       if (shouldStop === false) {
-                        context.instance.__dirty = false;
+                        context.instance.__markAsClean(context);
                       } else {
                         d();
                       }
