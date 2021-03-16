@@ -35,12 +35,14 @@ import waitingList from "./middlewares/waitingList";
 
 import { notFoundLifeCycle } from "./lifecycles";
 
+const DEFAULT_LINK_SELECTOR = "[data-navigo]";
+
 export default function Navigo(appRoute?: string, options?: RouterOptions) {
   let DEFAULT_RESOLVE_OPTIONS: RouterOptions = options || {
     strategy: "ONE",
     hash: false,
     noMatchWarning: false,
-    linksSelector: "[data-navigo]",
+    linksSelector: DEFAULT_LINK_SELECTOR,
   };
   let self: NavigoRouter = this;
   let root = "/";
@@ -281,7 +283,9 @@ export default function Navigo(appRoute?: string, options?: RouterOptions) {
   function findLinks() {
     if (isWindowAvailable) {
       return [].slice.call(
-        document.querySelectorAll(DEFAULT_RESOLVE_OPTIONS.linksSelector)
+        document.querySelectorAll(
+          DEFAULT_RESOLVE_OPTIONS.linksSelector || DEFAULT_LINK_SELECTOR
+        )
       );
     }
     return [];

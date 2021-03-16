@@ -1,3 +1,7 @@
+## 8.10.1
+
+Fixing a hash routing bug introduced in 8.10.0
+
 ## 8.10.0
 
 * Issue #281 - make sure that the waiting tasks are executed even if a hook stops the routing logic.
