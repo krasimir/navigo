@@ -25,6 +25,7 @@ const config = {
   mode: mode,
   entry: __dirname + "/src/index.ts",
   devtool: "source-map",
+  target: "es5",
   output: {
     path: __dirname + "/lib",
     filename: outputFile.toLowerCase(),
