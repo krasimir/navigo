@@ -1,3 +1,7 @@
+## 8.11.0
+
+Export to es5. A webpack config change.
+
 ## 8.10.1
 
 Fixing a hash routing bug introduced in 8.10.0
