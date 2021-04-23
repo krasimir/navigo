@@ -22,9 +22,11 @@ export default function updateBrowserURL(context: QContext, done) {
       if (location && location.hash) {
         context.instance.__freezeListening = true;
         setTimeout(() => {
-          let tmp = location.hash;
-          location.hash = "";
-          location.hash = tmp;
+          if (!isItUsingHash) {
+            let tmp = location.hash;
+            location.hash = "";
+            location.hash = tmp;
+          }
           context.instance.__freezeListening = false;
         }, 1);
       }

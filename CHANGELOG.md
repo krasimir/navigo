@@ -1,3 +1,7 @@
+## 8.11.1
+
+Fixing a bug with history items when using hash based routing.
+
 ## 8.11.0
 
 Export to es5. A webpack config change.
