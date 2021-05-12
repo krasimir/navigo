@@ -41,6 +41,7 @@ export default function Navigo(appRoute?: string, options?: RouterOptions) {
   let DEFAULT_RESOLVE_OPTIONS: RouterOptions = options || {
     strategy: "ONE",
     hash: false,
+    hashCharacter: '#',
     noMatchWarning: false,
     linksSelector: DEFAULT_LINK_SELECTOR,
   };
@@ -63,11 +64,11 @@ export default function Navigo(appRoute?: string, options?: RouterOptions) {
   }
 
   function _checkForAHash(url: string): string {
-    if (url.indexOf("#") >= 0) {
+    if (url.indexOf(DEFAULT_RESOLVE_OPTIONS.hashCharacter) >= 0) {
       if (DEFAULT_RESOLVE_OPTIONS.hash === true) {
-        url = url.split("#")[1] || "/";
+        url = url.split(DEFAULT_RESOLVE_OPTIONS.hashCharacter)[1] || "/";
       } else {
-        url = url.split("#")[0];
+        url = url.split(DEFAULT_RESOLVE_OPTIONS.hashCharacter)[0];
       }
     }
     return url;
