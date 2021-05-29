@@ -54,13 +54,15 @@ or via npm/yarn:
 ## Quick start
 
 ```js
+import Navigo from 'navigo'; // When using ES modules.
+
 const router = new Navigo('/');
 ```
 
 The constructor of the library accepts a single argument - the root path of your app. If you host your project at `https://site.com/my/awesome/app`, your root path is `/my/awesome/app`. Then you have to define your routes.
 
 ```js
-router.on('/products/list', function () {
+router.on('/my/awesome/app', function () {
   // do something
 });
 ```
