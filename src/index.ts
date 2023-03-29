@@ -51,8 +51,8 @@ export default function Navigo(appRoute?: string, options?: RouterOptions) {
   let destroyed = false;
   let genericHooks: RouteHooks;
 
-  const isPushStateAvailable = pushStateAvailable();
-  const isWindowAvailable = windowAvailable();
+  const isPushStateAvailable: () => boolean = pushStateAvailable;
+  const isWindowAvailable: () => boolean = windowAvailable;
 
   if (!appRoute) {
     console.warn(
@@ -97,7 +97,7 @@ export default function Navigo(appRoute?: string, options?: RouterOptions) {
     hooks?: RouteHooks
   ) {
     if (typeof path === "object" && !(path instanceof RegExp)) {
-      Object.keys(path).forEach((p) => {
+      Object.keys(path).forEach((p: string) => {
         if (typeof path[p] === "function") {
           this.on(p, path[p]);
         } else {
@@ -109,7 +109,7 @@ export default function Navigo(appRoute?: string, options?: RouterOptions) {
     } else if (typeof path === "function") {
       hooks = handler as RouteHooks;
       handler = path as Handler;
-      path = root;
+      path = 'root';
     }
     routes.push(
       createRoute(path as string | RegExp, handler, [genericHooks, hooks])
@@ -128,26 +128,51 @@ export default function Navigo(appRoute?: string, options?: RouterOptions) {
     const context: QContext = {
       instance: self,
       to,
+        /**
+         * TODO?: currentLocation: options?.currentLocation ?? '',
+         * TODO?: currentParams: options?.currentParams ?? {},
+         * TODO?: currentQuery: options?.currentQuery ?? {},
+         */
       currentLocationPath: to,
       navigateOptions: {},
       resolveOptions: { ...DEFAULT_RESOLVE_OPTIONS, ...options },
     };
     Q(
       [
-        setLocationPath,
-        matchPathToRegisteredRoutes,
+        setLocationPath, 
+        matchPathToRegisteredRoutes, 
         Q.if(
-          ({ matches }: QContext) => matches && matches.length > 0,
-          processMatches,
+          ({ matches }: QContext) => matches && matches.length > 0, 
+          processMatches, 
           notFoundLifeCycle
-        ),
-      ],
-      context,
-      waitingList
+          ),
+      ], 
+      { context, done: waitingList }
     );
 
+    /** 
+     * const middlewareChain: QMiddleware<QContext>[] = [
+     * setLocation,
+     *  Q.parallel([
+     *    matchPathToRegisteredRoutes,
+     *    Q.if(
+     *      ({ matches }: QContext) => matches && matches.length > 0,
+     *      processMatches,
+     *      notFoundLifeCycle
+     *     )
+     *   ]),
+     * ];
+     *
+     * if (options?.queryParamsMode === 'strict') {
+     *   middlewareChain.push(Q.sync(queryParamsStrictMode));
+     * }
+     *
+     * Q(middlewareChain, context, waitingList);
+     */
+    
     return context.matches ? context.matches : false;
   }
+  /** function navigate(to: string, navigateOptions?: NavigateOptions = {}): void { */ 
   function navigate(to: string, navigateOptions?: NavigateOptions): void {
     // console.log("-- navigate --> " + to, self.__dirty);
     if (self.__dirty) {
@@ -167,22 +192,18 @@ export default function Navigo(appRoute?: string, options?: RouterOptions) {
           : DEFAULT_RESOLVE_OPTIONS,
       currentLocationPath: _checkForAHash(to),
     };
-    Q(
-      [
-        checkForDeprecationMethods,
-        checkForForceOp,
-        matchPathToRegisteredRoutes,
-        Q.if(
-          ({ matches }: QContext) => matches && matches.length > 0,
-          processMatches,
-          notFoundLifeCycle
-        ),
-        updateBrowserURL,
-        waitingList,
-      ],
-      context,
-      waitingList
-    );
+      Q(
+        [
+          setLocationPath, 
+          matchPathToRegisteredRoutes, 
+          Q.if(
+            ({ matches }: QContext) => matches && matches.length > 0, 
+            processMatches, 
+            notFoundLifeCycle
+            ),
+        ], 
+        { context, done: waitingList }
+      );
   }
   function navigateByName(
     name: string,
@@ -197,9 +218,13 @@ export default function Navigo(appRoute?: string, options?: RouterOptions) {
     return false;
   }
   function off(what: string | RegExp | Function) {
-    this.routes = routes = routes.filter((r) => {
+    this.routes = routes = routes.filter((r) => { // r: router 
       if (isString(what)) {
         return clean(r.path as string) !== clean(what as string);
+     /** 
+      * else if (isRegExp(what)) {
+      * return !what.test(r.path as string);
+      */
       } else if (isFunction(what)) {
         return what !== r.handler;
       }
@@ -218,9 +243,9 @@ export default function Navigo(appRoute?: string, options?: RouterOptions) {
     }
   }
   function destroy() {
-    this.routes = routes = [];
+    [this.routes, routes] = [[], this.routes];
     if (isPushStateAvailable) {
-      window.removeEventListener("popstate", this.__popstateListener);
+      window.removeEventListener("popstate", this.__popstateListener) : null;
     }
     this.destroyed = destroyed = true;
   }
@@ -233,16 +258,18 @@ export default function Navigo(appRoute?: string, options?: RouterOptions) {
     );
     return this;
   }
+  
+  /** isExternalLink = external(link) */
+  
   function updatePageLinks() {
     if (!isWindowAvailable) return;
-    findLinks().forEach((link) => {
-      if (
-        "false" === link.getAttribute("data-navigo") ||
-        "_blank" === link.getAttribute("target")
-      ) {
-        if (link.hasListenerAttached) {
-          link.removeEventListener("click", link.navigoHandler);
-        }
+        links.forEach((link) => {
+          let isNavigoEnabled = link.getAttribute("data-navigo") !== "false";
+          let isTargetBlank = link.getAttribute("target") === "_blank";
+        if (!isNavigoEnabled || isTargetBlank) {
+          if (link.hasListenerAttached) {
+            link.removeEventListener("click", link.navigoHandler);
+          }
         return;
       }
       if (!link.hasListenerAttached) {
@@ -281,15 +308,27 @@ export default function Navigo(appRoute?: string, options?: RouterOptions) {
     return self;
   }
   function findLinks() {
-    if (isWindowAvailable) {
-      return [].slice.call(
-        document.querySelectorAll(
-          DEFAULT_RESOLVE_OPTIONS.linksSelector || DEFAULT_LINK_SELECTOR
-        )
-      );
-    }
-    return [];
+    const linksSelector = DEFAULT_RESOLVE_OPTIONS.linksSelector || DEFAULT_LINK_SELECTOR;
+    const links = document.querySelectorAll(linksSelector);
+      if (isWindowAvailable) {
+        return [].slice.call(links);
+      }
+   return [];
   }
+  
+    /**
+     * TODO?: Do add them here too?
+     * if (isWindowAvailable) { 
+     *   return links.filter(link => { 
+     *   const dataNavigo = link.getAttribute("data-navigo"); 
+     *   const target = link.getAttribute("target"); 
+     *   return dataNavigo !== "false" && target !== "_blank"; 
+     *   });
+     * }
+     *  return [];
+     * }
+     */
+  
   function link(path: string) {
     return `/${root}/${clean(path)}`;
   }
@@ -310,8 +349,12 @@ export default function Navigo(appRoute?: string, options?: RouterOptions) {
     if (route) {
       result = route.path as string;
       if (data) {
+        /** for (const [key, value] of Object.entries(data)) { */
         for (let key in data) {
-          result = result.replace(":" + key, data[key]);
+        /** 
+         * result = result.replace(`:${key}`, value);
+         */
+         result = result.replace(`:${key}`, data[key]);
         }
       }
       result = !result.match(/^\//) ? `/${result}` : result;
@@ -321,7 +364,7 @@ export default function Navigo(appRoute?: string, options?: RouterOptions) {
     }
     return result;
   }
-  function getLinkPath(link) {
+  function getLinkPath(link: HTMLAnchorElement): string | null {
     return link.getAttribute("href");
   }
   function pathToMatchObject(path: string): Match {
@@ -352,7 +395,7 @@ export default function Navigo(appRoute?: string, options?: RouterOptions) {
       resolveOptions: DEFAULT_RESOLVE_OPTIONS,
     };
     matchPathToRegisteredRoutes(context, () => {});
-    return context.matches ? context.matches : false;
+    return context.matches ?? false;
   }
   function directMatchWithLocation(
     path: string | RegExp,
@@ -383,7 +426,7 @@ export default function Navigo(appRoute?: string, options?: RouterOptions) {
       handler: () => {},
       hooks: {},
     });
-    return match ? match : false;
+    return match ?? false;
   }
   function addHook(
     type: string,
@@ -396,7 +439,7 @@ export default function Navigo(appRoute?: string, options?: RouterOptions) {
     if (route) {
       if (!route.hooks[type]) route.hooks[type] = [];
       route.hooks[type].push(func);
-      return () => {
+      return (): void => {
         (route as Route).hooks[type] = (route as Route).hooks[type].filter(
           (f) => f !== func
         );
@@ -404,7 +447,7 @@ export default function Navigo(appRoute?: string, options?: RouterOptions) {
     } else {
       console.warn(`Route doesn't exists: ${route}`);
     }
-    return () => {};
+    return (): void => {};
   }
   function getRoute(nameOrHandler: string | Function): Route | undefined {
     if (typeof nameOrHandler === "string") {
