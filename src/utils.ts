@@ -19,26 +19,21 @@ import {
   NOT_SURE_REGEXP,
 } from "./constants";
 
-export function getCurrentEnvURL(fallback = "/"): string {
-  if (windowAvailable()) {
-    return location.pathname + location.search + location.hash;
-  }
-  return fallback;
+export function getCurrentURLPath(fallback = "/"): string {
+  return window?.location?.pathname + window?.location?.search + window?.location?.hash ?? fallback;
 }
-export function clean(s: string) {
-  return s.replace(/\/+$/, "").replace(/^\/+/, "");
+export function clean(s: string): string {
+  return s.replace(/^\/+|\/+$/g, "$1");
 }
 export function isString(s: any): boolean {
-  return typeof s === "string";
+  return typeof s === "string" || s instanceof String;
 }
 export function isFunction(s: any): boolean {
-  return typeof s === "function";
+  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Function]";
 }
-export function extractHashFromURL(url: string) {
-  if (url && url.indexOf("#") >= 0) {
-    return url.split("#").pop() || "";
-  }
-  return "";
+export function extractHashFromURL(url: string): string {
+  const match = /#(.*)$/.exec(url);
+  return match ? match[1] : "";
 }
 export function regExpResultToParams(match, names: string[]) {
   if (names.length === 0) return null;
@@ -74,7 +69,7 @@ export function matchRoute(context: QContext, route: Route): false | Match {
   const [current, GETParams] = extractGETParameters(
     clean(context.currentLocationPath)
   );
-  const params = GETParams === "" ? null : parseQuery(GETParams);
+  const params: { [key: string]: string } | null = GETParams === "" ? null : parseQuery(GETParams) as { [key: string]: string };
   const paramNames = [];
   let pattern;
   if (isString(route.path)) {
@@ -124,46 +119,45 @@ export function matchRoute(context: QContext, route: Route): false | Match {
   return false;
 }
 export function pushStateAvailable(): boolean {
-  return !!(
-    typeof window !== "undefined" &&
-    window.history &&
-    window.history.pushState
-  );
+  return typeof window?.history?.pushState === "function";
 }
 export function undefinedOrTrue(obj, key: string): boolean {
-  return typeof obj[key] === "undefined" || obj[key] === true;
+  return typeof obj[key] === "undefined" ? true : obj[key];
 }
 export function parseNavigateOptions(source?: string): NavigateOptions {
   if (!source) return {};
-  const pairs = source.split(",");
-  const options: NavigateOptions = {};
-  let resolveOptions: ResolveOptions;
 
-  pairs.forEach((str) => {
-    const temp = str.split(":").map((v) => v.replace(/(^ +| +$)/g, ""));
-    switch (temp[0]) {
+  const options: NavigateOptions = {};
+  const resolveOptions: Partial<ResolveOptions> = {};
+
+  const parseKeyValuePair = (str: string) => {
+    const [key, value] = str.split(":").map(v => v.trim());
+
+    switch (key) {
       case "historyAPIMethod":
-        options.historyAPIMethod = temp[1];
+        options.historyAPIMethod = value;
         break;
       case "resolveOptionsStrategy":
-        if (!resolveOptions) resolveOptions = {};
-        resolveOptions.strategy = temp[1] as ResolveStrategy;
+        resolveOptions.strategy = value as ResolveStrategy;
         break;
       case "resolveOptionsHash":
-        if (!resolveOptions) resolveOptions = {};
-        resolveOptions.hash = temp[1] === "true";
+        resolveOptions.hash = value === "true";
         break;
       case "updateBrowserURL":
       case "callHandler":
       case "updateState":
       case "force":
-        options[temp[0]] = temp[1] === "true";
+        options[key] = value === "true";
         break;
     }
-  });
-  if (resolveOptions) {
-    options.resolveOptions = resolveOptions;
+  };
+
+  source.split(",").forEach(parseKeyValuePair);
+
+  if (Object.keys(resolveOptions).length) {
+    options.resolveOptions = resolveOptions as ResolveOptions;
   }
+
   return options;
 }
 export function windowAvailable() {
