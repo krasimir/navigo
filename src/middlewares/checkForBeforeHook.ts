@@ -22,7 +22,8 @@ export default function checkForBeforeHook(context: QContext, done) {
             }, context.match);
           };
         })
-        .concat([() => done()])
+        .concat([() => done()]),
+      {} // An empty options object here to prevent error
     );
   } else {
     done();
