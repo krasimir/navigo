@@ -53,7 +53,8 @@ export default function checkForLeaveHook(context: QContext, done) {
                       : undefined
                   );
               })
-              .concat([() => leaveLoopDone()])
+              .concat([() => leaveLoopDone()]),
+              {}
           );
           return;
         } else {
@@ -61,7 +62,8 @@ export default function checkForLeaveHook(context: QContext, done) {
         }
       };
     }),
-    {},
-    () => done()
+    {
+      done: () => done(),
+    }
   );
 }
