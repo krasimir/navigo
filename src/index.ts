@@ -320,7 +320,7 @@ export default function Navigo(appRoute?: string, options?: RouterOptions) {
 
             // Note that this won't handle regex groups that contain sub-groups
             // e.g. /(?<groupName>(:?example)?)
-            let keyRegex = new RegExp(`\(\?\<${regexEscapedKey}\>[^\(^\)]+\)`);
+            let keyRegex = new RegExp(`\\(\\?\\<${regexEscapedKey}\\>[^\\(^\\)]+\\)`, "g");
             result = result.replace(keyRegex, data[key]);
           }
         }
