@@ -316,11 +316,11 @@ export default function Navigo(appRoute?: string, options?: RouterOptions) {
           // If regex group replacement is enabled, search
           // for named-regex parameter groups
           if (options?.replaceRegexGroups === true) {
-            let regexEscapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            const regexEscapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
             // Note that this won't handle regex groups that contain sub-groups
             // e.g. /(?<groupName>(:?example)?)
-            let keyRegex = new RegExp(`\\(\\?\\<${regexEscapedKey}\\>[^\\(^\\)]+\\)`, "g");
+            const keyRegex = new RegExp(`\\(\\?\\<${regexEscapedKey}\\>[^\\(^\\)]+\\)`, "g");
             result = result.replace(keyRegex, data[key]);
           }
         }
