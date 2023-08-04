@@ -58,6 +58,7 @@ export type QContext = {
 };
 export type GenerateOptions = {
   includeRoot: boolean;
+  replaceRegexGroups: boolean;
 };
 export type RouterOptions = ResolveOptions & { linksSelector?: string };
 declare class Navigo {
